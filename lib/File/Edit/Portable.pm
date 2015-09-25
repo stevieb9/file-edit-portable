@@ -97,21 +97,18 @@ sub _extract {
     my $self = shift;
     my $file = shift;
 
-    open my $fh, '<', $file or croak $!;
-
-    binmode $fh;
-    my @contents = <$fh>;
-
-    close $fh or croak $!;
+    my $check = qx(file $file);
 
     my $eor;
 
-    if ($contents[0]){
-        for (@contents){
-            if (/(\R)/){
-                $eor = unpack "H*", $1;
-            }
-        }
+    if ($check =~ /CRLF/){
+        $eor = "0d0a";
+    }
+    elsif ($check =~ /CR/){
+        $eor = "0d";
+    }
+    else {
+        $eor = "0a";
     }
 
     return $eor;
@@ -163,7 +160,13 @@ Parameters: <file =E<gt> 'filename'>
 
 Writes the data back to the original file, or alternately a copy of the file. Returns 1 on success.
 
-Parameters: C<file =E<gt> 'file'>, which is not needed if you've used C<pread()> to open the file, C<copy =E<gt> 'file2'> if you want to write to a copy of the original file instead of the original, and C<contents =E<gt> \@contents>, which is mandatory, and should contain a reference to the array that was returned by C<pread()>.
+Parameters: 
+
+C<file =E<gt> 'file'>: Not needed if you've used C<pread()> to open the file. 
+
+C<copy =E<gt> 'file2'>: Set this if you want to write to an alternate file, rather than the original.
+
+C<contents =E<gt> \@contents>: Mandatory, should contain a reference to the array that was returned by C<pread()>.
 
 
 =head1 AUTHOR

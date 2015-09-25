@@ -36,26 +36,57 @@ WriteMakefile(
 
 if ($^O eq 'MSWin32'){
 
-    my $eor = qx(file t/win.txt);
+    print "\nSetting up environment for Windows...\n\n";
+    
+    { # win
 
-    if ($eor !~ /CRLF/){
+        my $eor = qx(file t/win.txt);
 
-        open my $fh, '<', 't/win.txt' or die $!;
-        my @f = <$fh>;
-        close $fh or die $!;
+        if ($eor !~ /CRLF/){
 
-        for (@f){
-            s/\n/\r\n/g;
+            open my $fh, '<', 't/win.txt' or die $!;
+            my @f = <$fh>;
+            close $fh or die $!;
+
+            for (@f){
+                s/\n/\r\n/g;
+            }
+
+            unlink 't/win.txt';
+
+            open my $wfh, '<', 't/win.txt' or die $!;
+
+            for (@f){
+                print $wfh $_;
+            }
+
+            close $wfh or die $!;
         }
+    }
 
-        unlink 't/win.txt';
+    { # unix
 
-        open my $wfh, '<', 't/win.txt' or die $!;
+        my $eor = qx(file t/unix.txt);
 
-        for (@f){
-            print $wfh $_;
+        if ($eor =~ /CRLF/){
+
+            open my $fh, '<', 't/unix.txt' or die $!;
+            my @f = <$fh>;
+            close $fh or die $!;
+
+            for (@f){
+                s/\r\n/\n/g;
+            }
+
+            unlink 't/unix.txt';
+
+            open my $wfh, '<', 't/unix.txt' or die $!;
+
+            for (@f){
+                print $wfh $_;
+            }
+
+            close $wfh or die $!;
         }
-
-        close $wfh or die $!;
     }
 }
