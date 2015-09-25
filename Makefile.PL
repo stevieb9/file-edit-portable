@@ -7,6 +7,16 @@ WriteMakefile(
     NAME             => 'File::Edit::Portable',
     AUTHOR           => q{Steve Bertrand <steveb@cpan.org>},
     VERSION_FROM     => 'lib/File/Edit/Portable.pm',
+    META_MERGE => {
+        'meta-spec' => { version => 2 },
+        resources   => {
+            repository => {
+                type => 'git',
+                url => 'https://github.com/stevieb9/file-edit-portable.git',
+                web => 'https://github.com/stevieb9/file-edit-portable',
+            },
+        },
+    },
     ABSTRACT_FROM    => 'lib/File/Edit/Portable.pm',
     LICENSE          => 'perl_5',
     PL_FILES         => {},

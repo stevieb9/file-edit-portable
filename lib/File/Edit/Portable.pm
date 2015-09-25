@@ -60,6 +60,8 @@ sub pwrite {
     }
 
     close $wfh or croak $!;
+
+    return 1;
 }
 sub _check {
 
@@ -121,7 +123,7 @@ __END__
 
 =head1 NAME
 
-File::Edit::Portable - Read and write files while keeping the original line-endings intact
+File::Edit::Portable - Read and write files while keeping the original line-endings intact, no matter the platform.
 
 =cut
 
@@ -129,26 +131,40 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
     use File::Edit::Portable;
 
-    my $fep = File::Edit::Portable->
-    my @contents = File::Edit::Portable->new->
-=head1 EXPORT
+    my $rw = File::Edit::Portable->new;
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+    my @contents = $rw->pread(file => 'file.txt');
 
-=head1 SUBROUTINES/METHODS
+    push @contents, 'line 1', 'line 2';
 
-=head2 function1
+    $rw->pwrite(file => 'file.txt', contents => \@contents);
 
-=cut
+=head1 DESCRIPTION
 
-}
+This module will read in a file, and keep track of the file's current line endings.
+ 
+When you want to write the file back out after editing its contents, it'll write the file back out with the original line endings, bypassing perl's default behaviour of re-writing the file with the default record separator for the Operating System it's running on.
 
-=head2 function2
 
-=cut
+=head1 METHODS
 
-}
+=head2 new
+
+Returns a new C<File::Edit::Portable> object.
+
+=head2 pread
+
+Opens a file and extracts its contents, returning an array of the files contents where each line of the file is a separate element in the array.
+
+Parameters: <file =E<gt> 'filename'>
+
+
+=head2 pwrite
+
+Writes the data back to the original file, or alternately a copy of the file. Returns 1 on success.
+
+Parameters: C<file =E<gt> 'file'>, which is not needed if you've used C<pread()> to open the file, C<copy =E<gt> 'file2'> if you want to write to a copy of the original file instead of the original, and C<contents =E<gt> \@contents>, which is mandatory, and should contain a reference to the array that was returned by C<pread()>.
+
 
 =head1 AUTHOR
 
@@ -178,22 +194,12 @@ You can also look for information at:
 
 L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=File-Edit-Portable>
 
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/File-Edit-Portable>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/File-Edit-Portable>
-
 =item * Search CPAN
 
 L<http://search.cpan.org/dist/File-Edit-Portable/>
 
 =back
 
-
-=head1 ACKNOWLEDGEMENTS
 
 
 =head1 LICENSE AND COPYRIGHT
@@ -207,6 +213,3 @@ by the Free Software Foundation; or the Artistic License.
 See L<http://dev.perl.org/licenses/> for more information.
 
 
-=cut
-
-1; # End of File::Edit::Portable
