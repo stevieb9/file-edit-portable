@@ -7,7 +7,7 @@ use Data::Dumper;
 use File::Copy;
 use Test::More;
 
-use Test::More tests => 16;
+use Test::More tests => 17;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
@@ -33,9 +33,9 @@ my $rw = File::Edit::Portable->new;
 
     # print "*** " . unpack("H*", $rw->{eor}) . "\n";
     
-    my $eor = $rw->_extract($copy);
+    my $eor = $rw->recsep($copy);
 
-    is ($eor, '0a', "unix line endings were replaced properly" );
+    is ($eor, '\0a', "unix line endings were replaced properly" );
     
     unlink $copy or die $!;
 
@@ -56,7 +56,11 @@ my $rw = File::Edit::Portable->new;
 
     # print "*** " . unpack("H*", $rw->{eor}) . "\n";
 
-    my $eor = $rw->_extract($copy);
+    my $eor = $rw->recsep($copy);
 
-    is ($eor, '0d0a', "win line endings were replaced properly" );
+    is ($eor, '\0d\0a', "win line endings were replaced properly" );
+
+    eval {unlink $copy;};
+
+    ok (! $@, "unlinked copy successfully");
 }

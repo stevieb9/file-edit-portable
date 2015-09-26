@@ -48,12 +48,13 @@ my $rw = File::Edit::Portable->new;
         is ($1, undef, "out of testing, EOR is removed");
     }
 
+    my $eor = $rw->recsep($file);
+
+    is ($eor, '\0a', "nix EOR was saved from the orig file");
+
     eval { unlink $copy or die $!; };
     ok (! $@, "unlinked test file" );
 
-    my $eor = unpack "H*", $rw->{eor};
-
-    is ($eor, '0a', "nix EOR was saved from the orig file");
 }
 {
     my $file = 't/win.txt';
@@ -68,10 +69,11 @@ my $rw = File::Edit::Portable->new;
         is ($1, undef, "out of testing, EOR is removed");
     }
 
+    my $eor = $rw->recsep($file);;
+
+    is ($eor, '\0d\0a', "win EOR was saved from the orig file");
+
     eval { unlink $copy or die $!; };
     ok (! $@, "unlinked test file" );
 
-    my $eor = unpack "H*", $rw->{eor};
-
-    is ($eor, '0d0a', "win EOR was saved from the orig file");
 }

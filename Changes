@@ -1,7 +1,8 @@
 Revision history for File-Edit-Portable
 
-0.02    2015-09-25
+0.02    2015-09-26
         - POD
+        - added recsep(), returns string of hex eor 
 
 0.01    2015-09-25
         - pread(), pwrite() completed

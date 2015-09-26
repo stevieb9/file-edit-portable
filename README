@@ -14,16 +14,22 @@ SYNOPSIS
         push @contents, 'line 1', 'line 2';
     
         $rw->pwrite(file => 'file.txt', contents => \@contents);
+    
+        $hex_record_separator = $rw->recsep('file');
 
 DESCRIPTION
 
     This module will read in a file, and keep track of the file's current
+    line endings, and write the file back out using those same original
     line endings.
 
-    When you want to write the file back out after editing its contents,
-    it'll write the file back out with the original line endings, bypassing
-    perl's default behaviour of re-writing the file with the default record
-    separator for the Operating System it's running on.
+    Uses are for dynamically reading/writing files while on one Operating
+    System, but you don't know what the record separator (line endings) are
+    platform-standard.
+
+    You're returned an array with all of the lines of the file on read. You
+    can them manipulate it, and then pass it back for re-writing the file
+    (or a copy).
 
 METHODS
 
@@ -37,7 +43,7 @@ METHODS
     contents where each line of the file is a separate element in the
     array.
 
-    Parameters: <file => 'filename'>
+    Parameters: file => 'filename'
 
  pwrite
 
@@ -53,6 +59,12 @@ METHODS
 
     contents => \@contents: Mandatory, should contain a reference to the
     array that was returned by pread().
+
+ recsep('file')
+
+    Returns a string of the hex representation of the line endings (record
+    separators) in 'file'. For example, "\0d\0a" will be returned for
+    Windows line endings (CRLF).
 
 AUTHOR
 
