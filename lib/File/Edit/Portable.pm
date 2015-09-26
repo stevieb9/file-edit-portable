@@ -16,6 +16,8 @@ sub read {
 
     $self->_config(@_);
 
+    $self->{is_read} = 1;
+
     my $file = $self->{file};
     my $testing = $self->{testing};
 
@@ -53,6 +55,10 @@ sub write {
     return if ! $file;
 
     $file = $copy if $copy;
+
+    if (! $self->{is_read}){
+        $self->recsep($file);
+    }
 
     open my $wfh, '>', $file or die $!;
 
@@ -172,7 +178,7 @@ Steve Bertrand, C<< <steveb at cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-file-rw-portable at rt.cpan.org>, or through
+Please report any bugs or feature requests to C<bug-file-edit-portable at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=File-Edit-Portable>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 

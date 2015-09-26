@@ -34,9 +34,9 @@ WriteMakefile(
     clean => { FILES => 'File-Edit-Portable-*' },
 );
 
-if ($^O eq 'MSWin32'){
+if ($^O eq 'MSWin32' || $^O eq 'MacOS'){
 
-    print "\nSetting up environment for Windows...\n\n";
+    print "\nSetting up environment for non-Unix...\n\n";
     
     { # win
 
