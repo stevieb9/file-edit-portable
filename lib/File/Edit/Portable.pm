@@ -33,7 +33,7 @@ sub read {
     binmode $fh, ':raw';
     my @contents = <$fh>;
 
-    close $fh or croak $!;
+    close $fh or croak "read() can't close file $file!: $!";
 
     if (! $testing){
         for (@contents){
@@ -61,7 +61,8 @@ sub write {
         $self->recsep($file);
     }
 
-    open my $wfh, '>', $file or die $!;
+    open my $wfh, '>', $file
+      or croak "write() can't open file $wfh for writing!: $!";
 
     binmode $wfh, ':raw';
 
@@ -76,7 +77,7 @@ sub write {
         }
     }
 
-    close $wfh or croak $!;
+    close $wfh or croak "write() can't close file $file: $!";
     $self->{is_read} = 0;
 
     return 1;
@@ -86,13 +87,14 @@ sub recsep {
     my $self = shift;
     my $file = shift;
 
-    open my $fh, '<', $file or croak $!;
+    open my $fh, '<', $file 
+      or croak "recsep() can't open file $file!: $!";
 
     binmode $fh, ':raw';
 
     my @contents = <$fh>;
 
-    close $fh or croak $!;
+    close $fh or croak "recsep() can't close file $file!: $!";
 
     return if ! $contents[0];
 
