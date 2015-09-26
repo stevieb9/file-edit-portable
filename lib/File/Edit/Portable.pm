@@ -142,7 +142,13 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
     $rw->write(file => 'file.txt', contents => \@contents);
 
+    # get the record separator for a file
+
     $hex_record_separator = $rw->recsep('file');
+
+    # override the found line ending with a custom one 
+
+    $rw->write(file => 'file', recsep => "\r\n");
 
 =head1 DESCRIPTION
 
