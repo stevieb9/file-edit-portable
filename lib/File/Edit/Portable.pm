@@ -51,6 +51,7 @@ sub write {
     my $file = $self->{file};
     my $copy = $self->{copy};
     my $contents = $self->{contents};
+    my $recsep = $self->{custom_recsep};
 
     return if ! $file;
 
@@ -66,7 +67,13 @@ sub write {
 
     for (@$contents){
         s/\R//;
-        print $wfh $_ . $self->{recsep};
+
+        if ($recsep){
+            print $wfh $_ . $recsep;
+        }
+        else {
+            print $wfh $_ . $self->{recsep};
+        }
     }
 
     close $wfh or croak $!;
@@ -103,6 +110,8 @@ sub _config {
     my $self = shift;
     my %p = @_;
 
+    $self->{custom_recsep} = $p{recsep};
+    delete $p{recsep};
     delete $self->{testing} if ! $p{testing};
     delete $self->{copy};
 
@@ -137,7 +146,7 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
 =head1 DESCRIPTION
 
-This module will read in a file, and keep track of the file's current line endings, and write the file back out using those same original line endings.
+This module will read in a file, keep track of the file's current line endings, and write the file back out using those same original line endings, or optionally a user supplied custom record separator.
 
 Uses are for dynamically reading/writing files while on one Operating System, but you don't know that the record separator (line endings) are platform-standard.
 
@@ -151,7 +160,7 @@ Returns a new C<File::Edit::Portable> object.
 
 =head2 C<read>
 
-Opens a file and extracts its contents, returning an array of the files contents where each line of the file is a separate element in the array.
+Opens a file and extracts its contents, returning an array of the file's contents where each line of the file is a separate element in the array.
 
 Parameters: C<file =E<gt> 'filename'>
 
@@ -167,6 +176,8 @@ C<file =E<gt> 'file'>: Not needed if you've used C<read()> to open the file.
 C<copy =E<gt> 'file2'>: Set this if you want to write to an alternate file, rather than the original.
 
 C<contents =E<gt> \@contents>: Mandatory, should contain a reference to the array that was returned by C<read()>.
+
+C<recsep =E<gt> "\r\n">: Optional, a double-quoted string of any characters you want to write as the line ending (record separators). This value will override what was found in the C<read()> call. Common ones are C<"\r\n"> for Windows, C<"\n"> for Unix and C<"\r"> for Mac.
 
 =head2 C<recsep('file')>
 

@@ -3,7 +3,6 @@ use 5.006;
 use strict;
 use warnings;
 
-use Data::Dumper;
 use File::Copy;
 use Test::More;
 
@@ -29,17 +28,17 @@ my $rw = File::Edit::Portable->new;
         push @file, $_;
     }
 
-    $rw->write(copy => $copy, contents => \@file);
+    $rw->write(recsep => "\r\n", copy => $copy, contents => \@file);
 
     # print "*** " . unpack("H*", $rw->{eor}) . "\n";
     
-    my $eor = $rw->recsep($copy);
+    my $recsep = $rw->recsep($copy);
 
-    is ($eor, '\0a', "unix line endings were replaced properly" );
+    is ($recsep, '\0d\0a', "custom recsep takes precedence" );
     
     eval {unlink $copy or die $!;};
 
-    ok (! $@, "copied file unlinked successfully");
+    ok (! $@, "unlinked copied file successfully");
 
 }
 {
@@ -54,15 +53,15 @@ my $rw = File::Edit::Portable->new;
         push @file, $_;
     }
 
-    $rw->write(copy => $copy, contents => \@file);
+    $rw->write(recsep => "\n", copy => $copy, contents => \@file);
 
     # print "*** " . unpack("H*", $rw->{eor}) . "\n";
 
-    my $eor = $rw->recsep($copy);
+    my $recsep = $rw->recsep($copy);
 
-    is ($eor, '\0d\0a', "win line endings were replaced properly" );
+    is ($recsep, '\0a', "on windows file, custom recsep took precedence" );
 
-    eval {unlink $copy;};
+    eval {unlink $copy or die $!;};
 
     ok (! $@, "unlinked copy successfully");
 }
