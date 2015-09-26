@@ -3,7 +3,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Carp;
 
@@ -28,7 +28,7 @@ sub pread {
     open my $fh, '<', $file
       or croak "pread() can't open the file $file!: $!";
 
-    binmode $fh;
+    binmode $fh, ':raw';
     my @contents = <$fh>;
 
     if (! $testing){
@@ -94,6 +94,7 @@ sub _config {
     my %p = @_;
 
     delete $self->{testing} if ! $p{testing};
+    delete $self->{copy};
 
     for (keys %p){
         $self->{$_} = $p{$_};
@@ -128,7 +129,7 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
 This module will read in a file, and keep track of the file's current line endings, and write the file back out using those same original line endings.
 
-Uses are for dynamically reading/writing files while on one Operating System, but you don't know what the record separator (line endings) are platform-standard.
+Uses are for dynamically reading/writing files while on one Operating System, but you don't know that the record separator (line endings) are platform-standard.
 
 You're returned an array with all of the lines of the file on read. You can them manipulate it, and then pass it back for re-writing the file (or a copy).
 
