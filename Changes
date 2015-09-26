@@ -2,6 +2,7 @@ Revision history for File-Edit-Portable
 
 0.04    2015-09-26
         - renamed pread(), pwrite() to read(), write()
+        - requires perl v5.10 due to \R
 
 0.02    2015-09-26
         - POD
