@@ -141,7 +141,7 @@ This module will read in a file, and keep track of the file's current line endin
 
 Uses are for dynamically reading/writing files while on one Operating System, but you don't know that the record separator (line endings) are platform-standard.
 
-You're returned an array with all of the lines of the file on read. You can them manipulate it, and then pass it back for re-writing the file (or a copy).
+You're returned an array with all of the lines of the file on read. You can then manipulate it, and then pass it back for re-writing the file (or a copy).
 
 =head1 METHODS
 
