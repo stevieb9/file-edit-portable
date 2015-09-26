@@ -31,6 +31,8 @@ sub pread {
     binmode $fh, ':raw';
     my @contents = <$fh>;
 
+    close $fh or croak $!;
+
     if (! $testing){
         for (@contents){
             s/\R//;
@@ -75,6 +77,8 @@ sub recsep {
     binmode $fh, ':raw';
 
     my @contents = <$fh>;
+
+    close $fh or croak $!;
 
     return if ! $contents[0];
 
