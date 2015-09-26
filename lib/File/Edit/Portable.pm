@@ -77,6 +77,7 @@ sub write {
     }
 
     close $wfh or croak $!;
+    $self->{is_read} = 0;
 
     return 1;
 }
