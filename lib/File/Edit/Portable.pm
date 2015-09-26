@@ -155,9 +155,11 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
 =head1 DESCRIPTION
 
-This module will read in a file, keep track of the file's current line endings, and write the file back out using those same original line endings, or optionally a user supplied custom record separator.
+The default behaviour of C<perl> is to read and write files using the Operating System's (OS) default record separator (line ending). If you open a file on an OS where the record separators are that of another OS, things can and do break.
 
-Uses are for dynamically reading/writing files while on one Operating System, but you don't know that the record separator (line endings) are platform-standard.
+This module will read in a file, keep track of the file's current record separators regardless of the OS, and write the file back out using those same original line endings, or optionally a user supplied custom record separator.
+
+Uses are for dynamically reading/writing files while on one Operating System, but you don't know whether the record separators are platform-standard. This module affords you the ability to not have to check.
 
 You're returned an array with all of the lines of the file on read. You can then manipulate it, and then pass it back for re-writing the file (or a copy).
 
@@ -186,7 +188,7 @@ C<copy =E<gt> 'file2'>: Set this if you want to write to an alternate file, rath
 
 C<contents =E<gt> \@contents>: Mandatory, should contain a reference to the array that was returned by C<read()>.
 
-C<recsep =E<gt> "\r\n">: Optional, a double-quoted string of any characters you want to write as the line ending (record separators). This value will override what was found in the C<read()> call. Common ones are C<"\r\n"> for Windows, C<"\n"> for Unix and C<"\r"> for Mac.
+C<recsep =E<gt> "\r\n">: Optional, a double-quoted string of any characters you want to write as the line ending (record separator). This value will override what was found in the C<read()> call. Common ones are C<"\r\n"> for Windows, C<"\n"> for Unix and C<"\r"> for Mac. 
 
 =head2 C<recsep('file')>
 
