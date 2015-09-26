@@ -10,7 +10,7 @@ use Carp;
 sub new {
     return bless {}, shift;
 }
-sub pread {
+sub read {
 
     my $self = shift;
 
@@ -20,13 +20,13 @@ sub pread {
     my $testing = $self->{testing};
 
     if (! $file){ 
-        croak "pread() requires a file name sent in!";
+        croak "read() requires a file name sent in!";
     }
 
     $self->recsep($file);
 
     open my $fh, '<', $file
-      or croak "pread() can't open the file $file!: $!";
+      or croak "read() can't open the file $file!: $!";
 
     binmode $fh, ':raw';
     my @contents = <$fh>;
@@ -41,7 +41,7 @@ sub pread {
 
     return @contents;
 }
-sub pwrite {
+sub write {
 
     my $self = shift;
     my $p = $self->_config(@_);
@@ -121,11 +121,11 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
     my $rw = File::Edit::Portable->new;
 
-    my @contents = $rw->pread(file => 'file.txt');
+    my @contents = $rw->read(file => 'file.txt');
 
     push @contents, 'line 1', 'line 2';
 
-    $rw->pwrite(file => 'file.txt', contents => \@contents);
+    $rw->write(file => 'file.txt', contents => \@contents);
 
     $hex_record_separator = $rw->recsep('file');
 
@@ -143,24 +143,24 @@ You're returned an array with all of the lines of the file on read. You can them
 
 Returns a new C<File::Edit::Portable> object.
 
-=head2 C<pread>
+=head2 C<read>
 
 Opens a file and extracts its contents, returning an array of the files contents where each line of the file is a separate element in the array.
 
 Parameters: C<file =E<gt> 'filename'>
 
 
-=head2 C<pwrite>
+=head2 C<write>
 
 Writes the data back to the original file, or alternately a copy of the file. Returns 1 on success.
 
 Parameters: 
 
-C<file =E<gt> 'file'>: Not needed if you've used C<pread()> to open the file. 
+C<file =E<gt> 'file'>: Not needed if you've used C<read()> to open the file. 
 
 C<copy =E<gt> 'file2'>: Set this if you want to write to an alternate file, rather than the original.
 
-C<contents =E<gt> \@contents>: Mandatory, should contain a reference to the array that was returned by C<pread()>.
+C<contents =E<gt> \@contents>: Mandatory, should contain a reference to the array that was returned by C<read()>.
 
 =head2 C<recsep('file')>
 

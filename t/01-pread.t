@@ -18,7 +18,7 @@ my $copy = 't/test.txt';
 my $rw = File::Edit::Portable->new;
 
 {
-    my @file = $rw->pread(testing => 1, file => 't/unix.txt');
+    my @file = $rw->read(testing => 1, file => 't/unix.txt');
 
     for (@file){
         if (/(\R)/){
@@ -27,7 +27,7 @@ my $rw = File::Edit::Portable->new;
     }
 }
 {
-    my @file = $rw->pread(testing => 1, file => 't/win.txt');
+    my @file = $rw->read(testing => 1, file => 't/win.txt');
 
     for (@file){
         if (/(\R)/){
@@ -41,7 +41,7 @@ my $rw = File::Edit::Portable->new;
     copy $file, $copy;
     $file = $copy;
 
-    my @file = $rw->pread(file => $file);
+    my @file = $rw->read(file => $file);
 
     for (@file){
         /(\R)/;
@@ -62,7 +62,7 @@ my $rw = File::Edit::Portable->new;
     copy $file, $copy;
     $file = $copy;
 
-    my @file = $rw->pread(file => $file);
+    my @file = $rw->read(file => $file);
 
     for (@file){
         /(\R)/;

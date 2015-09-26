@@ -18,7 +18,7 @@ my $copy = 't/test.txt';
 my $rw = File::Edit::Portable->new;
 
 {
-    my @file = $rw->pread(file => 't/unix.txt');
+    my @file = $rw->read(file => 't/unix.txt');
 
     for (@file){
         /(\R)/;
@@ -29,7 +29,7 @@ my $rw = File::Edit::Portable->new;
         push @file, $_;
     }
 
-    $rw->pwrite(copy => $copy, contents => \@file);
+    $rw->write(copy => $copy, contents => \@file);
 
     # print "*** " . unpack("H*", $rw->{eor}) . "\n";
     
@@ -41,7 +41,7 @@ my $rw = File::Edit::Portable->new;
 
 }
 {
-    my @file = $rw->pread(file => 't/win.txt');
+    my @file = $rw->read(file => 't/win.txt');
 
     for (@file){
         /(\R)/;
@@ -52,7 +52,7 @@ my $rw = File::Edit::Portable->new;
         push @file, $_;
     }
 
-    $rw->pwrite(copy => $copy, contents => \@file);
+    $rw->write(copy => $copy, contents => \@file);
 
     # print "*** " . unpack("H*", $rw->{eor}) . "\n";
 
