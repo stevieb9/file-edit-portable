@@ -7,7 +7,7 @@ use Data::Dumper;
 use File::Copy;
 use Test::More;
 
-use Test::More tests => 18;
+use Test::More tests => 20;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
@@ -17,6 +17,15 @@ my $copy = 't/test.txt';
 
 my $rw = File::Edit::Portable->new;
 
+{
+    eval { $rw->write; };
+    like ($@, qr/file/, "write() croaks if no file is found");
+
+    my @file = $rw->read(file => 't/unix.txt');
+
+    eval { $rw->write; };
+    like ($@, qr/contents/, "write() croaks if no contents are passed in");
+}
 {
     my @file = $rw->read(file => 't/unix.txt');
 
