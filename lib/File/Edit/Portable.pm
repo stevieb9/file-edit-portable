@@ -177,14 +177,14 @@ Returns a new C<File::Edit::Portable> object.
 
 =head2 C<read>
 
-Opens a file and extracts its contents, returning an array of the file's contents where each line of the file is a separate element in the array.
+Opens a file and extracts its contents, returning an array of the file's contents where each line of the file is a separate element in the array (line endings have been stripped off).
 
 Parameters: C<file =E<gt> 'filename'>
 
 
 =head2 C<write>
 
-Writes the data back to the original file, or alternately a copy of the file. Returns 1 on success.
+Writes the data back to the original file, or alternately a copy of the file. Returns 1 on success. If you inadvertantly append newlines to the new elements of the contents array, we'll strip them off before appending the real newlines.
 
 Parameters: 
 
