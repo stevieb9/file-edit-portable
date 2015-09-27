@@ -3,7 +3,7 @@ use 5.012;
 use strict;
 use warnings;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use Carp;
 
@@ -53,7 +53,13 @@ sub write {
     my $contents = $self->{contents};
     my $recsep = $self->{custom_recsep};
 
-    return if ! $file;
+    if (! $file){
+        croak "write() requires a file to be passed in!";
+    }
+
+    if (! @contents){
+        croak "write() requires an array reference of contents to write!";
+    }
 
     $file = $copy if $copy;
 
