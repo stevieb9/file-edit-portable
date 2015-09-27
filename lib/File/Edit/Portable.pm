@@ -260,9 +260,9 @@ Get the local platforms record separator. This will be in string representation.
 
 The default behaviour of C<perl> is to read and write files using the Operating System's (OS) default record separator (line ending). If you open a file on an OS where the record separators are that of another OS, things can and do break.
 
-This module will read in a file, keep track of the file's current record separators regardless of the OS. It can return either a file handle (in scalar context) that has had its line endings replaced with that of the local OS platform, or an array of the file's contents (in list context) with line endings stripped off. You can then modify this array and send it back in for writing to the same file or a copy, where the original file's line endings will be re-appended (or a custom ending if you so choose).
+This module will read in a file, keep track of the file's current record separators regardless of the OS. It can return either a file handle (in scalar context) that has had its line endings replaced with that of the local OS platform, or an array of the file's contents (in list context) with line endings stripped off. You can then modify this array and send it back in for writing to the same file or a new file, where the original file's line endings will be re-appended (or a custom ending if you so choose).
 
-Uses are for dynamically reading/writing files while on one Operating System, but you don't know whether the record separators are platform-standard. Shared storage between multpile platforms are a good use case. This module affords you the ability to not have to check each file, and is very useful in looping over a directory where all files may have been written by numerous platforms.
+Uses are for dynamically reading/writing files while on one Operating System, but you don't know whether the record separators are platform-standard. Shared storage between multpile platforms are a good use case. This module affords you the ability to not have to check each file, and is very useful in looping over a directory where various files may have been written by different platforms.
 
 
 =head1 METHODS
@@ -279,7 +279,7 @@ In scalar context, will return a read-only file handle to a copy of the file tha
 
 In list context, will return an array, where each element is a line from the file, with all line endings stripped off.
 
-In both cases, we save the line endings that were found in the original file (which is used when C<write()> is used).
+In both cases, we save the line endings that were found in the original file (which is used when C<write()> is used, by default).
 
 
 
@@ -291,7 +291,7 @@ Parameters:
 
 C<file =E<gt> 'file'>: Not needed if you've used C<read()> to open the file. 
 
-C<copy =E<gt> 'file2'>: Set this if you want to write to an alternate file, rather than the original.
+C<copy =E<gt> 'file2'>: Set this if you want to write to an alternate (new) file, rather than the original.
 
 C<contents =E<gt> \@contents>: Mandatory, should contain a reference to the array that was returned by C<read()>.
 
@@ -303,7 +303,7 @@ Returns a string of the hex representation of the line endings (record separator
 
 =head2 C<platform_recsep>
 
-Returns the string representation of the current platform's record separator. Takes no parameters.
+Returns the string representation of the current platform's (OS) record separator. Takes no parameters.
 
 =head1 AUTHOR
 
