@@ -13,7 +13,7 @@ SYNOPSIS
     
         push @contents, 'new line 1', 'new line 2';
     
-        $rw->write(file => 'file.txt', contents => \@contents);
+        $rw->write(contents => \@contents);
     
         # get the record separator for a file
     
@@ -21,7 +21,7 @@ SYNOPSIS
     
         # override the found line ending with a custom one 
     
-        $rw->write(file => 'file', recsep => "\r\n");
+        $rw->write(recsep => "\r\n", contents => \@contents);
 
 DESCRIPTION
 
@@ -54,14 +54,16 @@ METHODS
 
     Opens a file and extracts its contents, returning an array of the
     file's contents where each line of the file is a separate element in
-    the array.
+    the array (line endings have been stripped off).
 
     Parameters: file => 'filename'
 
  write
 
     Writes the data back to the original file, or alternately a copy of the
-    file. Returns 1 on success.
+    file. Returns 1 on success. If you inadvertantly append newlines to the
+    new elements of the contents array, we'll strip them off before
+    appending the real newlines.
 
     Parameters:
 

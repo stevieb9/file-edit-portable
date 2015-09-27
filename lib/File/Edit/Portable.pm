@@ -57,7 +57,7 @@ sub write {
         croak "write() requires a file to be passed in!";
     }
 
-    if (! @contents){
+    if (! @$contents){
         croak "write() requires an array reference of contents to write!";
     }
 
