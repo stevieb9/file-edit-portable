@@ -9,7 +9,7 @@ use Test::More;
 
 
 if ($^O ne 'MSWin32'){
-    plan skip_all => "We're not on Windows" if $^O ne 'MSWin32';
+    plan skip_all => "Windows test but we're not on Windows";
 }
 else {
 
@@ -24,7 +24,7 @@ else {
 
         my $rs = unpack "H*", $1;
 
-        is ($rs, '0d0a', "handle properly rewrites to local platform recsep");
+        is ($rs, '0d0a', "handle properly rewrites to local (Windows) platform recsep");
         last;
     }
 
