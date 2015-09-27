@@ -140,6 +140,7 @@ sub platform_recsep {
 
     close $fh or die "platform_recsep() can't close temp file $!";
 
+    unlink $file or die "platform_recsep() can't unlink the 'local.txt' temp file";
     return $self->{platform_recsep};
 }
 sub _config {
@@ -231,7 +232,7 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
 Get a (read-only) file handle which (if necessary) has had the existing record separator (line endings) replaced with the current local platform's (OS's).
 
-    my $fh = $rw->read(file => 'file.xts');
+    my $fh = $rw->read(file => 'file.txt');
 
 Get an array of the contents of the file after having record separators checked/stored, modify the contents, then re-write
 the file with the original record separator found.
@@ -242,7 +243,7 @@ the file with the original record separator found.
 
     $rw->write(contents => \@contents);
 
-When writing, override the original record separators with a custom one.
+When writing, override the original record separator with a custom one.
 
     $rw->write(recsep => "\r\n", contents => \@contents);
 
@@ -272,13 +273,14 @@ Returns a new C<File::Edit::Portable> object.
 
 =head2 C<read>
 
+Parameters: C<file =E<gt> 'filename'>
+
 In scalar context, will return a read-only file handle to a copy of the file that has had its line endings replaced with those of the local OS platform's record separator.
 
 In list context, will return an array, where each element is a line from the file, with all line endings stripped off.
 
 In both cases, we save the line endings that were found in the original file (which is used when C<write()> is used).
 
-Parameters: C<file =E<gt> 'filename'>
 
 
 =head2 C<write>

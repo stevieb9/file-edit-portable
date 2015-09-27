@@ -13,7 +13,7 @@ SYNOPSIS
     record separator (line endings) replaced with the current local
     platform's (OS's).
 
-        my $fh = $rw->read(file => 'file.xts');
+        my $fh = $rw->read(file => 'file.txt');
 
     Get an array of the contents of the file after having record separators
     checked/stored, modify the contents, then re-write the file with the
@@ -25,8 +25,7 @@ SYNOPSIS
     
         $rw->write(contents => \@contents);
 
-    When writing, override the original record separators with a custom
-    one.
+    When writing, override the original record separator with a custom one.
 
         $rw->write(recsep => "\r\n", contents => \@contents);
 
@@ -70,6 +69,8 @@ METHODS
 
  read
 
+    Parameters: file => 'filename'
+
     In scalar context, will return a read-only file handle to a copy of the
     file that has had its line endings replaced with those of the local OS
     platform's record separator.
@@ -79,8 +80,6 @@ METHODS
 
     In both cases, we save the line endings that were found in the original
     file (which is used when write() is used).
-
-    Parameters: file => 'filename'
 
  write
 
