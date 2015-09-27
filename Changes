@@ -1,5 +1,9 @@
 Revision history for File-Edit-Portable
 
+0.06    2015-09-26
+        - fixed a couple of bugs in write() if params aren't sent in
+        - cleaned up POD, SYNOPSIS was wrong
+
 0.05    2015-09-26
         - write() now accepts 'recsep' parameter, uses this instead of the one
           found by read()
