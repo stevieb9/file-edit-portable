@@ -11,21 +11,34 @@ SYNOPSIS
     
         my @contents = $rw->read(file => 'file.txt');
     
-        push @contents, 'line 1', 'line 2';
+        push @contents, 'new line 1', 'new line 2';
     
         $rw->write(file => 'file.txt', contents => \@contents);
     
-        $hex_record_separator = $rw->recsep('file');
+        # get the record separator for a file
+    
+        my $hex_record_separator = $rw->recsep('file');
+    
+        # override the found line ending with a custom one 
+    
+        $rw->write(file => 'file', recsep => "\r\n");
 
 DESCRIPTION
 
-    This module will read in a file, and keep track of the file's current
-    line endings, and write the file back out using those same original
-    line endings.
+    The default behaviour of perl is to read and write files using the
+    Operating System's (OS) default record separator (line ending). If you
+    open a file on an OS where the record separators are that of another
+    OS, things can and do break.
+
+    This module will read in a file, keep track of the file's current
+    record separators regardless of the OS, and write the file back out
+    using those same original line endings, or optionally a user supplied
+    custom record separator.
 
     Uses are for dynamically reading/writing files while on one Operating
-    System, but you don't know that the record separator (line endings) are
-    platform-standard.
+    System, but you don't know whether the record separators are
+    platform-standard. This module affords you the ability to not have to
+    check.
 
     You're returned an array with all of the lines of the file on read. You
     can then manipulate it, and then pass it back for re-writing the file
@@ -39,9 +52,9 @@ METHODS
 
  read
 
-    Opens a file and extracts its contents, returning an array of the files
-    contents where each line of the file is a separate element in the
-    array.
+    Opens a file and extracts its contents, returning an array of the
+    file's contents where each line of the file is a separate element in
+    the array.
 
     Parameters: file => 'filename'
 
@@ -59,6 +72,11 @@ METHODS
 
     contents => \@contents: Mandatory, should contain a reference to the
     array that was returned by read().
+
+    recsep => "\r\n": Optional, a double-quoted string of any characters
+    you want to write as the line ending (record separator). This value
+    will override what was found in the read() call. Common ones are "\r\n"
+    for Windows, "\n" for Unix and "\r" for Mac.
 
  recsep('file')
 

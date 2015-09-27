@@ -62,7 +62,7 @@ sub write {
     }
 
     open my $wfh, '>', $file
-      or croak "write() can't open file $wfh for writing!: $!";
+      or croak "write() can't open file $file for writing!: $!";
 
     binmode $wfh, ':raw';
 
@@ -141,13 +141,13 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
     my @contents = $rw->read(file => 'file.txt');
 
-    push @contents, 'line 1', 'line 2';
+    push @contents, 'new line 1', 'new line 2';
 
     $rw->write(file => 'file.txt', contents => \@contents);
 
     # get the record separator for a file
 
-    $hex_record_separator = $rw->recsep('file');
+    my $hex_record_separator = $rw->recsep('file');
 
     # override the found line ending with a custom one 
 
