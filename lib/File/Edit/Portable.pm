@@ -27,21 +27,24 @@ sub read {
 
     $self->recsep($file);
 
-    open my $fh, '<', $file
-      or croak "read() can't open the file $file!: $!";
+    my $fh = $self->_open($file);
 
-    binmode $fh, ':raw';
-    my @contents = <$fh>;
-
-    close $fh or croak "read() can't close file $file!: $!";
-
-    if (! $testing){
-        for (@contents){
-            s/\R//;
-        }
+    if (! wantarray){
+        my $handle = $self->_read_handle($file);
+        return $handle;
     }
+    else {
 
-    return @contents;
+        my @contents = <$fh>;
+        close $fh or croak "read() can't close file $file!: $!";
+
+        if (! $testing){
+            for (@contents){
+                s/\R//;
+            }
+        }
+        return @contents;
+    }
 }
 sub write {
 
@@ -58,8 +61,9 @@ sub write {
     }
 
     if (! $contents){
-        croak "write() requires an array reference of contents to write!";
+        croak "write() requires 'contents' param sent in";
     }
+
 
     $file = $copy if $copy;
 
@@ -67,10 +71,7 @@ sub write {
         $self->recsep($file);
     }
 
-    open my $wfh, '>', $file
-      or croak "write() can't open file $file for writing!: $!";
-
-    binmode $wfh, ':raw';
+    my $wfh = $self->_open($file, 'w');
 
     for (@$contents){
         s/\R//;
@@ -114,6 +115,33 @@ sub recsep {
 
     return $recsep;
 }
+sub platform_recsep {
+
+    my $self = shift;
+    my $file = 'local.tmp';
+
+    open my $wfh, '>', $file 
+      or die "platform_recsep() can't open temp file $!";
+
+    print $wfh "x\n";
+
+    close $wfh or die "platform_recsep() can't close temp file $!";
+
+    open my $fh, '<', $file 
+      or die "platform_recsep() can't open temp file $!";
+
+    binmode $fh, ':raw';
+
+    for (<$fh>){
+        if (/(\R)/){
+            $self->{platform_recsep} = $1;
+        }
+    }
+
+    close $fh or die "platform_recsep() can't close temp file $!";
+
+    return $self->{platform_recsep};
+}
 sub _config {
 
     my $self = shift;
@@ -126,6 +154,62 @@ sub _config {
 
     for (keys %p){
         $self->{$_} = $p{$_};
+    }
+}
+sub _read_handle {
+
+    my $self = shift;
+    my $file = shift;
+
+    my $temp_file = "$$.tmp";
+
+    my $fh = $self->_open($file);
+    binmode $fh, ':raw';
+
+    my $wfh = $self->_open($temp_file, 'w');
+    binmode $wfh, ':raw';
+
+    $self->platform_recsep;
+
+    for (<$fh>){
+        s/\R/$self->{platform_recsep}/;
+        print $wfh $_;
+    }
+
+    close $fh or die "can't close file $file: $!";
+    close $wfh or die "can't close file $file: $!";
+
+    my $ret_fh = $self->_open($temp_file);
+
+    return $ret_fh;
+}
+sub _open {
+
+    my $self = shift;
+    my $file = shift;
+    my $mode = shift || 'r';
+
+    my $fh;
+
+    if ($mode =~ /^w/){
+        open $fh, '>', $file
+          or croak "can't open file $file for writing!: $!";
+    }
+    else {
+        open $fh, '<', $file
+          or croak "can't open file $file for reading!: $!";
+    }
+
+    binmode $fh, ':raw';
+
+    return $fh;
+}
+sub DESTROY {
+    if (-f "$$.tmp"){
+        eval { unlink "$$.tmp" or die $!; };
+        if ($@){
+            croak "can't unlink temp file $$.txt in DESTROY()";
+        }
     }
 }
 sub _vim_placeholder {}; # for folding
