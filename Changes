@@ -4,6 +4,8 @@ Revision history for File-Edit-Portable
         - new interal _open() method for r/w opens
         - read() can now return a handle in scalar context, which will have
           the native platform's recsep installed
+        - new internal _handle() method
+        - new public platform_recsep() method, returns the OSs recsep in string form 
 
 0.06    2015-09-26
         - fixed a couple of bugs in write() if params aren't sent in

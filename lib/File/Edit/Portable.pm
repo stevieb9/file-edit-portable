@@ -30,7 +30,7 @@ sub read {
     my $fh = $self->_open($file);
 
     if (! wantarray){
-        my $handle = $self->_read_handle($file);
+        my $handle = $self->_handle($file);
         return $handle;
     }
     else {
@@ -156,7 +156,7 @@ sub _config {
         $self->{$_} = $p{$_};
     }
 }
-sub _read_handle {
+sub _handle {
 
     my $self = shift;
     my $file = shift;
@@ -229,29 +229,40 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
     my $rw = File::Edit::Portable->new;
 
+Get a (read-only) file handle which (if necessary) has had the existing record separator (line endings) replaced with the current local platform's (OS's).
+
+    my $fh = $rw->read(file => 'file.xts');
+
+Get an array of the contents of the file after having record separators checked/stored, modify the contents, then re-write
+the file with the original record separator found.
+
     my @contents = $rw->read(file => 'file.txt');
 
-    push @contents, 'new line 1', 'new line 2';
+    s/this/that/g for @contents;
 
     $rw->write(contents => \@contents);
 
-    # get the record separator for a file
+When writing, override the original record separators with a custom one.
+
+    $rw->write(recsep => "\r\n", contents => \@contents);
+
+Get the original record separator found in the file in hex format.
 
     my $hex_record_separator = $rw->recsep('file');
 
-    # override the found line ending with a custom one 
+Get the local platforms record separator. This will be in string representation.
 
-    $rw->write(recsep => "\r\n", contents => \@contents);
+    my $platform_recsep = $rw->platform_recsep;
+
 
 =head1 DESCRIPTION
 
 The default behaviour of C<perl> is to read and write files using the Operating System's (OS) default record separator (line ending). If you open a file on an OS where the record separators are that of another OS, things can and do break.
 
-This module will read in a file, keep track of the file's current record separators regardless of the OS, and write the file back out using those same original line endings, or optionally a user supplied custom record separator.
+This module will read in a file, keep track of the file's current record separators regardless of the OS. It can return either a file handle (in scalar context) that has had its line endings replaced with that of the local OS platform, or an array of the file's contents (in list context) with line endings stripped off. You can then modify this array and send it back in for writing to the same file or a copy, where the original file's line endings will be re-appended (or a custom ending if you so choose).
 
-Uses are for dynamically reading/writing files while on one Operating System, but you don't know whether the record separators are platform-standard. This module affords you the ability to not have to check.
+Uses are for dynamically reading/writing files while on one Operating System, but you don't know whether the record separators are platform-standard. Shared storage between multpile platforms are a good use case. This module affords you the ability to not have to check each file, and is very useful in looping over a directory where all files may have been written by numerous platforms.
 
-You're returned an array with all of the lines of the file on read. You can then manipulate it, and then pass it back for re-writing the file (or a copy).
 
 =head1 METHODS
 
@@ -261,7 +272,11 @@ Returns a new C<File::Edit::Portable> object.
 
 =head2 C<read>
 
-Opens a file and extracts its contents, returning an array of the file's contents where each line of the file is a separate element in the array (line endings have been stripped off).
+In scalar context, will return a read-only file handle to a copy of the file that has had its line endings replaced with those of the local OS platform's record separator.
+
+In list context, will return an array, where each element is a line from the file, with all line endings stripped off.
+
+In both cases, we save the line endings that were found in the original file (which is used when C<write()> is used).
 
 Parameters: C<file =E<gt> 'filename'>
 
@@ -283,6 +298,10 @@ C<recsep =E<gt> "\r\n">: Optional, a double-quoted string of any characters you 
 =head2 C<recsep('file')>
 
 Returns a string of the hex representation of the line endings (record separators) in 'file'. For example, "\0d\0a" will be returned for Windows line endings (CRLF).
+
+=head2 C<platform_recsep>
+
+Returns the string representation of the current platform's record separator. Takes no parameters.
 
 =head1 AUTHOR
 

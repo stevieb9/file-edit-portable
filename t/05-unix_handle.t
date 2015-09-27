@@ -6,19 +6,16 @@ use warnings;
 use File::Copy;
 use Test::More;
 
-BEGIN {
-    use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
+
+
+if ($^O eq 'MSWin32' || $^O eq 'MacOS'){
+    plan skip_all => "We're on Unix";
 }
+else {
 
-my $rw = File::Edit::Portable->new;
-
-{ 
-    if ($^O eq 'MSWin32' || $^O eq 'MacOS'){
-        plan skip_all => "We're on Unix";
-    }
-    else {
-        plan tests => 3;
-    }
+    plan tests => 3;
+    use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
+    my $rw = File::Edit::Portable->new;
 
     my $fh = $rw->read(file => 't/win.txt');
 
