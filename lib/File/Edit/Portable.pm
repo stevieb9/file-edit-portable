@@ -143,7 +143,7 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
     push @contents, 'new line 1', 'new line 2';
 
-    $rw->write(file => 'file.txt', contents => \@contents);
+    $rw->write(contents => \@contents);
 
     # get the record separator for a file
 
