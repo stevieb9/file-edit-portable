@@ -151,7 +151,7 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
     # override the found line ending with a custom one 
 
-    $rw->write(file => 'file', recsep => "\r\n");
+    $rw->write(recsep => "\r\n", contents => \@contents);
 
 =head1 DESCRIPTION
 
