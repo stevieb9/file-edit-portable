@@ -64,7 +64,6 @@ sub write {
         croak "write() requires 'contents' param sent in";
     }
 
-
     $file = $copy if $copy;
 
     if (! $self->{is_read}){
@@ -141,6 +140,7 @@ sub platform_recsep {
     close $fh or die "platform_recsep() can't close temp file $!";
 
     unlink $file or die "platform_recsep() can't unlink the 'local.txt' temp file";
+
     return $self->{platform_recsep};
 }
 sub _config {
