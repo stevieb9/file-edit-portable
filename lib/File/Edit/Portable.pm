@@ -83,8 +83,9 @@ sub write {
         }
     }
 
-    close $wfh or croak "write() can't close file $file: $!";
     $self->{is_read} = 0;
+    
+    close $wfh or croak "write() can't close file $file: $!";
 
     return 1;
 }
