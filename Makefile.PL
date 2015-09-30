@@ -41,53 +41,54 @@ if ($^O eq 'MSWin32' || $^O eq 'MacOS'){
     
     { # win
 
-        my $eor = qx(file t/win.txt);
+        my $file = 't/win.txt';
 
-        if ($eor !~ /CRLF/){
+        open my $fh, '<', $file or die $!;
+        binmode $fh, ':raw';
 
-            open my $fh, '<', 't/win.txt' or die $!;
-            my @f = <$fh>;
-            close $fh or die $!;
+        my @f = <$fh>;
+        close $fh or die $!;
 
-            for (@f){
-                s/\n/\r\n/g;
-            }
-
-            unlink 't/win.txt';
-
-            open my $wfh, '<', 't/win.txt' or die $!;
-
-            for (@f){
-                print $wfh $_;
-            }
-
-            close $wfh or die $!;
+        for (@f){
+            s/\R/\r\n/g;
         }
+
+        close $fh;
+
+        open my $wfh, '>', $file or die $!;
+        binmode $wfh, ':raw';
+
+        for (@f){
+            print $wfh $_;
+        }
+
+        close $wfh or die $!;
     }
 
     { # unix
 
-        my $eor = qx(file t/unix.txt);
+        my $file = 't/unix.txt';
 
-        if ($eor =~ /CRLF/){
+        open my $fh, '<', $file or die $!;
+        binmode $fh, ':raw';
 
-            open my $fh, '<', 't/unix.txt' or die $!;
-            my @f = <$fh>;
-            close $fh or die $!;
+        my @f = <$fh>;
+        close $fh or die $!;
 
-            for (@f){
-                s/\r\n/\n/g;
-            }
-
-            unlink 't/unix.txt';
-
-            open my $wfh, '<', 't/unix.txt' or die $!;
-
-            for (@f){
-                print $wfh $_;
-            }
-
-            close $wfh or die $!;
+        for (@f){
+            s/\R/\n/g;
         }
+
+        close $fh;
+
+        open my $wfh, '>', $file or die $!;
+        binmode $wfh, ':raw';
+
+        for (@f){
+            print $wfh $_;
+        }
+
+        close $wfh or die $!;
+
     }
 }

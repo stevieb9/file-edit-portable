@@ -1,5 +1,8 @@
 Revision history for File-Edit-Portable
 
+0.08    2015-09-30
+        - fixed logic bugs in Makefile.PL, breaking tests on Win32
+
 0.07    2015-09-27
         - new interal _open() method for r/w opens
         - read() can now return a handle in scalar context, which will have
