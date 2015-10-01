@@ -424,6 +424,13 @@ Please report any bugs or feature requests to C<bug-file-edit-portable at rt.cpa
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=File-Edit-Portable>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
+=head1 REPOSITORY
+
+L<https://github.com/stevieb9/file-edit-portable>
+
+=head1 BUILD RESULTS
+
+L<https://travis-ci.org/stevieb9/file-edit-portable>
 
 =head1 SUPPORT
 

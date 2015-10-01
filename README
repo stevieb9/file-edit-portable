@@ -43,7 +43,12 @@ SYNOPSIS
         use File::Edit::Portable qw(pread pwrite);
     
         my $fh = pread('file.txt');
+    
+        # and/or
+    
         my @contents = pread('file.txt');
+    
+        # then
     
         pwrite('file.txt', \@contents);
 
@@ -70,14 +75,16 @@ DESCRIPTION
     file, and is very useful in looping over a directory where various
     files may have been written by different platforms.
 
-EXPORTS None by default. See EXPORT_OK
+EXPORT
+
+    None by default. See EXPORT_OK
 
 EXPORT_OK
 
     If you desire using the non-OO functionality, the following functions
     are exported on demand.
 
-        C<pread()> and C<pwrite()>
+    pread() and pwrite()
 
 METHODS
 
@@ -144,7 +151,8 @@ FUNCTIONS
 
     Writes back out the file (or alternately a new file (copy.txt), using
     the original file's line endings, or optionally a custom record
-    separator as specified by the last parameter.
+    separator as specified by the last parameter. Note the record separator
+    MUST be sent in within double-quotes.
 
     If you want to send in a custom record separator but not use a copy
     file, just set the third parameter (copy.txt) to undef within the call.
@@ -160,6 +168,14 @@ BUGS
     http://rt.cpan.org/NoAuth/ReportBug.html?Queue=File-Edit-Portable. I
     will be notified, and then you'll automatically be notified of progress
     on your bug as I make changes.
+
+REPOSITORY
+
+    https://github.com/stevieb9/file-edit-portable
+
+BUILD RESULTS
+
+    https://travis-ci.org/stevieb9/file-edit-portable
 
 SUPPORT
 
