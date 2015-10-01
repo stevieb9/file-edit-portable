@@ -175,7 +175,9 @@ REPOSITORY
 
 BUILD RESULTS
 
-    https://travis-ci.org/stevieb9/file-edit-portable
+    Travis-CI: https://travis-ci.org/stevieb9/file-edit-portable
+
+    CPAN Testers: http://matrix.cpantesters.org/?dist=File-Edit-Portable
 
 SUPPORT
 

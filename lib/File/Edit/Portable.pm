@@ -430,7 +430,9 @@ L<https://github.com/stevieb9/file-edit-portable>
 
 =head1 BUILD RESULTS
 
-L<https://travis-ci.org/stevieb9/file-edit-portable>
+Travis-CI: L<https://travis-ci.org/stevieb9/file-edit-portable>
+
+CPAN Testers: L<http://matrix.cpantesters.org/?dist=File-Edit-Portable>
 
 =head1 SUPPORT
 
