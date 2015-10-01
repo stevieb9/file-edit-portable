@@ -1,5 +1,8 @@
 Revision history for File-Edit-Portable
 
+0.10    xxx
+        - Travis-CI integration
+
 0.09    2015-10-01
         - new non-OO functions, pread() and pwrite()
 
