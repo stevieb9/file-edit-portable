@@ -16,6 +16,5 @@ os:
 sudo: required
 
 before_install:
-    - if [$TRAVIS_OS_NAME == 'osx']; then brew update; fi
-    - if [$TRAVIS_OS_NAME == 'osx']; then brew install cpanm; fi
-
+    - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
+    - source ~/travis-perl/helpers/init --auto
