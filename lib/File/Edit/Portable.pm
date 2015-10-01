@@ -3,7 +3,7 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '0.08_01';
+our $VERSION = '0.09';
 
 use Carp;
 use Exporter;
@@ -346,6 +346,14 @@ This module will read in a file, keep track of the file's current record separat
 
 Uses are for dynamically reading/writing files while on one Operating System, but you don't know whether the record separators are platform-standard. Shared storage between multpile platforms are a good use case. This module affords you the ability to not have to check each file, and is very useful in looping over a directory where various files may have been written by different platforms.
 
+=head1 EXPORTS
+    None by default. See L<EXPORT_OK>
+
+=head1 EXPORT_OK
+
+If you desire using the non-OO functionality, the following functions are exported on demand.
+
+    C<pread()> and C<pwrite()>
 
 =head1 METHODS
 

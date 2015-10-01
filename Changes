@@ -1,5 +1,8 @@
 Revision history for File-Edit-Portable
 
+0.09    2015-10-01
+        - new non-OO functions, pread() and pwrite()
+
 0.08    2015-09-30
         - fixed logic bugs in Makefile.PL, breaking tests on Win32
 

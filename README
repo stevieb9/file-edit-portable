@@ -38,6 +38,15 @@ SYNOPSIS
 
         my $platform_recsep = $rw->platform_recsep;
 
+    There's also a non-OO interface...
+
+        use File::Edit::Portable qw(pread pwrite);
+    
+        my $fh = pread('file.txt');
+        my @contents = pread('file.txt');
+    
+        pwrite('file.txt', \@contents);
+
 DESCRIPTION
 
     The default behaviour of perl is to read and write files using the
@@ -50,16 +59,25 @@ DESCRIPTION
     handle (in scalar context) that has had its line endings replaced with
     that of the local OS platform, or an array of the file's contents (in
     list context) with line endings stripped off. You can then modify this
-    array and send it back in for writing to the same file or a copy, where
-    the original file's line endings will be re-appended (or a custom
+    array and send it back in for writing to the same file or a new file,
+    where the original file's line endings will be re-appended (or a custom
     ending if you so choose).
 
     Uses are for dynamically reading/writing files while on one Operating
     System, but you don't know whether the record separators are
     platform-standard. Shared storage between multpile platforms are a good
     use case. This module affords you the ability to not have to check each
-    file, and is very useful in looping over a directory where all files
-    may have been written by numerous platforms.
+    file, and is very useful in looping over a directory where various
+    files may have been written by different platforms.
+
+EXPORTS None by default. See EXPORT_OK
+
+EXPORT_OK
+
+    If you desire using the non-OO functionality, the following functions
+    are exported on demand.
+
+        C<pread()> and C<pwrite()>
 
 METHODS
 
@@ -79,7 +97,7 @@ METHODS
     from the file, with all line endings stripped off.
 
     In both cases, we save the line endings that were found in the original
-    file (which is used when write() is used).
+    file (which is used when write() is used, by default).
 
  write
 
@@ -92,8 +110,8 @@ METHODS
 
     file => 'file': Not needed if you've used read() to open the file.
 
-    copy => 'file2': Set this if you want to write to an alternate file,
-    rather than the original.
+    copy => 'file2': Set this if you want to write to an alternate (new)
+    file, rather than the original.
 
     contents => \@contents: Mandatory, should contain a reference to the
     array that was returned by read().
@@ -111,8 +129,25 @@ METHODS
 
  platform_recsep
 
-    Returns the string representation of the current platform's record
+    Returns the string representation of the current platform's (OS) record
     separator. Takes no parameters.
+
+FUNCTIONS
+
+ pread('file.txt')
+
+    In scalar context, will return a read-only file handle. In list
+    context, returns an array with each element being a line in the file,
+    with the endings stripped off.
+
+ pwrite('file.txt', \@contents, 'copy.txt', "\r\n")
+
+    Writes back out the file (or alternately a new file (copy.txt), using
+    the original file's line endings, or optionally a custom record
+    separator as specified by the last parameter.
+
+    If you want to send in a custom record separator but not use a copy
+    file, just set the third parameter (copy.txt) to undef within the call.
 
 AUTHOR
 
