@@ -30,6 +30,7 @@ WriteMakefile(
     },
     PREREQ_PM => {
         Carp => 0,
+        Exporter => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'File-Edit-Portable-*' },

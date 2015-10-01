@@ -3,9 +3,13 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '0.09';
+our $VERSION = '0.08_01';
 
 use Carp;
+use Exporter;
+
+our @ISA = qw(Exporter);
+our @EXPORT_OK = qw (pread pwrite);
 
 sub new {
     return bless {}, shift;
@@ -106,7 +110,8 @@ sub recsep {
     return if ! $contents[0];
 
     if ($contents[0] =~ /(\R)/){
-        $self->{recsep} = $1;;
+        $self->{recsep} = $1;
+        $ENV{FEP_RECSEP} = $1;
     }
 
     my $recsep = unpack "H*", $self->{recsep};
@@ -143,6 +148,73 @@ sub platform_recsep {
     unlink $file or die "platform_recsep() can't unlink the 'local.txt' temp file";
 
     return $self->{platform_recsep};
+}
+sub pread {
+    my ($file, $testing) = @_; 
+
+    my $rw = File::Edit::Portable->new;
+
+    $ENV{FEP_IS_READ} = 1;
+
+    if (! $file){ 
+        croak "pread() requires a file name sent in!";
+    }
+
+    $rw->recsep($file);
+
+    my $fh = $rw->_open($file);
+
+    if (! wantarray){
+        my $handle = $rw->_handle($file);
+        return $handle;
+    }
+    else {
+
+        my @contents = <$fh>;
+        close $fh or croak "read() can't close file $file!: $!";
+
+        if (! $testing){
+            for (@contents){
+                s/\R//;
+            }
+        }
+        return @contents;
+    }
+}
+sub pwrite {
+
+    my ($file, $contents, $copy, $recsep) = @_;
+
+    my $rw = File::Edit::Portable->new;
+
+    if (! $file){
+        croak "write() requires a file to be passed in!";
+    }
+
+    if (! $contents){
+        croak "write() requires 'contents' param sent in";
+    }
+
+    $rw->recsep($file);
+
+    $file = $copy if $copy;
+
+    my $wfh = $rw->_open($file, 'w');
+
+    for (@$contents){
+        s/\R//;
+
+        if ($recsep){
+            print $wfh $_ . $recsep;
+        }
+       else {
+            print $wfh $_ . $rw->{recsep};
+        }
+    }
+
+    close $wfh or croak "write() can't close file $file: $!";
+
+    return 1;
 }
 sub _config {
 
@@ -256,6 +328,15 @@ Get the local platforms record separator. This will be in string representation.
 
     my $platform_recsep = $rw->platform_recsep;
 
+There's also a non-OO interface...
+
+    use File::Edit::Portable qw(pread pwrite);
+
+    my $fh = pread('file.txt');
+    my @contents = pread('file.txt');
+
+    pwrite('file.txt', \@contents);
+
 
 =head1 DESCRIPTION
 
@@ -305,6 +386,19 @@ Returns a string of the hex representation of the line endings (record separator
 =head2 C<platform_recsep>
 
 Returns the string representation of the current platform's (OS) record separator. Takes no parameters.
+
+=head1 FUNCTIONS
+
+=head2 C<pread('file.txt')>
+
+In scalar context, will return a read-only file handle. In list context, returns an array with each element being a line in the file, with the endings stripped off.
+
+=head2 C<pwrite('file.txt', \@contents, 'copy.txt', "\r\n")>
+
+Writes back out the file (or alternately a new file (copy.txt), using the original file's line endings, or optionally a custom record separator as specified by the last parameter.
+
+If you want to send in a custom record separator but not use a copy file, just set the third parameter (copy.txt) to C<undef> within the call.
+
 
 =head1 AUTHOR
 
