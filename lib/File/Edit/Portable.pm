@@ -333,7 +333,12 @@ There's also a non-OO interface...
     use File::Edit::Portable qw(pread pwrite);
 
     my $fh = pread('file.txt');
+
+    # and/or
+
     my @contents = pread('file.txt');
+
+    # then
 
     pwrite('file.txt', \@contents);
 
@@ -346,14 +351,15 @@ This module will read in a file, keep track of the file's current record separat
 
 Uses are for dynamically reading/writing files while on one Operating System, but you don't know whether the record separators are platform-standard. Shared storage between multpile platforms are a good use case. This module affords you the ability to not have to check each file, and is very useful in looping over a directory where various files may have been written by different platforms.
 
-=head1 EXPORTS
-    None by default. See L<EXPORT_OK>
+=head1 EXPORT
+
+None by default. See L<EXPORT_OK>
 
 =head1 EXPORT_OK
 
 If you desire using the non-OO functionality, the following functions are exported on demand.
 
-    C<pread()> and C<pwrite()>
+C<pread()> and C<pwrite()>
 
 =head1 METHODS
 
@@ -403,7 +409,7 @@ In scalar context, will return a read-only file handle. In list context, returns
 
 =head2 C<pwrite('file.txt', \@contents, 'copy.txt', "\r\n")>
 
-Writes back out the file (or alternately a new file (copy.txt), using the original file's line endings, or optionally a custom record separator as specified by the last parameter.
+Writes back out the file (or alternately a new file (copy.txt), using the original file's line endings, or optionally a custom record separator as specified by the last parameter. Note the record separator MUST be sent in within double-quotes.
 
 If you want to send in a custom record separator but not use a copy file, just set the third parameter (copy.txt) to C<undef> within the call.
 
