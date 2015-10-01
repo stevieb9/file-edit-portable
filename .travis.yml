@@ -16,5 +16,10 @@ os:
 sudo: required
 
 before_install:
-    - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
-    - source ~/travis-perl-helpers/init --auto
+    - wget http://search.cpan.org/CPAN/authors/id/M/MI/MIYAGAWA/Menlo-1.9001.tar.gz
+    - tar -xzvf Menlo-1.9001.tar.gz
+    - cd Menlo-1.9001
+    - perl Makefile.PL
+    - make
+    - make test
+    - sudo make install
