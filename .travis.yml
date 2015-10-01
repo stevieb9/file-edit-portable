@@ -17,4 +17,4 @@ sudo: required
 
 before_install:
     - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
-    - source ~/travis-perl/helpers/init --auto
+    - source ~/travis-perl-helpers/init --auto
