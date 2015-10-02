@@ -122,29 +122,32 @@ sub platform_recsep {
 
     my $self = shift;
 
-    my $temp_fh = File::Temp->new(UNLINK => 1);
-    my $temp_name = $temp_fh->filename;
- 
+    my $file = $self->_temp_file;
+
     # this is for checking to see if we've cleaned up
     # in DESTROY
 
-    push @{ $self->{temp_files} }, $temp_name;
+    push @{ $self->{temp_files} }, $file;
 
-    binmode $temp_fh, 'raw:';
+    # for platform_recsep(), we need the file open in ASCII mode,
+    # so we can't use _open() or File::Temp
 
-    print $temp_fh "abc\n";
+    open my $wfh, '>', $file
+      or die "platform_recsep() can't open temp file $file for writing!: $!";
 
-    close $temp_fh
-      or croak "platform_recsep() can't close temp file $temp_name: $!";
+    print $wfh "abc\n";
 
-    my $fh = $self->_open($temp_name);
+    close $wfh
+      or croak "platform_recsep() can't close temp file $file write: $!";
+
+    my $fh = $self->_open($file);
 
     if (<$fh> =~ /(\R)/){
         $self->{platform_recsep} = $1;
     }
 
     close $fh
-      or croak "platform_recsep() can't close temp file $temp_name: $!";
+      or croak "platform_recsep() can't close temp file $file after run: $!";
 
     return $self->{platform_recsep};
 }
@@ -279,6 +282,19 @@ sub _open {
     binmode $fh, ':raw';
 
     return $fh;
+}
+sub _temp_file {
+
+    my $self = shift;
+    
+    my $temp_fh = File::Temp->new(UNLINK => 1);
+
+    my $file = $temp_fh->filename;
+
+    close $temp_fh
+     or croak "_temp_file() can't close the $file temp file: $!";
+
+    return $file;
 }
 sub DESTROY {
     
