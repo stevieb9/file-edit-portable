@@ -29,7 +29,7 @@ sub unix_build {
     $brew_info = `perlbrew list`;
 
     my @perls_installed
-      = $brew_info =~ /(perl-\d\.\d+\.\d+)/g;
+      = $brew_info =~ /perl-\d\.\d+\.\d+)/g;
 
     if ($debug){
         print "$_\n" for @perls_installed;
@@ -62,6 +62,8 @@ sub unix_build {
     my $i = 0;
     my $ver;
 
+    print "\n\n";
+
     for (@ver_results){
         if (/^(perl-\d\.\d+\.\d+)/){
             $ver = $1;
@@ -76,7 +78,6 @@ sub unix_build {
         print "$ver :: $res\n";
     }
 }
-
 sub win_build {
 
     my $num = shift;
@@ -122,6 +123,8 @@ sub win_build {
     my @ver_results = split /\n\n\n/, $result;
 
     my $ver;
+
+    print "\n\n";
 
     for (@ver_results){
         if (/^Perl-(\d\.\d+\.\d+.*)/){
