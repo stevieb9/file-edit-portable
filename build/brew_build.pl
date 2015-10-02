@@ -15,7 +15,6 @@ if ($^O eq 'MSWin32'){
 else {
     unix_build($num);
 }
-
 sub unix_build {
 
     my $num = shift;
@@ -41,7 +40,7 @@ sub unix_build {
     print "\nremoving previous installs...\n" if $debug;
 
     for (@perls_installed){
-        `perlbrew uninstall $_`;
+#        `perlbrew uninstall $_`;
     }
 
     print "\nremoval of existing perl installs complete...\n" if $debug;
@@ -54,7 +53,7 @@ sub unix_build {
 
     for (@new_installs){
         print "\ninstalling $_...\n" if $debug;
-        `perlbrew install --notest -j 4 $_`;
+#        `perlbrew install --notest -j 4 $_`;
     }
 
     my $result = `perlbrew exec build/test.pl 2>/dev/null`;
@@ -112,28 +111,20 @@ sub win_build {
     }
 
     for (@new_installs){
-#        print "\ninstalling $_...\n" if $debug;
-        `berrybrew install $_`;
+        print "\ninstalling $_...\n" if $debug;
+#        `berrybrew install $_`;
     }
 
     print "\nexecuting commands...\n" if $debug;
 
-    my @fails;
+    my $result = `berrybrew exec perl build\\test.pl`;
 
-    for (@perls_installed){
-        system("berrybrew switch $_");
-        my $result = system("cpanm --installdeps . && dmake && dmake test");
-        if ($result){
-            push @fails, $_;
-        }
-    }
-    my $result = `berrybrew exec build\\test.pl 2> nul`;
     my @ver_results = split /\n\n\n/, $result;
 
     my $ver;
 
     for (@ver_results){
-        if (/^(perl-\d\.\d+\.\d+)/){
+        if (/^Perl-(\d\.\d+\.\d+.*)/){
             $ver = $1;
         }
         my $res;

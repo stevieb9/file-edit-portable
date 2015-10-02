@@ -2,5 +2,10 @@
 use warnings;
 use strict;
 
-system("sudo cpanm --installdeps . && make && make test");
+if ($^O ne 'MSWin32'){
+    system("sudo cpanm --installdeps . && make && make test");
+}
+else {
+    system("cpanm --installdeps . && dmake && dmake test");
+}
 
