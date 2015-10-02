@@ -32,7 +32,9 @@ sub unix_build {
     my @perls_installed
       = $brew_info =~ /(perl-\d\.\d+\.\d+)/g;
 
-      print "$_\n" for @perls_installed if $debug;
+    if ($debug){
+        print "$_\n" for @perls_installed;
+    }
 
     my %perl_vers;
 
