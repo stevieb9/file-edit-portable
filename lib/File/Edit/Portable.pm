@@ -99,8 +99,7 @@ sub recsep {
     my $self = shift;
     my $file = shift;
 
-    open my $fh, '<', $file 
-      or croak "recsep() can't open file $file!: $!";
+    my $fh = $self->_open($file);
 
     binmode $fh, ':raw';
 
@@ -155,15 +154,15 @@ sub pread {
 
     $rw->recsep($file);
 
-    my $fh = $rw->_open($file);
-
     if (! wantarray){
         my $handle = $rw->_handle($file);
         return $handle;
     }
     else {
 
+        my $fh = $rw->_open($file);
         my @contents = <$fh>;
+        
         close $fh or croak "read() can't close file $file!: $!";
 
         if (! $testing){
