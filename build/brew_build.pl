@@ -2,12 +2,14 @@
 use warnings;
 use strict;
 
-use Data::Dumper;
+# set $debug to true to print out running info
 
-print "\nUsage: build.pl run_count [debug]\n" if ! $ARGV[0];
+my $debug = 0;
+
+print "\nUsage: build.pl run_count [reload]\n" if ! $ARGV[0];
 
 my $num = $ARGV[0];
-my $debug = $ARGV[1];
+my $reload = $ARGV[1];
 
 if ($^O eq 'MSWin32'){
     win_build($num);
@@ -15,6 +17,7 @@ if ($^O eq 'MSWin32'){
 else {
     unix_build($num);
 }
+
 sub unix_build {
 
     my $num = shift;
@@ -24,7 +27,7 @@ sub unix_build {
     my @perls_available 
       = $brew_info =~ /(perl-\d\.\d+\.\d+)/g;
 
-    $num = scalar @perls_available if $num eq 'all';
+    $num = scalar @perls_available if $num =~ /all/;
 
     $brew_info = `perlbrew list`;
 
@@ -40,7 +43,7 @@ sub unix_build {
     print "\nremoving previous installs...\n" if $debug;
 
     for (@perls_installed){
-#        `perlbrew uninstall $_`;
+        `perlbrew uninstall $_` if $reload;
     }
 
     print "\nremoval of existing perl installs complete...\n" if $debug;
@@ -53,7 +56,7 @@ sub unix_build {
 
     for (@new_installs){
         print "\ninstalling $_...\n" if $debug;
-#        `perlbrew install --notest -j 4 $_`;
+        `perlbrew install --notest -j 4 $_` if $reload;
     }
 
     my $result = `perlbrew exec build/test.pl 2>/dev/null`;
@@ -92,6 +95,8 @@ sub win_build {
     my @perls_available 
       = $brew_info =~ /(\d\.\d{2}\.\d(?:_\d{2}))(?!=_)/g;
 
+    $num = scalar @perls_available if $num =~ /all/;
+
     my @perls_installed
       = $brew_info =~ /(\d\.\d{2}\.\d(?:_\d{2}))(?!=_)\s+\[installed\]/ig;
 
@@ -100,7 +105,7 @@ sub win_build {
     print "\nremoving previous installs...\n" if $debug;
 
     for (@perls_installed){
-#        `berrybrew remove $_`;
+        `berrybrew remove $_` if $reload;
     }
 
     print "\nremoval of existing perl installs complete...\n" if $debug;
@@ -113,7 +118,7 @@ sub win_build {
 
     for (@new_installs){
         print "\ninstalling $_...\n" if $debug;
-#        `berrybrew install $_`;
+        `berrybrew install $_` if $reload;
     }
 
     print "\nexecuting commands...\n" if $debug;
@@ -140,4 +145,3 @@ sub win_build {
         print "$ver :: $res\n";
     }
 }
-

@@ -1,3 +1,5 @@
+build/brew_build.pl
+build/test.pl
 Changes
 examples/embedded.pl
 examples/get_local_recsep.pl
