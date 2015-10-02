@@ -4,9 +4,10 @@ use strict;
 
 use Data::Dumper;
 
-print "\nUsage: build.pl run_count\n" if ! $ARGV[0];
+print "\nUsage: build.pl run_count [debug]\n" if ! $ARGV[0];
 
 my $num = $ARGV[0];
+my $debug = $ARGV[1];
 
 if ($^O eq 'MSWin32'){
     win_build($num);
@@ -31,17 +32,17 @@ sub unix_build {
     my @perls_installed
       = $brew_info =~ /(perl-\d\.\d+\.\d+)/g;
 
-      #print "$_\n" for @perls_installed;
+      print "$_\n" for @perls_installed if $debug;
 
     my %perl_vers;
 
-    #print "\nremoving previous installs...\n";
+    print "\nremoving previous installs...\n" if $debug;
 
     for (@perls_installed){
         `perlbrew uninstall $_`;
     }
 
-    #print "\nremoval of existing perl installs complete...\n";
+    print "\nremoval of existing perl installs complete...\n" if $debug;
 
     my @new_installs;
 
@@ -50,7 +51,7 @@ sub unix_build {
     }
 
     for (@new_installs){
-        #print "\ninstalling $_...\n";
+        print "\ninstalling $_...\n" if $debug;
         `perlbrew install --notest -j 4 $_`;
     }
 
@@ -94,13 +95,13 @@ sub win_build {
 
     my %perl_vers;
 
-    #print "\nremoving previous installs...\n";
+    print "\nremoving previous installs...\n" if $debug;
 
     for (@perls_installed){
         `berrybrew remove $_`;
     }
 
-    #print "\nremoval of existing perl installs complete...\n";
+    print "\nremoval of existing perl installs complete...\n" if $debug;
 
     my @new_installs;
 
@@ -109,11 +110,11 @@ sub win_build {
     }
 
     for (@new_installs){
-        print "\ninstalling $_...\n";
+        print "\ninstalling $_...\n" if $debug;
         `berrybrew install $_`;
     }
 
-    #print "\nexecuting commands...\n";
+    print "\nexecuting commands...\n" if $debug;
 
     my @fails;
 
