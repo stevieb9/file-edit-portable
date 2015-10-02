@@ -7,6 +7,7 @@ our $VERSION = '0.09_01';
 
 use Carp;
 use Exporter;
+use File::Temp qw(tempfile);
 
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw (pread pwrite);
@@ -123,29 +124,23 @@ sub recsep {
 sub platform_recsep {
 
     my $self = shift;
-    my $file = 'local.tmp';
 
-    open my $wfh, '>', $file 
-      or die "platform_recsep() can't open temp file $!";
+    my $temp_fh = File::Temp->new(UNLINK => 1);
+    
+    binmode $temp_fh, 'raw:';
 
-    print $wfh "x\n";
+    print $temp_fh "abc\n";
 
-    close $wfh or die "platform_recsep() can't close temp file $!";
+    $temp_fh->seek(0, 0);
 
-    open my $fh, '<', $file 
-      or die "platform_recsep() can't open temp file $!";
-
-    binmode $fh, ':raw';
-
-    for (<$fh>){
-        if (/(\R)/){
-            $self->{platform_recsep} = $1;
-        }
+    if (<$temp_fh> =~ /(\R)/){
+        $self->{platform_recsep} = $1;
     }
 
-    close $fh or die "platform_recsep() can't close temp file $!";
+    my $temp_name = $temp_fh->filename;
 
-    unlink $file or die "platform_recsep() can't unlink the 'local.txt' temp file";
+    close $temp_fh 
+      or die "platform_recsep() can't close temp file $temp_name: $!";
 
     return $self->{platform_recsep};
 }
