@@ -98,7 +98,7 @@ sub win_build {
     print "\nremoving previous installs...\n" if $debug;
 
     for (@perls_installed){
-        `berrybrew remove $_`;
+#        `berrybrew remove $_`;
     }
 
     print "\nremoval of existing perl installs complete...\n" if $debug;
@@ -110,7 +110,7 @@ sub win_build {
     }
 
     for (@new_installs){
-        print "\ninstalling $_...\n" if $debug;
+#        print "\ninstalling $_...\n" if $debug;
         `berrybrew install $_`;
     }
 
@@ -125,7 +125,7 @@ sub win_build {
             push @fails, $_;
         }
     }
-    my $result = `berrybrew exec build/test.pl 2>/dev/null`;
+    my $result = `berrybrew exec build\\test.pl 2> nul`;
     my @ver_results = split /\n\n\n/, $result;
 
     my $ver;
