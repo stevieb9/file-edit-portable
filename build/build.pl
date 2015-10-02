@@ -11,6 +11,69 @@ my $num = $ARGV[0];
 if ($^O eq 'MSWin32'){
     win_build($num);
 }
+else {
+    unix_build($num);
+}
+
+sub unix_build {
+
+    my $num = shift;
+
+    my $brew_info = `perlbrew available`;
+
+    my @perls_available 
+      = $brew_info =~ /(perl-\d\.\d+\.\d+)/g;
+
+    $num = scalar @perls_available if $num eq 'all';
+
+    $brew_info = `perlbrew list`;
+
+    my @perls_installed
+      = $brew_info =~ /(perl-\d\.\d+\.\d+)/g;
+
+      #print "$_\n" for @perls_installed;
+
+    my %perl_vers;
+
+    #print "\nremoving previous installs...\n";
+
+    for (@perls_installed){
+        `perlbrew uninstall $_`;
+    }
+
+    #print "\nremoval of existing perl installs complete...\n";
+
+    my @new_installs;
+
+    for (1..$num){
+        push @new_installs, $perls_available[rand @perls_available];
+    }
+
+    for (@new_installs){
+        #print "\ninstalling $_...\n";
+        `perlbrew install --notest -j 4 $_`;
+    }
+
+    my $result = `perlbrew exec build/test.pl 2>/dev/null`;
+    my @ver_results = split /\n\n\n/, $result;
+
+    my $i = 0;
+    my $ver;
+
+    for (@ver_results){
+        if (/^(perl-\d\.\d+\.\d+)/){
+            $ver = $1;
+        }
+        my $res;
+        if (/Result:\s+(PASS)/){
+           $res = $1; 
+        }
+        else {
+            $res = 'FAIL';
+        }
+        print "$ver :: $res\n";
+    }
+}
 
 sub win_build {
 
@@ -31,13 +94,13 @@ sub win_build {
 
     my %perl_vers;
 
-    print "\nremoving previous installs...\n";
+    #print "\nremoving previous installs...\n";
 
     for (@perls_installed){
         `berrybrew remove $_`;
     }
 
-    print "\nremoval of existing perl installs complete...\n";
+    #print "\nremoval of existing perl installs complete...\n";
 
     my @new_installs;
 
@@ -50,7 +113,7 @@ sub win_build {
         `berrybrew install $_`;
     }
 
-    print "\nexecuting commands...\n";
+    #print "\nexecuting commands...\n";
 
     my @fails;
 
