@@ -61,10 +61,23 @@ sub win_build {
             push @fails, $_;
         }
     }
+    my $result = `berrybrew exec build/test.pl 2>/dev/null`;
+    my @ver_results = split /\n\n\n/, $result;
 
-    if (@fails){
-        print "Failed on...\n\n";
-        print "$_\n" for @fails;
+    my $ver;
+
+    for (@ver_results){
+        if (/^(perl-\d\.\d+\.\d+)/){
+            $ver = $1;
+        }
+        my $res;
+        if (/Result:\s+(PASS)/){
+           $res = $1; 
+        }
+        else {
+            $res = 'FAIL';
+        }
+        print "$ver :: $res\n";
     }
 }
 
