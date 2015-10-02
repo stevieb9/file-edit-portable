@@ -104,17 +104,15 @@ sub recsep {
 
     binmode $fh, ':raw';
 
-    my @contents = <$fh>;
+    return if ! <$fh>;
 
-    close $fh or croak "recsep() can't close file $file!: $!";
-
-    return if ! $contents[0];
-
-    if ($contents[0] =~ /(\R)/){
+    if (<$fh> =~ /(\R)/){
         $self->{recsep} = $1;
         $ENV{FEP_RECSEP} = $1;
     }
 
+    close $fh or croak "recsep() can't close file $file!: $!";
+    
     my $recsep = unpack "H*", $self->{recsep};
 
     $recsep =~ s/0/\\0/g;
