@@ -123,7 +123,13 @@ sub platform_recsep {
     my $self = shift;
 
     my $temp_fh = File::Temp->new(UNLINK => 1);
-    
+    my $temp_name = $temp_fh->filename;
+ 
+    # this is for checking to see if we've cleaned up
+    # in DESTROY
+
+    push @{ $self->{temp_files} }, $temp_name;
+
     binmode $temp_fh, 'raw:';
 
     print $temp_fh "abc\n";
@@ -134,7 +140,6 @@ sub platform_recsep {
         $self->{platform_recsep} = $1;
     }
 
-    my $temp_name = $temp_fh->filename;
 
     close $temp_fh 
       or die "platform_recsep() can't close temp file $temp_name: $!";
@@ -233,6 +238,11 @@ sub _handle {
     binmode $temp_wfh, ':raw';
     my $temp_filename = $temp_wfh->filename;
 
+    # we'll check these in DESTROY to make sure we've
+    # cleaned up appropriately
+
+    push @{ $self->{temp_files} }, $temp_filename;
+
     $self->platform_recsep;
 
     for (<$fh>){
@@ -269,10 +279,16 @@ sub _open {
     return $fh;
 }
 sub DESTROY {
-    if (-f "$$.tmp"){
-        eval { unlink "$$.tmp" or die $!; };
-        if ($@){
-            croak "can't unlink temp file $$.txt in DESTROY()";
+    
+    my $self = shift;
+
+    for (@{ $self->{temp_files} }){
+        if (-f){
+            eval { unlink $_ or die $!; };
+            if ($@){
+                croak "File::Temp didn't unlink $_ temp file, and we " .
+                      "can't unlink it in our DESTROY() either!: $@";
+            }
         }
     }
 }
