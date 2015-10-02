@@ -3,7 +3,7 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '0.09_01';
+our $VERSION = '0.09_03';
 
 use Carp;
 use Exporter;
@@ -238,9 +238,9 @@ sub _handle {
     my $file = shift;
 
     my $fh = $self->_open($file);
-     
     my $temp_wfh = File::Temp->new(UNLINK => 1);
     binmode $temp_wfh, ':raw';
+    
     my $temp_filename = $temp_wfh->filename;
 
     # we'll check these in DESTROY to make sure we've
