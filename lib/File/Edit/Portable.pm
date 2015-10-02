@@ -227,25 +227,23 @@ sub _handle {
     my $self = shift;
     my $file = shift;
 
-    my $temp_file = "$$.tmp";
-
     my $fh = $self->_open($file);
-    binmode $fh, ':raw';
-
-    my $wfh = $self->_open($temp_file, 'w');
-    binmode $wfh, ':raw';
+     
+    my $temp_wfh = File::Temp->new(UNLINK => 1);
+    binmode $temp_wfh, ':raw';
+    my $temp_filename = $temp_wfh->filename;
 
     $self->platform_recsep;
 
     for (<$fh>){
         s/\R/$self->{platform_recsep}/;
-        print $wfh $_;
+        print $temp_wfh $_;
     }
 
     close $fh or die "can't close file $file: $!";
-    close $wfh or die "can't close file $file: $!";
+    close $temp_wfh or die "can't close file $file: $!";
 
-    my $ret_fh = $self->_open($temp_file);
+    my $ret_fh = $self->_open($temp_filename);
 
     return $ret_fh;
 }
