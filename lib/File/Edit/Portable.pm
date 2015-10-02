@@ -134,15 +134,17 @@ sub platform_recsep {
 
     print $temp_fh "abc\n";
 
-    $temp_fh->seek(0, 0);
+    close $temp_fh
+      or croak "platform_recsep() can't close temp file $temp_name: $!";
 
-    if (<$temp_fh> =~ /(\R)/){
+    my $fh = $self->_open($temp_name);
+
+    if (<$fh> =~ /(\R)/){
         $self->{platform_recsep} = $1;
     }
 
-
-    close $temp_fh 
-      or die "platform_recsep() can't close temp file $temp_name: $!";
+    close $fh
+      or croak "platform_recsep() can't close temp file $temp_name: $!";
 
     return $self->{platform_recsep};
 }
@@ -251,10 +253,10 @@ sub _handle {
     }
 
     close $fh or die "can't close file $file: $!";
-    close $temp_wfh or die "can't close file $file: $!";
+    close $temp_wfh or die "can't close file $temp_filename: $!";
 
     my $ret_fh = $self->_open($temp_filename);
-
+    
     return $ret_fh;
 }
 sub _open {
