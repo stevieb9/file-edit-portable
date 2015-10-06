@@ -1,9 +1,11 @@
 Revision history for File-Edit-Portable
 
-0.10    xxx
+0.10    2015-10-06
         - Travis-CI integration
         - now uses File::Temp (core) for anything requiring a temp file
-        - many performance/efficiency enhancements
+        - new functions read(), write() exported on demand. pread/pwrite are still
+          available
+        - performance/efficiency enhancements
 
 0.09    2015-10-01
         - new non-OO functions, pread() and pwrite()

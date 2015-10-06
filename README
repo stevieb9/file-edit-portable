@@ -40,17 +40,17 @@ SYNOPSIS
 
     There's also a non-OO interface...
 
-        use File::Edit::Portable qw(pread pwrite);
+        use File::Edit::Portable qw(read write);
     
-        my $fh = pread('file.txt');
+        my $fh = read('file.txt');
     
         # and/or
     
-        my @contents = pread('file.txt');
+        my @contents = read('file.txt');
     
         # then
     
-        pwrite('file.txt', \@contents);
+        write('file.txt', \@contents);
 
 DESCRIPTION
 
@@ -84,7 +84,8 @@ EXPORT_OK
     If you desire using the non-OO functionality, the following functions
     are exported on demand.
 
-    pread() and pwrite()
+    read() and write(). If there are namespace collisions with those two
+    functions, pread() and pwrite() are available as well.
 
 METHODS
 
@@ -141,13 +142,19 @@ METHODS
 
 FUNCTIONS
 
- pread('file.txt')
+ read('file.txt')
+
+    pread() can alternately be imported in the event of namespace
+    collisions.
 
     In scalar context, will return a read-only file handle. In list
     context, returns an array with each element being a line in the file,
     with the endings stripped off.
 
- pwrite('file.txt', \@contents, 'copy.txt', "\r\n")
+ write('file.txt', \@contents, 'copy.txt', "\r\n")
+
+    pwrite() can alternately be imported in the event of namespace
+    collisions.
 
     Writes back out the file (or alternately a new file (copy.txt), using
     the original file's line endings, or optionally a custom record

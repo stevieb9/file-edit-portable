@@ -317,7 +317,7 @@ sub DESTROY {
     my $self = shift;
 
     for (@{ $self->{temp_files} }){
-        if (-f){
+        if (-f && $^O ne 'MSWin32'){
             eval { unlink $_ or die $!; };
             if ($@){
                 croak "File::Temp didn't unlink $_ temp file, and we " .
@@ -370,17 +370,17 @@ Get the local platforms record separator. This will be in string representation.
 
 There's also a non-OO interface...
 
-    use File::Edit::Portable qw(pread pwrite);
+    use File::Edit::Portable qw(read write);
 
-    my $fh = pread('file.txt');
+    my $fh = read('file.txt');
 
     # and/or
 
-    my @contents = pread('file.txt');
+    my @contents = read('file.txt');
 
     # then
 
-    pwrite('file.txt', \@contents);
+    write('file.txt', \@contents);
 
 
 =head1 DESCRIPTION
@@ -399,7 +399,7 @@ None by default. See L<EXPORT_OK>
 
 If you desire using the non-OO functionality, the following functions are exported on demand.
 
-C<pread()> and C<pwrite()>
+C<read()> and C<write()>. If there are namespace collisions with those two functions, C<pread()> and C<pwrite()> are available as well.
 
 =head1 METHODS
 
@@ -443,11 +443,15 @@ Returns the string representation of the current platform's (OS) record separato
 
 =head1 FUNCTIONS
 
-=head2 C<pread('file.txt')>
+=head2 C<read('file.txt')>
+
+C<pread()> can alternately be imported in the event of namespace collisions.
 
 In scalar context, will return a read-only file handle. In list context, returns an array with each element being a line in the file, with the endings stripped off.
 
-=head2 C<pwrite('file.txt', \@contents, 'copy.txt', "\r\n")>
+=head2 C<write('file.txt', \@contents, 'copy.txt', "\r\n")>
+
+C<pwrite()> can alternately be imported in the event of namespace collisions.
 
 Writes back out the file (or alternately a new file (copy.txt), using the original file's line endings, or optionally a custom record separator as specified by the last parameter. Note the record separator MUST be sent in within double-quotes.
 
