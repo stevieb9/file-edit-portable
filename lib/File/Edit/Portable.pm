@@ -10,13 +10,24 @@ use Exporter;
 use File::Temp qw(tempfile);
 
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw (pread pwrite);
+our @EXPORT_OK = qw (read pread write pwrite);
 
 sub new {
     return bless {}, shift;
 }
 sub read {
 
+    if (ref($_[0]) ne 'File::Edit::Portable'){
+        if (wantarray){
+            my @ret = pread(@_);
+            return @ret;
+        }
+        else {
+            my $fh = pread(@_);
+            return $fh;
+        }
+    }
+            
     my $self = shift;
 
     $self->_config(@_);
@@ -52,6 +63,11 @@ sub read {
     }
 }
 sub write {
+
+    if (ref($_[0]) ne 'File::Edit::Portable'){
+        pwrite(@_);
+        return 1;
+    }
 
     my $self = shift;
     my $p = $self->_config(@_);
