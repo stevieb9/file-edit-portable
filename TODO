@@ -1,4 +1,0 @@
-0.03    
-        - allow either coderefs to be passed in for open(), or allow
-          flags to be passed to open some other way
-        - Mac testing/implementation (may need to hack Makefile.PL like for win)

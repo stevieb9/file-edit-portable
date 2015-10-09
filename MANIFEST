@@ -27,5 +27,4 @@ t/pod-coverage.t
 t/pod.t
 t/unix.txt
 t/win.txt
-TODO
 xt/boilerplate.t
