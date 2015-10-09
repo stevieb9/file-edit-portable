@@ -1,5 +1,9 @@
 Revision history for File-Edit-Portable
 
+0.11    2015xxxx
+        - removed File::Temp dependency, we now used memory-based (scalar ref)
+          temporary files
+
 0.10    2015-10-06
         - Travis-CI integration
         - now uses File::Temp (core) for anything requiring a temp file

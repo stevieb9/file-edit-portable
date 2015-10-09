@@ -7,7 +7,6 @@ our $VERSION = '0.10_01';
 
 use Carp;
 use Exporter;
-use File::Temp qw(tempfile);
 
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw (read pread write pwrite);
@@ -138,32 +137,24 @@ sub platform_recsep {
 
     my $self = shift;
 
-    my $file = $self->_temp_file;
+    my $mem_file;
 
-    # this is for checking to see if we've cleaned up
-    # in DESTROY
-
-    push @{ $self->{temp_files} }, $file;
-
-    # for platform_recsep(), we need the file open in ASCII mode,
-    # so we can't use _open() or File::Temp
-
-    open my $wfh, '>', $file
-      or die "platform_recsep() can't open temp file $file for writing!: $!";
+    open my $wfh, '>', \$mem_file
+      or die "platform_recsep() can't open memory temp file for writing!: $!";
 
     print $wfh "abc\n";
 
     close $wfh
-      or croak "platform_recsep() can't close temp file $file write: $!";
+      or croak "platform_recsep() can't close memory temp file after write: $!";
 
-    my $fh = $self->_open($file);
+    my $fh = $self->_open(\$mem_file);
 
     if (<$fh> =~ /(\R)/){
         $self->{platform_recsep} = $1;
     }
 
     close $fh
-      or croak "platform_recsep() can't close temp file $file after run: $!";
+      or croak "platform_recsep() can't close memory temp file after run: $!";
 
     return $self->{platform_recsep};
 }
@@ -254,16 +245,10 @@ sub _handle {
     my $file = shift;
 
     my $fh = $self->_open($file);
-    my $temp_wfh = File::Temp->new(UNLINK => 1);
-    binmode $temp_wfh, ':raw';
+
+    my $mem_file;
+    my $temp_wfh = $self->_open(\$mem_file, 'w');
     
-    my $temp_filename = $temp_wfh->filename;
-
-    # we'll check these in DESTROY to make sure we've
-    # cleaned up appropriately
-
-    push @{ $self->{temp_files} }, $temp_filename;
-
     $self->platform_recsep;
 
     for (<$fh>){
@@ -272,9 +257,9 @@ sub _handle {
     }
 
     close $fh or die "can't close file $file: $!";
-    close $temp_wfh or die "can't close file $temp_filename: $!";
+    close $temp_wfh or die "can't close memory temp file: $!";
 
-    my $ret_fh = $self->_open($temp_filename);
+    my $ret_fh = $self->_open(\$mem_file);
     
     return $ret_fh;
 }
@@ -298,33 +283,6 @@ sub _open {
     binmode $fh, ':raw';
 
     return $fh;
-}
-sub _temp_file {
-
-    my $self = shift;
-    
-    my $temp_fh = File::Temp->new(UNLINK => 1);
-
-    my $file = $temp_fh->filename;
-
-    close $temp_fh
-     or croak "_temp_file() can't close the $file temp file: $!";
-
-    return $file;
-}
-sub DESTROY {
-    
-    my $self = shift;
-
-    for (@{ $self->{temp_files} }){
-        if (-f && $^O ne 'MSWin32'){
-            eval { unlink $_ or die $!; };
-            if ($@){
-                croak "File::Temp didn't unlink $_ temp file, and we " .
-                      "can't unlink it in our DESTROY() either!: $@";
-            }
-        }
-    }
 }
 sub _vim_placeholder {}; # for folding
 
