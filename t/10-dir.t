@@ -7,7 +7,7 @@ use Data::Dumper;
 use File::Copy;
 use Test::More;
 
-use Test::More;
+use Test::More tests => 24;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
@@ -17,15 +17,9 @@ use File::Edit::Portable;
 
 # set up the test bed
 
-if (! mkdir 't/a'){
-    plan skip_all => "Couldn't create dir() t/a directory test structure";
-}
+mkdir 't/a';
+mkdir 't/a/b';
 
-if (! mkdir 't/a/b'){
-    plan skip_all => "Couldn't create dir() t/a/b directory test structure";
-}
-
-plan tests => 24;
 
 my $rw = File::Edit::Portable->new;
 
