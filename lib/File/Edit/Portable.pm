@@ -430,7 +430,7 @@ Get the local platforms record separator. This will be in string representation.
 
 Rewrite line endings to the current platform's in all files in a directory recursively.
 
-    $rw->dir(dir => '/path/to/files/);
+    $rw->dir(dir => '/path/to/files/');
     
 There's also a minimal non-OO interface...
 
