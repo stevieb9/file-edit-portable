@@ -17,13 +17,13 @@ use File::Edit::Portable;
 
 # set up the test bed
 
+if (! mkdir 't/a'){
+    plan skip_all => "Couldn't create dir() t/a directory test structure";
+}
 
-plan skip_all => "Couldn't create dir() t/a directory test structure"
-  unless mkdir 't/a';
-
-    
-plan skip_all => "Couldn't create dir() t/a/b directory test structure"
-  unless mkdir 't/a/b' or die $!;
+if (! mkdir 't/a/b'){
+    plan skip_all => "Couldn't create dir() t/a/b directory test structure";
+}
 
 plan tests => 24;
 
