@@ -7,7 +7,7 @@ use Data::Dumper;
 use File::Copy;
 use Test::More;
 
-use Test::More tests => 22;
+use Test::More;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
@@ -15,8 +15,17 @@ BEGIN {
 
 use File::Edit::Portable;
 
-# set up the test files
+# set up the test bed
 
+
+plan skip_all => "Couldn't create dir() t/a directory test structure"
+  unless mkdir 't/a';
+
+    
+plan skip_all => "Couldn't create dir() t/a/b directory test structure"
+  unless mkdir 't/a/b' or die $!;
+
+plan tests => 24;
 
 my $rw = File::Edit::Portable->new;
 
@@ -70,7 +79,7 @@ my $rw = File::Edit::Portable->new;
     for (@files){
         my $rec = $rw->recsep($_);
         my $prec = unpack("H*", $rw->platform_recsep);
-        $prec = "\\$prec";       
+        $prec =~ s/0/\\0/g;       
 
         ok ($rec eq $prec, "dir() properly sets all files to platform recsep");
     }
@@ -92,7 +101,7 @@ my $rw = File::Edit::Portable->new;
     for (@files){
         my $rec = $rw->recsep($_);
         my $prec = unpack("H*", $rw->platform_recsep);
-        $prec = "\\$prec";       
+        $prec =~ s/0/\\0/g;       
 
         ok ($rec eq $prec, "dir() properly sets all files back to platform recsep");
     }
@@ -101,8 +110,14 @@ my $rw = File::Edit::Portable->new;
 { # unlink
     my @files = $rw->dir(dir => 't/a', list => 1);
     for (@files){
+        next if $_ =~ /^\./;
         eval { unlink $_ or die "can't unlink file $_!: $!"; };
         is ($@, '', "unlinked file $_ ok");
+    }
+
+    for ('t/a/b', 't/a'){
+        eval { rmdir $_ or die "can't remove dir()'s test dir $_"; };
+        is ($@, '', "removed dir()'s temp directories");
     }
 }
 sub _reset {

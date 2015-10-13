@@ -23,8 +23,6 @@ t/07-chain_calls.t
 t/08-pread.t
 t/09-pwrite.t
 t/10-dir.t
-t/a/*
-t/a/b/*
 t/manifest.t
 t/orig/unix.txt
 t/pod-coverage.t
