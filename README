@@ -38,7 +38,13 @@ SYNOPSIS
 
         my $platform_recsep = $rw->platform_recsep;
 
-    There's also a non-OO interface...
+    Rewrite line endings to the current platform's in all files in a
+    directory recursively.
+
+        $rw->dir(dir => '/path/to/files/);
+        
+
+    There's also a minimal non-OO interface...
 
         use File::Edit::Portable qw(read write);
     
@@ -128,6 +134,22 @@ METHODS
     you want to write as the line ending (record separator). This value
     will override what was found in the read() call. Common ones are "\r\n"
     for Windows, "\n" for Unix and "\r" for Mac.
+
+ dir
+
+    Rewrites the line endings in some or all files within a directory
+    structure recursively.
+
+    Parameters:
+
+    dir => '/path/to/files': Mandatory.
+
+    types => ['txt', 'dat']: Optional. Specify file extensions (less the
+    dot) within an array reference and we'll only work on these file types.
+
+    recsep => "\r\n": Optional: If this parameter is not sent in, we'll
+    replace the line endings with that of the current platform we're
+    operating on. Otherwise, we'll use the double-quoted value sent in.
 
  recsep('file')
 

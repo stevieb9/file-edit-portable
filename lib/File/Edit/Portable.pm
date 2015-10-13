@@ -3,10 +3,11 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '0.10';
+our $VERSION = '1.01';
 
 use Carp;
 use Exporter;
+use File::Find;
 use File::Temp qw(tempfile);
 
 our @ISA = qw(Exporter);
@@ -94,7 +95,7 @@ sub write {
     my $wfh = $self->_open($file, 'w');
 
     for (@$contents){
-        s/\R//;
+        s/\R//g;
 
         if ($recsep){
             print $wfh $_ . $recsep;
@@ -110,6 +111,63 @@ sub write {
 
     return 1;
 }
+sub dir {
+    
+    my $self = shift;
+    $self->_config(@_);
+
+    my $dir = $self->{dir};
+    my $types = $self->{types};
+    my $recsep = $self->{custom_recsep};
+    my $list = $self->{list};
+
+    my @files;
+
+    find({wanted => sub {
+            
+                return if ! -f;
+
+                if ($types){
+                    my $exts = join('|', @$types);
+
+                    if ($_ !~ /\.(?:$exts)$/i){
+                        return;
+                    }
+                } 
+
+                my $file = $File::Find::name;
+
+                push @files, $file;
+            }, 
+            no_chdir => 1,
+        }, 
+        $dir,
+    );
+
+    return @files if $list;
+
+    for my $file (@files){
+        my @contents = $self->read(file => $file);
+
+        if ($recsep){
+
+            $self->write(
+                        file => $file, 
+                        contents => \@contents, 
+                        recsep =>$recsep
+                    );
+        }
+        else {
+            $self->write(
+                    file => $file, 
+                    contents => \@contents, 
+                    recsep => $self->platform_recsep
+                );
+        }
+    }
+
+    return @files;
+}
 sub recsep {
 
     my $self = shift;
@@ -119,7 +177,7 @@ sub recsep {
 
     binmode $fh, ':raw';
 
-    return if ! <$fh>;
+    croak "recsep() couldn't acquire file handle" if ! $fh;
 
     if (<$fh> =~ /(\R)/){
         $self->{recsep} = $1;
@@ -243,6 +301,8 @@ sub _config {
     delete $p{recsep};
     delete $self->{testing} if ! $p{testing};
     delete $self->{copy};
+    delete $self->{types};
+    delete $self->{list};
 
     for (keys %p){
         $self->{$_} = $p{$_};
@@ -368,7 +428,11 @@ Get the local platforms record separator. This will be in string representation.
 
     my $platform_recsep = $rw->platform_recsep;
 
-There's also a non-OO interface...
+Rewrite line endings to the current platform's in all files in a directory recursively.
+
+    $rw->dir(dir => '/path/to/files/);
+    
+There's also a minimal non-OO interface...
 
     use File::Edit::Portable qw(read write);
 
@@ -432,6 +496,20 @@ C<copy =E<gt> 'file2'>: Set this if you want to write to an alternate (new) file
 C<contents =E<gt> \@contents>: Mandatory, should contain a reference to the array that was returned by C<read()>.
 
 C<recsep =E<gt> "\r\n">: Optional, a double-quoted string of any characters you want to write as the line ending (record separator). This value will override what was found in the C<read()> call. Common ones are C<"\r\n"> for Windows, C<"\n"> for Unix and C<"\r"> for Mac. 
+
+
+=head2 C<dir>
+
+Rewrites the line endings in some or all files within a directory structure recursively.
+
+Parameters:
+
+C<dir =E<gt> '/path/to/files'>: Mandatory.
+
+C<types =E<gt> ['txt', 'dat']>: Optional. Specify file extensions (less the dot) within an array reference and we'll only work on these file types.
+
+C<recsep =E<gt> "\r\n">: Optional: If this parameter is not sent in, we'll replace the line endings with that of the current platform we're operating on. Otherwise, we'll use the double-quoted value sent in.
+
 
 =head2 C<recsep('file')>
 
