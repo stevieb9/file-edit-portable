@@ -7,7 +7,7 @@ our $VERSION = '1.01_01';
 
 use Carp;
 use Exporter;
-use File::Find;
+use File::Find::Rule;
 use File::Temp qw(tempfile);
 
 our @ISA = qw(Exporter);
@@ -116,45 +116,38 @@ sub dir {
     my $self = shift;
     $self->_config(@_);
 
-    my $dir = $self->{dir};
-    my $types = $self->{types};
-    my $recsep = $self->{custom_recsep};
-    my $list = $self->{list};
+    # set up the file names
 
-    my @files;
+    if ($self->{types}){
+        for (@{ $self->{types} }){
+            if (/(\w+)/){
+                s/$_/*.$_/;
+            }
+        }
+    }
+    else {
+       $self->{types} = [qw(*)];
+    }
 
-    find({wanted => sub {
-            
-                return if ! -f;
+    my $find = File::Find::Rule->new;
+    
+    $find->maxdepth($self->{depth}) if $self->{depth};
+    $find->file;
+    $find->name(@{ $self->{types} });
 
-                if ($types){
-                    my $exts = join('|', @$types);
+    my @files = $find->in($self->{dir});
 
-                    if ($_ !~ /\.(?:$exts)$/i){
-                        return;
-                    }
-                } 
-
-                my $file = $File::Find::name;
-
-                push @files, $file;
-            }, 
-            no_chdir => 1,
-        }, 
-        $dir,
-    );
-
-    return @files if $list;
+    return @files if $self->{list};
 
     for my $file (@files){
         my @contents = $self->read(file => $file);
 
-        if ($recsep){
+        if ($self->{custom_recsep}){
 
             $self->write(
                         file => $file, 
                         contents => \@contents, 
-                        recsep =>$recsep
+                        recsep => $self->{custom_recsep},
                     );
         }
         else {
@@ -303,6 +296,7 @@ sub _config {
     delete $self->{copy};
     delete $self->{types};
     delete $self->{list};
+    delete $self->{depth};
 
     for (keys %p){
         $self->{$_} = $p{$_};
@@ -507,6 +501,8 @@ Parameters:
 C<dir =E<gt> '/path/to/files'>: Mandatory.
 
 C<types =E<gt> ['txt', 'dat']>: Optional. Specify file extensions (less the dot) within an array reference and we'll only work on these file types.
+
+C<depth =E<gt> 1>: Optional: Specify how many levels of recursion to do after entering the directory. We'll do a full recurse through all sub-directories if this parameter is not set.
 
 C<recsep =E<gt> "\r\n">: Optional: If this parameter is not sent in, we'll replace the line endings with that of the current platform we're operating on. Otherwise, we'll use the double-quoted value sent in.
 

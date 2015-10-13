@@ -147,6 +147,10 @@ METHODS
     types => ['txt', 'dat']: Optional. Specify file extensions (less the
     dot) within an array reference and we'll only work on these file types.
 
+    depth => 1: Optional: Specify how many levels of recursion to do after
+    entering the directory. We'll do a full recurse through all
+    sub-directories if this parameter is not set.
+
     recsep => "\r\n": Optional: If this parameter is not sent in, we'll
     replace the line endings with that of the current platform we're
     operating on. Otherwise, we'll use the double-quoted value sent in.
