@@ -1,10 +1,12 @@
 Revision history for File-Edit-Portable
 
-1.02    xxx
+1.02    2015-10-14
         - dir() method now uses File::Find::Rule for its ability to 
           specify maxdepth, which we do too
         - dir() takes wildcard globs in 'types' param in accordance with 
           File::Find::Rule::name
+        - fixed undef warning bug in recsep() if file is empty. In this case,
+          we will return the platform's recsep
 
 1.01    2015-10-13
         - new dir() method, rewrites files recursively

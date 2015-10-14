@@ -18,6 +18,8 @@ sub new {
 }
 sub read {
 
+    # for the non-OO interface
+
     if (ref($_[0]) ne 'File::Edit::Portable'){
         if (wantarray){
             my @ret = pread(@_);
@@ -64,6 +66,8 @@ sub read {
     }
 }
 sub write {
+
+    # for the non-OO interface
 
     if (ref($_[0]) ne 'File::Edit::Portable'){
         pwrite(@_);
@@ -140,21 +144,11 @@ sub dir {
     for my $file (@files){
         my @contents = $self->read(file => $file);
 
-        if ($recsep){
-
-            $self->write(
-                        file => $file, 
-                        contents => \@contents, 
-                        recsep => $recsep,
-                    );
-        }
-        else {
-            $self->write(
+        $self->write(
                     file => $file, 
                     contents => \@contents, 
-                    recsep => $self->platform_recsep
+                    recsep => $recsep || $self->platform_recsep,
                 );
-        }
     }
 
     return @files;
@@ -170,14 +164,32 @@ sub recsep {
 
     croak "recsep() couldn't acquire file handle" if ! $fh;
 
+    my @contents = <$fh>;
+
+    my $recsep;
+
+    if (! $contents[0]){
+
+        # we've got an empty file...
+        # we'll set recsep to the local platform's
+
+        $recsep = $self->platform_recsep;
+        $self->{recsep} = $recsep;
+        $recsep = unpack "H*", $recsep;
+        $recsep =~ s/0/\\0/g;
+
+        return $recsep;
+    }
+
+    seek $fh, 0, 0;
+
     if (<$fh> =~ /(\R)/){
         $self->{recsep} = $1;
-        $ENV{FEP_RECSEP} = $1;
     }
 
     close $fh or croak "recsep() can't close file $file!: $!";
     
-    my $recsep = unpack "H*", $self->{recsep};
+    $recsep = unpack "H*", $self->{recsep};
 
     $recsep =~ s/0/\\0/g;
 
@@ -220,8 +232,6 @@ sub pread {
     my ($file, $testing) = @_; 
 
     my $rw = File::Edit::Portable->new;
-
-    $ENV{FEP_IS_READ} = 1;
 
     if (! $file){ 
         croak "pread() requires a file name sent in!";
@@ -290,7 +300,8 @@ sub _config {
 
     $self->{custom_recsep} = $p{recsep};
     delete $p{recsep};
-    delete $self->{testing} if ! $p{testing};
+
+    delete $self->{testing};
     delete $self->{copy};
     delete $self->{types};
     delete $self->{list};
@@ -507,7 +518,7 @@ C<recsep =E<gt> "\r\n">: Optional: If this parameter is not sent in, we'll repla
 
 =head2 C<recsep('file')>
 
-Returns a string of the hex representation of the line endings (record separators) in 'file'. For example, "\0d\0a" will be returned for Windows line endings (CRLF).
+Returns a string of the hex representation of the line endings (record separators) in 'file'. For example, "\0d\0a" will be returned for Windows line endings (CRLF). If an empty file is being checked, we'll return the local platform's record separator.
 
 =head2 C<platform_recsep>
 
