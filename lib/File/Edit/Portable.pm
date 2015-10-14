@@ -116,24 +116,22 @@ sub dir {
     my $self = shift;
     $self->_config(@_);
 
-    # set up the file names
+    my $recsep = $self->{custom_recsep};
+
+    my @types;
 
     if ($self->{types}){
-        for (@{ $self->{types} }){
-            if (/(\w+)/){
-                s/$_/*.$_/;
-            }
-        }
+        @types = @{ $self->{types} };
     }
     else {
-       $self->{types} = [qw(*)];
+        @types = qw(*);
     }
 
     my $find = File::Find::Rule->new;
     
-    $find->maxdepth($self->{depth}) if $self->{depth};
+    $find->maxdepth($self->{maxdepth}) if $self->{maxdepth};
     $find->file;
-    $find->name(@{ $self->{types} });
+    $find->name(@types);
 
     my @files = $find->in($self->{dir});
 
@@ -142,12 +140,12 @@ sub dir {
     for my $file (@files){
         my @contents = $self->read(file => $file);
 
-        if ($self->{custom_recsep}){
+        if ($recsep){
 
             $self->write(
                         file => $file, 
                         contents => \@contents, 
-                        recsep => $self->{custom_recsep},
+                        recsep => $recsep,
                     );
         }
         else {
@@ -296,7 +294,7 @@ sub _config {
     delete $self->{copy};
     delete $self->{types};
     delete $self->{list};
-    delete $self->{depth};
+    delete $self->{maxdepth};
 
     for (keys %p){
         $self->{$_} = $p{$_};
@@ -424,7 +422,7 @@ Get the local platforms record separator. This will be in string representation.
 
 Rewrite line endings to the current platform's in all files in a directory recursively.
 
-    $rw->dir(dir => '/path/to/files/');
+    $rw->dir(dir => '/path/to/files');
     
 There's also a minimal non-OO interface...
 
@@ -500,9 +498,9 @@ Parameters:
 
 C<dir =E<gt> '/path/to/files'>: Mandatory.
 
-C<types =E<gt> ['txt', 'dat']>: Optional. Specify file extensions (less the dot) within an array reference and we'll only work on these file types.
+C<types =E<gt> ['*.txt', '*.dat']>: Optional. Specify wildcard combinations for files to work on. We'll accept anything that L<File::Find::Rule's|http://search.cpan.org/~rclamp/File-Find-Rule-0.33/lib/File/Find/Rule.pm> C<name()> method does.
 
-C<depth =E<gt> 1>: Optional: Specify how many levels of recursion to do after entering the directory. We'll do a full recurse through all sub-directories if this parameter is not set.
+C<maxdepth =E<gt> 1>: Optional: Specify how many levels of recursion to do after entering the directory. We'll do a full recurse through all sub-directories if this parameter is not set.
 
 C<recsep =E<gt> "\r\n">: Optional: If this parameter is not sent in, we'll replace the line endings with that of the current platform we're operating on. Otherwise, we'll use the double-quoted value sent in.
 

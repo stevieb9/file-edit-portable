@@ -1,5 +1,11 @@
 Revision history for File-Edit-Portable
 
+1.02    xxx
+        - dir() method now uses File::Find::Rule for its ability to 
+          specify maxdepth, which we do too
+        - dir() takes wildcard globs in 'types' param in accordance with 
+          File::Find::Rule::name
+
 1.01    2015-10-13
         - new dir() method, rewrites files recursively
 

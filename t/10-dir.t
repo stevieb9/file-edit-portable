@@ -29,13 +29,13 @@ my $rw = File::Edit::Portable->new;
     my @files = $rw->dir(dir => 't/a', list => 1);
     is (scalar @files, 3, "dir() returns the correct number of files w/no params");
 
-    @files = $rw->dir(dir => 't/a', types => [qw(txt)], list => 1);
+    @files = $rw->dir(dir => 't/a', types => [qw(*.txt)], list => 1);
     is (scalar @files, 2, "dir() with types() returns correct number of files");
 }
 {
     _reset();
 
-    my @files = $rw->dir(dir => 't/a', types => ['txt'], recsep => "\r");
+    my @files = $rw->dir(dir => 't/a', types => ['*.txt'], recsep => "\r");
 
     is (scalar @files, 2, "dir() processes correct files with types param");
 
@@ -51,7 +51,7 @@ my $rw = File::Edit::Portable->new;
         }
     }
 
-    @files = $rw->dir(dir => 't/a', types => ['none']);
+    @files = $rw->dir(dir => 't/a', types => ['*.none']);
 
     is (scalar @files, 1, "dir() with types param collects proper files");
 

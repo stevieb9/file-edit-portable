@@ -41,7 +41,7 @@ SYNOPSIS
     Rewrite line endings to the current platform's in all files in a
     directory recursively.
 
-        $rw->dir(dir => '/path/to/files/');
+        $rw->dir(dir => '/path/to/files');
         
 
     There's also a minimal non-OO interface...
@@ -144,11 +144,13 @@ METHODS
 
     dir => '/path/to/files': Mandatory.
 
-    types => ['txt', 'dat']: Optional. Specify file extensions (less the
-    dot) within an array reference and we'll only work on these file types.
+    types => ['*.txt', '*.dat']: Optional. Specify wildcard combinations
+    for files to work on. We'll accept anything that File::Find::Rule's
+    <http://search.cpan.org/~rclamp/File-Find-Rule-0.33/lib/File/Find/Rule.pm>
+    name() method does.
 
-    depth => 1: Optional: Specify how many levels of recursion to do after
-    entering the directory. We'll do a full recurse through all
+    maxdepth => 1: Optional: Specify how many levels of recursion to do
+    after entering the directory. We'll do a full recurse through all
     sub-directories if this parameter is not set.
 
     recsep => "\r\n": Optional: If this parameter is not sent in, we'll
