@@ -509,7 +509,7 @@ Parameters:
 
 C<dir =E<gt> '/path/to/files'>: Mandatory.
 
-C<types =E<gt> ['*.txt', '*.dat']>: Optional. Specify wildcard combinations for files to work on. We'll accept anything that L<File::Find::Rule's|http://search.cpan.org/~rclamp/File-Find-Rule-0.33/lib/File/Find/Rule.pm> C<name()> method does.
+C<types =E<gt> ['*.txt', '*.dat']>: Optional. Specify wildcard combinations for files to work on. We'll accept anything that L<File::Find::Rule's|http://search.cpan.org/~rclamp/File-Find-Rule-0.33/lib/File/Find/Rule.pm> C<name()> method does. If not supplied, we work on all files.
 
 C<maxdepth =E<gt> 1>: Optional: Specify how many levels of recursion to do after entering the directory. We'll do a full recurse through all sub-directories if this parameter is not set.
 
