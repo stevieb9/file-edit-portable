@@ -503,7 +503,7 @@ C<recsep =E<gt> "\r\n">: Optional, a double-quoted string of any characters you 
 
 =head2 C<dir>
 
-Rewrites the line endings in some or all files within a directory structure recursively.
+Rewrites the line endings in some or all files within a directory structure recursively. Returns an array of the names of the files found.
 
 Parameters:
 
@@ -514,6 +514,12 @@ C<types =E<gt> ['*.txt', '*.dat']>: Optional. Specify wildcard combinations for 
 C<maxdepth =E<gt> 1>: Optional: Specify how many levels of recursion to do after entering the directory. We'll do a full recurse through all sub-directories if this parameter is not set.
 
 C<recsep =E<gt> "\r\n">: Optional: If this parameter is not sent in, we'll replace the line endings with that of the current platform we're operating on. Otherwise, we'll use the double-quoted value sent in.
+
+C<list =E<gt> 1>
+
+If set, we'll return an array of the names of the files found, but won't take any editing action on them.
+
+Default is disabled.
 
 
 =head2 C<recsep('file')>
