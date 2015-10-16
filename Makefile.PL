@@ -7,7 +7,7 @@ WriteMakefile(
     NAME             => 'File::Edit::Portable',
     AUTHOR           => q{Steve Bertrand <steveb@cpan.org>},
     VERSION_FROM     => 'lib/File/Edit/Portable.pm',
-    MIN_PERL_VERSION => '5.010',
+    MIN_PERL_VERSION => '5.012',
     META_MERGE => {
         'meta-spec' => { version => 2 },
         resources   => {
