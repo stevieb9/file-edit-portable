@@ -557,7 +557,7 @@ Parameters:
 
 C<file =E<gt> 'file.name'>: Mandatory.
 
-C<contents =E<gt> \@contents>: Mandatory - an array reference containing the contents to merge into the file.
+C<insert =E<gt> \@contents>: Mandatory - an array reference containing the contents to merge into the file.
 
 C<copy =E<gt> 'newfile.name'>: Optional - we'll read from C<file>, but we'll write to this new file.
 
