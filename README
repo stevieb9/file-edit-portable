@@ -152,7 +152,7 @@ METHODS
 
     file => 'file.name': Mandatory.
 
-    contents => \@contents: Mandatory - an array reference containing the
+    insert => \@contents: Mandatory - an array reference containing the
     contents to merge into the file.
 
     copy => 'newfile.name': Optional - we'll read from file, but we'll
