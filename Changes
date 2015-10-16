@@ -1,5 +1,9 @@
 Revision history for File-Edit-Portable
 
+1.03    xxx
+        - added splice(), allows splicing in new contents while conforming
+          to the existing functionality of the module
+
 1.02    2015-10-14
         - dir() method now uses File::Find::Rule for its ability to 
           specify maxdepth, which we do too

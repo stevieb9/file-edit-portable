@@ -115,6 +115,42 @@ sub write {
 
     return 1;
 }
+sub splice {
+
+    my $self = shift;
+    $self->_config(@_);
+
+    my $file = $self->{file};
+    my $copy = $self->{copy};
+    my $insert = $self->{insert};
+    my $find = $self->{find};
+    my $line = $self->{line};
+    
+    if (! $insert){
+        croak "splice() requires insert => [aref] param";
+    }
+
+    my @contents = $self->read(file => $file);
+
+    if (defined $line){
+        splice @contents, $line, 0, @$insert;
+    }
+
+    if ($find){
+        $find = qr{$find};
+
+        while (my ($i, $e) = each @contents){
+            if ($e =~ /$find/){
+                splice @contents, ++$i, 0, @$insert;
+                last;
+            }
+        }
+    }
+
+    $self->write(contents => \@contents, copy => $copy);
+
+    return @contents;
+}
 sub dir {
     
     my $self = shift;
@@ -306,6 +342,9 @@ sub _config {
     delete $self->{types};
     delete $self->{list};
     delete $self->{maxdepth};
+    delete $self->{insert};
+    delete $self->{line};
+    delete $self->{find};
 
     for (keys %p){
         $self->{$_} = $p{$_};
@@ -434,6 +473,14 @@ Get the local platforms record separator. This will be in string representation.
 Rewrite line endings to the current platform's in all files in a directory recursively.
 
     $rw->dir(dir => '/path/to/files');
+
+Splice new data into a file after a specified line number.
+
+    $rw->splice(file => $file, line => $num, insert => \@contents);
+
+Splice data into a file after a search term is found.
+
+    $rw->splice(file => $file, find => 'term', insert => \@contents);
     
 There's also a minimal non-OO interface...
 
@@ -499,6 +546,26 @@ C<copy =E<gt> 'file2'>: Set this if you want to write to an alternate (new) file
 C<contents =E<gt> \@contents>: Mandatory, should contain a reference to the array that was returned by C<read()>.
 
 C<recsep =E<gt> "\r\n">: Optional, a double-quoted string of any characters you want to write as the line ending (record separator). This value will override what was found in the C<read()> call. Common ones are C<"\r\n"> for Windows, C<"\n"> for Unix and C<"\r"> for Mac. 
+
+=head2 C<splice>
+
+Inserts new data into a file after a specified line number or search term.
+
+Parameters:
+
+C<file =E<gt> 'file.name'>: Mandatory.
+
+C<contents =E<gt> \@contents>: Mandatory - an array reference containing the contents to merge into the file.
+
+C<copy =E<gt> 'newfile.name'>: Optional - we'll read from C<file>, but we'll write to this new file.
+
+C<line =E<gt> 23>: Optional - Merge the contents on the line following the one specified here.
+
+C<find =E<gt> 'search term'>: Optional - Merge the contents into the file on the line following the first find of the search term. The search term is put into C<qr>, so single quotes are recommended, and all regex patterns are honoured.
+
+NOTE: Although both are optional, at least one of C<line> or C<find> must be sent in.
+
+Returns an array of the modified file contents.  
 
 
 =head2 C<dir>

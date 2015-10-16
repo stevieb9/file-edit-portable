@@ -42,6 +42,14 @@ SYNOPSIS
     directory recursively.
 
         $rw->dir(dir => '/path/to/files');
+
+    Splice new data into a file after a specified line number.
+
+        $rw->splice(file => $file, line => $num, insert => \@contents);
+
+    Splice data into a file after a search term is found.
+
+        $rw->splice(file => $file, find => 'term', insert => \@contents);
         
 
     There's also a minimal non-OO interface...
@@ -135,10 +143,39 @@ METHODS
     will override what was found in the read() call. Common ones are "\r\n"
     for Windows, "\n" for Unix and "\r" for Mac.
 
+ splice
+
+    Inserts new data into a file after a specified line number or search
+    term.
+
+    Parameters:
+
+    file => 'file.name': Mandatory.
+
+    contents => \@contents: Mandatory - an array reference containing the
+    contents to merge into the file.
+
+    copy => 'newfile.name': Optional - we'll read from file, but we'll
+    write to this new file.
+
+    line => 23: Optional - Merge the contents on the line following the one
+    specified here.
+
+    find => 'search term': Optional - Merge the contents into the file on
+    the line following the first find of the search term. The search term
+    is put into qr, so single quotes are recommended, and all regex
+    patterns are honoured.
+
+    NOTE: Although both are optional, at least one of line or find must be
+    sent in.
+
+    Returns an array of the modified file contents.
+
  dir
 
     Rewrites the line endings in some or all files within a directory
-    structure recursively.
+    structure recursively. Returns an array of the names of the files
+    found.
 
     Parameters:
 
@@ -147,7 +184,7 @@ METHODS
     types => ['*.txt', '*.dat']: Optional. Specify wildcard combinations
     for files to work on. We'll accept anything that File::Find::Rule's
     <http://search.cpan.org/~rclamp/File-Find-Rule-0.33/lib/File/Find/Rule.pm>
-    name() method does.
+    name() method does. If not supplied, we work on all files.
 
     maxdepth => 1: Optional: Specify how many levels of recursion to do
     after entering the directory. We'll do a full recurse through all
@@ -156,6 +193,13 @@ METHODS
     recsep => "\r\n": Optional: If this parameter is not sent in, we'll
     replace the line endings with that of the current platform we're
     operating on. Otherwise, we'll use the double-quoted value sent in.
+
+    list => 1
+
+    If set, we'll return an array of the names of the files found, but
+    won't take any editing action on them.
+
+    Default is disabled.
 
  recsep('file')
 
