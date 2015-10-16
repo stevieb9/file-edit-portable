@@ -125,7 +125,7 @@ sub splice {
     my $insert = $self->{insert};
     my $find = $self->{find};
     my $line = $self->{line};
-    
+
     if (! $insert){
         croak "splice() requires insert => [aref] param";
     }
