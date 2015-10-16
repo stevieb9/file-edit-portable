@@ -1,6 +1,6 @@
 Revision history for File-Edit-Portable
 
-1.03    xxx
+1.03    2015-10-16 
         - added splice(), allows splicing in new contents while conforming
           to the existing functionality of the module
 

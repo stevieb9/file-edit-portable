@@ -7,7 +7,7 @@ use Data::Dumper;
 use File::Copy;
 use Test::More;
 
-use Test::More tests => 20;
+use Test::More tests => 21;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
@@ -119,6 +119,10 @@ my @insert = <DATA>;
 
     like($@, qr/read()/, "splice() croaks if a file isn't sent in");
 } 
+
+eval { unlink $copy or die $!; };
+
+is ($@, '', "copy file $copy unlinked successfully");
 
 __DATA__
 testing
