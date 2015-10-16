@@ -1,12 +1,6 @@
 build/brew_build.pl
 build/test.pl
 Changes
-examples/embedded.pl
-examples/get_local_recsep.pl
-examples/mem_file.pl
-examples/rw_handle_recsep.pl
-examples/splice.pl
-examples/ver.pl
 ignore.txt
 lib/File/Edit/Portable.pm
 Makefile.PL

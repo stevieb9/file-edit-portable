@@ -6,49 +6,34 @@ NAME
 SYNOPSIS
 
         use File::Edit::Portable;
-    
         my $rw = File::Edit::Portable->new;
-
-    Get a (read-only) file handle which (if necessary) has had the existing
-    record separator (line endings) replaced with the current local
-    platform's (OS's).
-
+    
+        # read a file, replacing original file's line endings with
+        # that of the local platform's default
+    
         my $fh = $rw->read(file => 'file.txt');
-
-    Get an array of the contents of the file after having record separators
-    checked/stored, modify the contents, then re-write the file with the
-    original record separator found.
-
+        # or
         my @contents = $rw->read(file => 'file.txt');
     
-        s/this/that/g for @contents;
+        # write out a file using original file's record separator
     
         $rw->write(contents => \@contents);
-
-    When writing, override the original record separator with a custom one.
-
+    
+        # replace original file's record separator with a new one
+    
         $rw->write(recsep => "\r\n", contents => \@contents);
-
-    Get the original record separator found in the file in hex format.
-
-        my $hex_record_separator = $rw->recsep('file');
-
-    Get the local platforms record separator. This will be in string
-    representation.
-
-        my $platform_recsep = $rw->platform_recsep;
-
-    Rewrite line endings to the current platform's in all files in a
-    directory recursively.
-
+    
+        # rewrite all files in a directory recursively with local
+        # platform's default record separator
+    
         $rw->dir(dir => '/path/to/files');
-
-    Splice new data into a file after a specified line number.
-
+    
+        # insert new data into a file after a specified line number
+    
         $rw->splice(file => $file, line => $num, insert => \@contents);
-
-    Splice data into a file after a search term is found.
-
+    
+        # insert new data into a file after a found search term
+    
         $rw->splice(file => $file, find => 'term', insert => \@contents);
         
 
