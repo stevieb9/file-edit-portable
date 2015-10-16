@@ -5,6 +5,7 @@ examples/embedded.pl
 examples/get_local_recsep.pl
 examples/mem_file.pl
 examples/rw_handle_recsep.pl
+examples/splice.pl
 examples/ver.pl
 ignore.txt
 lib/File/Edit/Portable.pm
@@ -23,10 +24,13 @@ t/07-chain_calls.t
 t/08-pread.t
 t/09-pwrite.t
 t/10-dir.t
+t/11-dir_depth.t
+t/12-splice.t
 t/manifest.t
 t/orig/unix.txt
 t/pod-coverage.t
 t/pod.t
+t/splice.txt
 t/unix.txt
 t/win.txt
 xt/boilerplate.t
