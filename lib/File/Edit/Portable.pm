@@ -1,9 +1,9 @@
 package File::Edit::Portable;
-use 5.010;
+use 5.012;
 use strict;
 use warnings;
 
-our $VERSION = '1.03_01';
+our $VERSION = '1.04';
 
 use Carp;
 use Exporter;
