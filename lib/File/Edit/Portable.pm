@@ -1,5 +1,5 @@
 package File::Edit::Portable;
-use 5.012;
+use 5.010;
 use strict;
 use warnings;
 
@@ -139,9 +139,11 @@ sub splice {
     if ($find){
         $find = qr{$find};
 
-        while (my ($i, $e) = each @contents){
-            if ($e =~ /$find/){
-                splice @contents, ++$i, 0, @$insert;
+        my $i = 0;
+        for (@contents){
+            $i++;
+            if (/$find/){
+                splice @contents, $i, 0, @$insert;
                 last;
             }
         }
