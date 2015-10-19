@@ -1,5 +1,14 @@
 Revision history for File-Edit-Portable
 
+1.06    20151019
+        - removed non-OO interface, it started causing issues
+        - added extra layer to recsep internally... it fixes a bug where
+          if two files were read before one was written, the recsep of
+          the latter file would be incorrectly used. Now, a recsep is saved
+          for each file read
+        - read() doesn't need 'file => $file' anymore, just the filename as
+          a string is required. However, the old API will still work
+
 1.04    2015-10-16
         - removed each() on array to prevent us from having to force
           perl v5.12

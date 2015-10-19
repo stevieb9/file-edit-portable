@@ -3,7 +3,7 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '1.05';
+our $VERSION = '1.05_01';
 
 use Carp;
 use Exporter;
@@ -18,27 +18,22 @@ sub new {
 }
 sub read {
 
-    # for the non-OO interface
-
-    if (ref($_[0]) ne 'File::Edit::Portable'){
-        if (wantarray){
-            my @ret = pread(@_);
-            return @ret;
-        }
-        else {
-            my $fh = pread(@_);
-            return $fh;
-        }
-    }
-            
     my $self = shift;
+    my ($file, $testing);
 
-    $self->_config(@_);
+    if ($_[0] eq 'file'){
+        $self->_config(@_);
+    }
+    else {
+        $file = shift;
+        $testing = shift if @_;
+        $self->_config(file => $file, testing => $testing);
+    }
 
     $self->{is_read} = 1;
 
-    my $file = $self->{file};
-    my $testing = $self->{testing};
+    $file = $self->{file};
+    $testing = $self->{testing};
 
     if (! $file){ 
         croak "read() requires a file name sent in!";
@@ -66,13 +61,6 @@ sub read {
     }
 }
 sub write {
-
-    # for the non-OO interface
-
-    if (ref($_[0]) ne 'File::Edit::Portable'){
-        pwrite(@_);
-        return 1;
-    }
 
     my $self = shift;
     my $p = $self->_config(@_);
@@ -130,7 +118,7 @@ sub splice {
         croak "splice() requires insert => [aref] param";
     }
 
-    my @contents = $self->read(file => $file);
+    my @contents = $self->read($file);
 
     if (defined $line){
         splice @contents, $line, 0, @$insert;
@@ -180,7 +168,7 @@ sub dir {
     return @files if $self->{list};
 
     for my $file (@files){
-        my @contents = $self->read(file => $file);
+        my @contents = $self->read($file);
 
         $self->write(
                     file => $file, 
@@ -265,71 +253,6 @@ sub platform_recsep {
       or croak "platform_recsep() can't close temp file $file after run: $!";
 
     return $self->{platform_recsep};
-}
-sub pread {
-    my ($file, $testing) = @_; 
-
-    my $rw = File::Edit::Portable->new;
-
-    if (! $file){ 
-        croak "pread() requires a file name sent in!";
-    }
-
-    $rw->recsep($file);
-
-    if (! wantarray){
-        my $handle = $rw->_handle($file);
-        return $handle;
-    }
-    else {
-
-        my $fh = $rw->_open($file);
-        my @contents = <$fh>;
-        
-        close $fh or croak "read() can't close file $file!: $!";
-
-        if (! $testing){
-            for (@contents){
-                s/\R//;
-            }
-        }
-        return @contents;
-    }
-}
-sub pwrite {
-
-    my ($file, $contents, $copy, $recsep) = @_;
-
-    my $rw = File::Edit::Portable->new;
-
-    if (! $file){
-        croak "write() requires a file to be passed in!";
-    }
-
-    if (! $contents){
-        croak "write() requires 'contents' param sent in";
-    }
-
-    $rw->recsep($file);
-
-    $file = $copy if $copy;
-
-    my $wfh = $rw->_open($file, 'w');
-
-    for (@$contents){
-        s/\R//;
-
-        if ($recsep){
-            print $wfh $_ . $recsep;
-        }
-       else {
-            print $wfh $_ . $rw->{recsep};
-        }
-    }
-
-    close $wfh or croak "write() can't close file $file: $!";
-
-    return 1;
 }
 sub _config {
 
@@ -449,9 +372,9 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
     # read a file, replacing original file's line endings with
     # that of the local platform's default
 
-    my $fh = $rw->read(file => 'file.txt');
+    my $fh = $rw->read('file.txt');
     # or
-    my @contents = $rw->read(file => 'file.txt');
+    my @contents = $rw->read('file.txt');
 
     # write out a file using original file's record separator
 
@@ -474,20 +397,6 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
     $rw->splice(file => $file, find => 'term', insert => \@contents);
     
-There's also a minimal non-OO interface...
-
-    use File::Edit::Portable qw(read write);
-
-    my $fh = read('file.txt');
-
-    # and/or
-
-    my @contents = read('file.txt');
-
-    # then
-
-    write('file.txt', \@contents);
-
 
 =head1 DESCRIPTION
 
@@ -497,16 +406,6 @@ This module will read in a file, keep track of the file's current record separat
 
 Uses are for dynamically reading/writing files while on one Operating System, but you don't know whether the record separators are platform-standard. Shared storage between multpile platforms are a good use case. This module affords you the ability to not have to check each file, and is very useful in looping over a directory where various files may have been written by different platforms.
 
-=head1 EXPORT
-
-None by default. See L<EXPORT_OK>
-
-=head1 EXPORT_OK
-
-If you desire using the non-OO functionality, the following functions are exported on demand.
-
-C<read()> and C<write()>. If there are namespace collisions with those two functions, C<pread()> and C<pwrite()> are available as well.
-
 =head1 METHODS
 
 =head2 C<new>
@@ -515,7 +414,7 @@ Returns a new C<File::Edit::Portable> object.
 
 =head2 C<read>
 
-Parameters: C<file =E<gt> 'filename'>
+Parameters: C<'filename'>
 
 In scalar context, will return a read-only file handle to a copy of the file that has had its line endings replaced with those of the local OS platform's record separator.
 
@@ -588,22 +487,6 @@ Returns a string of the hex representation of the line endings (record separator
 =head2 C<platform_recsep>
 
 Returns the string representation of the current platform's (OS) record separator. Takes no parameters.
-
-=head1 FUNCTIONS
-
-=head2 C<read('file.txt')>
-
-C<pread()> can alternately be imported in the event of namespace collisions.
-
-In scalar context, will return a read-only file handle. In list context, returns an array with each element being a line in the file, with the endings stripped off.
-
-=head2 C<write('file.txt', \@contents, 'copy.txt', "\r\n")>
-
-C<pwrite()> can alternately be imported in the event of namespace collisions.
-
-Writes back out the file (or alternately a new file (copy.txt), using the original file's line endings, or optionally a custom record separator as specified by the last parameter. Note the record separator MUST be sent in within double-quotes.
-
-If you want to send in a custom record separator but not use a copy file, just set the third parameter (copy.txt) to C<undef> within the call.
 
 
 =head1 AUTHOR

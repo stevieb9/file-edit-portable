@@ -52,7 +52,7 @@ my $rw = File::Edit::Portable->new;
 
     for (@files){
 
-        my @contents = $rw->read(file => $_);
+        my @contents = $rw->read($_);
 
         if ($contents[0] =~ /(\R)/){
             is($rw->recsep($_), '\0d', 
@@ -76,7 +76,7 @@ my $rw = File::Edit::Portable->new;
 
     for (@files){
 
-        my @contents = $rw->read(file => $_);
+        my @contents = $rw->read($_);
 
         if ($contents[0] =~ /(\R)/){
             is($rw->recsep($_), '\0d', 

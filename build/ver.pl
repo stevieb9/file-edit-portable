@@ -14,7 +14,7 @@ print "\nneed a version number as arg\n" if ! $ver;
 
 my $des = Devel::Examine::Subs->new(
     file => 'lib/File/Edit',
-    extensions => ['pm'],
+    extensions => ['*.pm'],
 );
 
 my $cref = sub { $_[0] =~ s/(our \$VERSION =).*/$1 '$ver';/; };

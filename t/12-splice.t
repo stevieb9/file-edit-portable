@@ -30,7 +30,7 @@ my @insert = <DATA>;
     is($ret[0], 'testing', "splice() at line 0 does the right thing");
     is(@ret, 7, "splice() retains the correct number of lines with line param");
 
-    my @new = $rw->read(file => $copy);
+    my @new = $rw->read($copy);
 
     is($new[0], 'testing', "splice() at line 0 writes the file correctly");
     is(@new, @ret, "splice() writes the correct number of lines in the file");
@@ -47,7 +47,7 @@ my @insert = <DATA>;
     is($ret[4], 'testing', "splice() at line 4 does the right thing");
     is(@ret, 7, "splice() retains the correct number of lines with line param");
 
-    my @new = $rw->read(file => $copy);
+    my @new = $rw->read($copy);
 
     is($new[4], 'testing', "splice() at line 4 writes the file correctly");
     is(@new, @ret, "splice() writes the correct number of lines in the file");
@@ -64,7 +64,7 @@ my @insert = <DATA>;
     is($ret[1], 'testing', "splice() with find works");
     is(@ret, 7, "splice() retains the correct number of lines with line param");
 
-    my @new = $rw->read(file => $copy);
+    my @new = $rw->read($copy);
 
     is($new[1], 'testing', "splice() with find writes the file correctly");
     is(@new, @ret, "splice() with find writes the file properly");
@@ -80,7 +80,7 @@ my @insert = <DATA>;
     is($ret[4], 'testing', "splice() with find works");
     is(@ret, 7, "splice() retains the correct number of lines with line param");
 
-    my @new = $rw->read(file => $copy);
+    my @new = $rw->read($copy);
 
     is($new[4], 'testing', "splice() with find writes the file correctly");
     is(@new, @ret, "splice() with find writes the file properly");

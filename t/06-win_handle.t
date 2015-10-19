@@ -17,7 +17,7 @@ else {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
     my $rw = File::Edit::Portable->new;
 
-    my $fh = $rw->read(file => 't/unix.txt');
+    my $fh = $rw->read('t/unix.txt');
 
     for (<$fh>){
         /(\R)/;

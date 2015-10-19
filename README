@@ -11,9 +11,9 @@ SYNOPSIS
         # read a file, replacing original file's line endings with
         # that of the local platform's default
     
-        my $fh = $rw->read(file => 'file.txt');
+        my $fh = $rw->read('file.txt');
         # or
-        my @contents = $rw->read(file => 'file.txt');
+        my @contents = $rw->read('file.txt');
     
         # write out a file using original file's record separator
     
@@ -36,20 +36,6 @@ SYNOPSIS
     
         $rw->splice(file => $file, find => 'term', insert => \@contents);
         
-
-    There's also a minimal non-OO interface...
-
-        use File::Edit::Portable qw(read write);
-    
-        my $fh = read('file.txt');
-    
-        # and/or
-    
-        my @contents = read('file.txt');
-    
-        # then
-    
-        write('file.txt', \@contents);
 
 DESCRIPTION
 
@@ -74,18 +60,6 @@ DESCRIPTION
     file, and is very useful in looping over a directory where various
     files may have been written by different platforms.
 
-EXPORT
-
-    None by default. See EXPORT_OK
-
-EXPORT_OK
-
-    If you desire using the non-OO functionality, the following functions
-    are exported on demand.
-
-    read() and write(). If there are namespace collisions with those two
-    functions, pread() and pwrite() are available as well.
-
 METHODS
 
  new
@@ -94,7 +68,7 @@ METHODS
 
  read
 
-    Parameters: file => 'filename'
+    Parameters: 'filename'
 
     In scalar context, will return a read-only file handle to a copy of the
     file that has had its line endings replaced with those of the local OS
@@ -197,30 +171,6 @@ METHODS
 
     Returns the string representation of the current platform's (OS) record
     separator. Takes no parameters.
-
-FUNCTIONS
-
- read('file.txt')
-
-    pread() can alternately be imported in the event of namespace
-    collisions.
-
-    In scalar context, will return a read-only file handle. In list
-    context, returns an array with each element being a line in the file,
-    with the endings stripped off.
-
- write('file.txt', \@contents, 'copy.txt', "\r\n")
-
-    pwrite() can alternately be imported in the event of namespace
-    collisions.
-
-    Writes back out the file (or alternately a new file (copy.txt), using
-    the original file's line endings, or optionally a custom record
-    separator as specified by the last parameter. Note the record separator
-    MUST be sent in within double-quotes.
-
-    If you want to send in a custom record separator but not use a copy
-    file, just set the third parameter (copy.txt) to undef within the call.
 
 AUTHOR
 

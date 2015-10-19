@@ -7,20 +7,20 @@ use Data::Dumper;
 use File::Copy;
 use Test::More;
 
-use Test::More tests => 33;
+use Test::More tests => 31;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
 }
 
-use File::Edit::Portable qw(read write);
+use File::Edit::Portable;
 
 my $copy = 't/test.txt';
 
 my $rw = File::Edit::Portable->new;
 
 {
-    my @file = $rw->read(testing => 1, file => 't/unix.txt');
+    my @file = $rw->read('t/unix.txt', 1);
 
     for (@file){
         if (/(\R)/){
@@ -29,7 +29,7 @@ my $rw = File::Edit::Portable->new;
     }
 }
 {
-    my @file = $rw->read(testing => 1, file => 't/win.txt');
+    my @file = $rw->read('t/win.txt', 1);
 
     for (@file){
         if (/(\R)/){
@@ -43,7 +43,7 @@ my $rw = File::Edit::Portable->new;
     copy $file, $copy;
     $file = $copy;
 
-    my @file = $rw->read(file => $file);
+    my @file = $rw->read($file);
 
     for (@file){
         /(\R)/;
@@ -64,7 +64,7 @@ my $rw = File::Edit::Portable->new;
     copy $file, $copy;
     $file = $copy;
 
-    my @file = $rw->read(file => $file);
+    my @file = $rw->read($file);
 
     for (@file){
         /(\R)/;
@@ -78,15 +78,4 @@ my $rw = File::Edit::Portable->new;
     eval { unlink $copy or die $!; };
     ok (! $@, "unlinked test file" );
 
-}
-{
-    my $file = 't/unix.txt';
-
-    my $fh = read($file);
-
-    is (ref($fh), 'GLOB', "read() function returns a handle in scalar context");
-
-    my @contents = read($file);
-
-    is (ref(\@contents), 'ARRAY', "read() function returns an array in list context");
 }

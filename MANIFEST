@@ -1,5 +1,3 @@
-build/brew_build.pl
-build/test.pl
 Changes
 ignore.txt
 lib/File/Edit/Portable.pm
@@ -15,11 +13,10 @@ t/04-custom_recsep.t
 t/05-unix_handle.t
 t/06-win_handle.t
 t/07-chain_calls.t
-t/08-pread.t
-t/09-pwrite.t
 t/10-dir.t
 t/11-dir_depth.t
 t/12-splice.t
+t/13-multi_file_recsep.t
 t/manifest.t
 t/orig/unix.txt
 t/pod-coverage.t
