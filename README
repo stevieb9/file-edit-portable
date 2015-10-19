@@ -66,9 +66,7 @@ METHODS
 
     Returns a new File::Edit::Portable object.
 
- read
-
-    Parameters: 'filename'
+ read('filename')
 
     In scalar context, will return a read-only file handle to a copy of the
     file that has had its line endings replaced with those of the local OS
@@ -167,10 +165,11 @@ METHODS
     Windows line endings (CRLF). If an empty file is being checked, we'll
     return the local platform's record separator.
 
- platform_recsep
+ platform_recsep('hex')
 
-    Returns the string representation of the current platform's (OS) record
-    separator. Takes no parameters.
+    Returns the the current platform's (OS) record separator. If the
+    optional string value "hex" is sent in, we'll return the recsep in hex
+    format. Otherwise, we'll return it in as-is string format.
 
 AUTHOR
 

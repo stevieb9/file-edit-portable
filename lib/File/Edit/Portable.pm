@@ -224,6 +224,7 @@ sub recsep {
 sub platform_recsep {
 
     my $self = shift;
+    my $hex = shift if @_;
 
     my $file = $self->_temp_file;
 
@@ -252,7 +253,14 @@ sub platform_recsep {
     close $fh
       or croak "platform_recsep() can't close temp file $file after run: $!";
 
-    return $self->{platform_recsep};
+    if ($hex){
+        my $recsep = unpack "H*", $self->{platform_recsep};
+        $recsep =~ s/0/\\0/g;
+        return $recsep;
+    }
+    else {
+        return $self->{platform_recsep};
+    }
 }
 sub _config {
 
@@ -482,9 +490,9 @@ Default is disabled.
 
 Returns a string of the hex representation of the line endings (record separators) in 'file'. For example, "\0d\0a" will be returned for Windows line endings (CRLF). If an empty file is being checked, we'll return the local platform's record separator.
 
-=head2 C<platform_recsep>
+=head2 C<platform_recsep('hex')>
 
-Returns the string representation of the current platform's (OS) record separator. Takes no parameters.
+Returns the the current platform's (OS) record separator. If the optional string value "hex" is sent in, we'll return the recsep in hex format. Otherwise, we'll return it in as-is string format.
 
 
 =head1 AUTHOR
