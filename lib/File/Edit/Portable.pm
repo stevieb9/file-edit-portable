@@ -412,9 +412,7 @@ Uses are for dynamically reading/writing files while on one Operating System, bu
 
 Returns a new C<File::Edit::Portable> object.
 
-=head2 C<read>
-
-Parameters: C<'filename'>
+=head2 C<read('filename')>
 
 In scalar context, will return a read-only file handle to a copy of the file that has had its line endings replaced with those of the local OS platform's record separator.
 
