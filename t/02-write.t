@@ -7,7 +7,7 @@ use Data::Dumper;
 use File::Copy;
 use Test::More;
 
-use Test::More tests => 20;
+use Test::More tests => 26;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
@@ -77,3 +77,25 @@ my $rw = File::Edit::Portable->new;
 
     ok (! $@, "unlinked copy successfully");
 }
+{
+
+    my $file = 't/unix.txt';
+    my $copy = 't/write_fh.txt';
+
+    my $fh = $rw->read($file);
+    my @read_contents = $rw->read($file);
+
+    $rw->write(copy => $copy, contents => $fh);
+
+    my @write_contents = $rw->read($copy);
+
+    my $i = 0;
+    for (@read_contents){
+        chomp;
+        is($write_contents[$i], $_, "written line is ok when write() takes a file handle as contents");
+        $i++;
+    }
+
+    eval { unlink $copy or die "can't unlink copy $copy"; };
+    is ($@, '', "unlinked $copy ok");
+} 

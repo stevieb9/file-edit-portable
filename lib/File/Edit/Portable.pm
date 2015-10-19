@@ -86,6 +86,12 @@ sub write {
 
     my $wfh = $self->_open($file, 'w');
 
+    if (ref($contents) eq 'GLOB'){
+        my @temp = <$contents>;
+        close $contents;
+        $contents = \@temp;
+    }
+
     for (@$contents){
         s/\R//g;
 
@@ -440,7 +446,7 @@ C<file =E<gt> 'file'>: Not needed if you've used C<read()> to open the file.
 
 C<copy =E<gt> 'file2'>: Set this if you want to write to an alternate (new) file, rather than the original.
 
-C<contents =E<gt> \@contents>: Mandatory, should contain a reference to the array that was returned by C<read()>.
+C<contents =E<gt> \@contents>: Mandatory, should contain a reference to the array that was returned by C<read()>, but the value can also be a file handle.
 
 C<recsep =E<gt> "\r\n">: Optional, a double-quoted string of any characters you want to write as the line ending (record separator). This value will override what was found in the C<read()> call. Common ones are C<"\r\n"> for Windows, C<"\n"> for Unix and C<"\r"> for Mac. 
 

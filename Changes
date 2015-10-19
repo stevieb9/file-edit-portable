@@ -1,5 +1,8 @@
 Revision history for File-Edit-Portable
 
+1.07    xxx
+        - write() now accepts a file handle as a value to 'contents' param
+
 1.06    20151019
         - removed non-OO interface, it started causing issues
         - added extra layer to recsep internally... it fixes a bug where
