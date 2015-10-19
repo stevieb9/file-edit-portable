@@ -86,6 +86,8 @@ sub write {
 
     my $wfh = $self->_open($file, 'w');
 
+    # is contents a fh?
+
     if (ref($contents) eq 'GLOB'){
         my @temp = <$contents>;
         close $contents;
@@ -93,7 +95,7 @@ sub write {
     }
 
     for (@$contents){
-        s/\R//g;
+        s/([\n\x{0B}\f\r\x{85}]{1,}|{utf8}2028-2029)//g;
 
         if ($recsep){
             print $wfh $_ . $recsep;
