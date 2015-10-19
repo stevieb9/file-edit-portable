@@ -1,4 +1,4 @@
-use 5.010;
+use 5.006;
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
@@ -20,7 +20,7 @@ WriteMakefile(
     ABSTRACT_FROM    => 'lib/File/Edit/Portable.pm',
     LICENSE          => 'perl_5',
     PL_FILES         => {},
-    MIN_PERL_VERSION => 5.010,
+    MIN_PERL_VERSION => 5.006,
     CONFIGURE_REQUIRES => {
         'ExtUtils::MakeMaker' => 0,
     },
