@@ -3,7 +3,7 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '1.05_01';
+our $VERSION = '1.06';
 
 use Carp;
 use Exporter;
