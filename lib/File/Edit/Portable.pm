@@ -193,17 +193,22 @@ sub recsep {
     my $file = shift;
     my $hex = shift if @_;
 
-    my $fh = $self->_open($file);
+    my $fh;
+    my @contents;
 
-    binmode $fh, ':raw';
+    eval {
+        $fh = $self->_open($file);
 
-    croak "recsep() couldn't acquire file handle" if ! $fh;
+        binmode $fh, ':raw';
 
-    my @contents = <$fh>;
+        croak "recsep() couldn't acquire file handle" if $@;
+
+        @contents = <$fh>;
+    };
 
     my $recsep;
 
-    if (! $contents[0]){
+    if ($@ || ! $contents[0]){
 
         # we've got an empty file...
         # we'll set recsep to the local platform's
@@ -217,7 +222,7 @@ sub recsep {
             return $recsep;
         }
         else {
-            return $recsep;
+            return $self->{recsep};
         }
     }
 
@@ -235,7 +240,7 @@ sub recsep {
         return $recsep;
     }
     else {
-        return $recsep;
+        return $self->{recsep};
     }
 }
 sub platform_recsep {
@@ -340,11 +345,11 @@ sub _open {
 
     if ($mode =~ /^w/){
         open $fh, '>', $file
-          or croak "can't open file $file for writing!: $!";
+          or croak "_open() can't open file $file for writing!: $!";
     }
     else {
         open $fh, '<', $file
-          or croak "can't open file $file for reading!: $!";
+          or croak "_open() can't open file $file for reading!: $!";
     }
 
     binmode $fh, ':raw';
