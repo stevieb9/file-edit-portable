@@ -1,7 +1,13 @@
 Revision history for File-Edit-Portable
 
-1.07    xxx
+1.07    20151022
+        - we're now perl v5.6 compliant due to replacing \R with full string
+          regex
+        - fixed issue when trying to write to a non-existent file
         - write() now accepts a file handle as a value to 'contents' param
+        - recsep() and platform_recsep() now both accept an optional string param
+          'hex', which will return the hex representation of the recsep. If not
+          supplied, will return the string representation
 
 1.06    20151019
         - removed non-OO interface, it started causing issues
