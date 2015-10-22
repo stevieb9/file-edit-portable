@@ -124,6 +124,10 @@ METHODS
     is put into qr, so single quotes are recommended, and all regex
     patterns are honoured.
 
+    limit => Integer: Optional: When splicing with the 'find' param, set
+    this to the number of finds to insert after. Default is stop after the
+    first find. Set to 0 will insert after all finds.
+
     NOTE: Although both are optional, at least one of line or find must be
     sent in.
 
@@ -159,12 +163,14 @@ METHODS
 
     Default is disabled.
 
- recsep('file')
+ recsep('file', 'hex')
 
-    Returns a string of the hex representation of the line endings (record
-    separators) in 'file'. For example, "\0d\0a" will be returned for
-    Windows line endings (CRLF). If an empty file is being checked, we'll
-    return the local platform's record separator.
+    Returns the record separator found within the file. If the file is
+    empty, we'll return the local platform's default record separator.
+
+    If the optional string parameter 'hex' is sent in, we'll return the
+    record separator in hex format. Otherwise, by default, it's returned in
+    string form.
 
  platform_recsep('hex')
 

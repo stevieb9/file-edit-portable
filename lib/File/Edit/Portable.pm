@@ -121,6 +121,7 @@ sub splice {
     my $insert = $self->{insert};
     my $find = $self->{find};
     my $line = $self->{line};
+    my $limit = defined $self->{limit} ? $self->{limit} : 1;
 
     if (! $insert){
         croak "splice() requires insert => [aref] param";
@@ -136,11 +137,16 @@ sub splice {
         $find = qr{$find};
 
         my $i = 0;
+        my $inserts = 0;
+
         for (@contents){
             $i++;
             if (/$find/){
+                $inserts++;
                 splice @contents, $i, 0, @$insert;
-                last;
+                if ($limit){
+                    last if $inserts == $limit;
+                }
             }
         }
     }
@@ -292,15 +298,15 @@ sub _config {
     $self->{custom_recsep} = $p{recsep};
     delete $p{recsep};
 
-    delete $self->{testing};
-    delete $self->{copy};
-    delete $self->{types};
-    delete $self->{list};
-    delete $self->{maxdepth};
-    delete $self->{insert};
-    delete $self->{line};
-    delete $self->{find};
+    my @params = qw(
+                    testing copy types list maxdepth
+                    insert line find limit
+                   );
 
+    for (@params){
+        delete $self->{$_};
+    }
+    
     for (keys %p){
         $self->{$_} = $p{$_};
     }
@@ -481,6 +487,8 @@ C<copy =E<gt> 'newfile.name'>: Optional - we'll read from C<file>, but we'll wri
 C<line =E<gt> 23>: Optional - Merge the contents on the line following the one specified here.
 
 C<find =E<gt> 'search term'>: Optional - Merge the contents into the file on the line following the first find of the search term. The search term is put into C<qr>, so single quotes are recommended, and all regex patterns are honoured.
+
+C<limit =E<gt> Integer>: Optional: When splicing with the 'find' param, set this to the number of finds to insert after. Default is stop after the first find. Set to 0 will insert after all finds.
 
 NOTE: Although both are optional, at least one of C<line> or C<find> must be sent in.
 
