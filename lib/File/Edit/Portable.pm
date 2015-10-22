@@ -1,5 +1,5 @@
 package File::Edit::Portable;
-use 5.010;
+use 5.006;
 use strict;
 use warnings;
 
@@ -54,7 +54,7 @@ sub read {
 
         if (! $testing){
             for (@contents){
-                s/\R//;
+                s/[\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2}//;
             }
         }
         return @contents;
@@ -95,7 +95,7 @@ sub write {
     }
 
     for (@$contents){
-        s/\R//g;
+        s/[\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2}//g;
 
         if ($recsep){
             print $wfh $_ . $recsep;
@@ -228,7 +228,7 @@ sub recsep {
 
     seek $fh, 0, 0;
 
-    if (<$fh> =~ /(\R)/){
+    if (<$fh> =~ /([\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2})/){
         $self->{recsep} = $1;
     }
 
@@ -268,7 +268,7 @@ sub platform_recsep {
 
     my $fh = $self->_open($file);
 
-    if (<$fh> =~ /(\R)/){
+    if (<$fh> =~ /([\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2})/){
         $self->{platform_recsep} = $1;
     }
 
@@ -324,7 +324,7 @@ sub _handle {
     $self->platform_recsep;
 
     for (<$fh>){
-        s/\R/$self->{platform_recsep}/;
+        s/[\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2}/$self->{platform_recsep}/;
         print $temp_wfh $_;
     }
 
