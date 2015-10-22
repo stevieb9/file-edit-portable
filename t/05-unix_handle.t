@@ -20,7 +20,7 @@ else {
     my $fh = $rw->read('t/win.txt');
 
     for (<$fh>){
-        /(\R)/;
+        /([\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2})/;
 
         my $rs = unpack "H*", $1;
 

@@ -32,7 +32,7 @@ my $rw = File::Edit::Portable->new;
     my @file = $rw->read('t/unix.txt');
 
     for (@file){
-        /(\R)/;
+        /([\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2})/;
         is ($1, undef, "no EOLs present after read");
     }
 
@@ -57,7 +57,7 @@ my $rw = File::Edit::Portable->new;
     my @file = $rw->read('t/win.txt');
 
     for (@file){
-        /(\R)/;
+        /([\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2})/;
         is ($1, undef, "no EOLs present after read");
     }
 

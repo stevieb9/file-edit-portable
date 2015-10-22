@@ -23,7 +23,7 @@ my $rw = File::Edit::Portable->new;
     my @file = $rw->read('t/unix.txt', 1);
 
     for (@file){
-        if (/(\R)/){
+        if (/([\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2})/){
             ok ($1 =~ /(?<!\r)\n/, "unix line endings have remained in test");
         }
     }
@@ -32,7 +32,7 @@ my $rw = File::Edit::Portable->new;
     my @file = $rw->read('t/win.txt', 1);
 
     for (@file){
-        if (/(\R)/){
+        if (/([\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2})/){
             ok ($1 =~ /\r\n/, "win line endings have remained in test");
         }
     }
@@ -46,7 +46,7 @@ my $rw = File::Edit::Portable->new;
     my @file = $rw->read($file);
 
     for (@file){
-        /(\R)/;
+        /([\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2})/;
         is ($1, undef, "out of testing, EOR is removed");
     }
 
@@ -67,7 +67,7 @@ my $rw = File::Edit::Portable->new;
     my @file = $rw->read($file);
 
     for (@file){
-        /(\R)/;
+        /([\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2})/;
         is ($1, undef, "out of testing, EOR is removed");
     }
 

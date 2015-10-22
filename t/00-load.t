@@ -25,7 +25,7 @@ if ($^O eq 'MSWin32' || $^O eq 'MacOS'){
         close $fh or die $!;
 
         for (@f){
-            s/\R/\r\n/g;
+            s/[\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2}/\r\n/g;
         }
 
         close $fh;
@@ -52,7 +52,7 @@ if ($^O eq 'MSWin32' || $^O eq 'MacOS'){
         close $fh or die $!;
 
         for (@f){
-            s/\R/\n/g;
+            s/[\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2}/\n/g;
         }
 
         close $fh;
