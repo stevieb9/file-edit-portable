@@ -44,7 +44,7 @@ my $rw = File::Edit::Portable->new;
 
     # print "*** " . unpack("H*", $rw->{eor}) . "\n";
     
-    my $eor = $rw->recsep($copy);
+    my $eor = $rw->recsep($copy, 'hex');
 
     is ($eor, '\0a', "unix line endings were replaced properly" );
     
@@ -69,7 +69,7 @@ my $rw = File::Edit::Portable->new;
 
     # print "*** " . unpack("H*", $rw->{eor}) . "\n";
 
-    my $eor = $rw->recsep($copy);
+    my $eor = $rw->recsep($copy, 'hex');
 
     is ($eor, '\0d\0a', "win line endings were replaced properly" );
 

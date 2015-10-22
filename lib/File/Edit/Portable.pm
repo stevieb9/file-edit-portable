@@ -1,5 +1,5 @@
 package File::Edit::Portable;
-use 5.006;
+use 5.010;
 use strict;
 use warnings;
 
@@ -95,7 +95,7 @@ sub write {
     }
 
     for (@$contents){
-        s/([\n\x{0B}\f\r\x{85}]{1,}|{utf8}2028-2029)//g;
+        s/\R//g;
 
         if ($recsep){
             print $wfh $_ . $recsep;
@@ -191,6 +191,7 @@ sub recsep {
 
     my $self = shift;
     my $file = shift;
+    my $hex = shift if @_;
 
     my $fh = $self->_open($file);
 
@@ -209,10 +210,15 @@ sub recsep {
 
         $recsep = $self->platform_recsep;
         $self->{recsep} = $recsep;
-        $recsep = unpack "H*", $recsep;
-        $recsep =~ s/0/\\0/g;
 
-        return $recsep;
+        if ($hex){
+            $recsep = unpack "H*", $recsep;
+            $recsep =~ s/0/\\0/g;
+            return $recsep;
+        }
+        else {
+            return $recsep;
+        }
     }
 
     seek $fh, 0, 0;
@@ -222,12 +228,15 @@ sub recsep {
     }
 
     close $fh or croak "recsep() can't close file $file!: $!";
-    
-    $recsep = unpack "H*", $self->{recsep};
-
-    $recsep =~ s/0/\\0/g;
-
-    return $recsep;
+   
+    if ($hex){ 
+        $recsep = unpack "H*", $self->{recsep};
+        $recsep =~ s/0/\\0/g;
+        return $recsep;
+    }
+    else {
+        return $recsep;
+    }
 }
 sub platform_recsep {
 
@@ -494,9 +503,11 @@ If set, we'll return an array of the names of the files found, but won't take an
 Default is disabled.
 
 
-=head2 C<recsep('file')>
+=head2 C<recsep('file', 'hex')>
 
-Returns a string of the hex representation of the line endings (record separators) in 'file'. For example, "\0d\0a" will be returned for Windows line endings (CRLF). If an empty file is being checked, we'll return the local platform's record separator.
+Returns the record separator found within the file. If the file is empty, we'll return the local platform's default record separator.
+
+If the optional string parameter 'hex' is sent in, we'll return the record separator in hex format. Otherwise, by default, it's returned in string form.
 
 =head2 C<platform_recsep('hex')>
 

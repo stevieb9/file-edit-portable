@@ -27,7 +27,7 @@ my $nix_cp = 't/unix.bak';
     my @win = $rw->read($win);
     $rw->write(copy => $win_cp, contents => \@win);
 
-    my $recsep = $rw->recsep($win_cp);
+    my $recsep = $rw->recsep($win_cp, 'hex');
 
     is ($recsep, '\0d\0a', "with only one read(), recsep is written properly");
 }
@@ -39,7 +39,7 @@ my $nix_cp = 't/unix.bak';
 
     $rw->write(copy => $nix_cp, contents => \@nix);
 
-    my $recsep = $rw->recsep($nix_cp);
+    my $recsep = $rw->recsep($nix_cp, 'hex');
 
     is ($recsep, '\0a', "with only one read(), recsep is written properly");
 }

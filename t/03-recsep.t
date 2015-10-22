@@ -13,8 +13,8 @@ BEGIN {
 
 my $rw = File::Edit::Portable->new;
 
-my $one = $rw->recsep('t/win.txt');
+my $one = $rw->recsep('t/win.txt', 'hex');
 is ($one, '\0d\0a', "recsep is correct for win");
 
-my $two = $rw->recsep('t/unix.txt');
+my $two = $rw->recsep('t/unix.txt', 'hex');
 is ($two, '\0a', "recsep is correct for nix");

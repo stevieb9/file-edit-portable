@@ -32,7 +32,7 @@ my $rw = File::Edit::Portable->new;
 
     # print "*** " . unpack("H*", $rw->{eor}) . "\n";
     
-    my $recsep = $rw->recsep($copy);
+    my $recsep = $rw->recsep($copy, 'hex');
 
     is ($recsep, '\0d\0a', "custom recsep takes precedence" );
     
@@ -57,7 +57,7 @@ my $rw = File::Edit::Portable->new;
 
     # print "*** " . unpack("H*", $rw->{eor}) . "\n";
 
-    my $recsep = $rw->recsep($copy);
+    my $recsep = $rw->recsep($copy, 'hex');
 
     is ($recsep, '\0a', "on windows file, custom recsep took precedence" );
 

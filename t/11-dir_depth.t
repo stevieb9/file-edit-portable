@@ -55,7 +55,7 @@ my $rw = File::Edit::Portable->new;
         my @contents = $rw->read($_);
 
         if ($contents[0] =~ /(\R)/){
-            is($rw->recsep($_), '\0d', 
+            is($rw->recsep($_, 'hex'), '\0d', 
                "dir() replaces with custom recsep on just specified files"
             );
 
@@ -79,7 +79,7 @@ my $rw = File::Edit::Portable->new;
         my @contents = $rw->read($_);
 
         if ($contents[0] =~ /(\R)/){
-            is($rw->recsep($_), '\0d', 
+            is($rw->recsep($_, 'hex'), '\0d', 
                "dir() replaces with custom recsep on just specified files"
             );
 

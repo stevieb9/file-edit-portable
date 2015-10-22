@@ -50,7 +50,7 @@ my $rw = File::Edit::Portable->new;
         is ($1, undef, "out of testing, EOR is removed");
     }
 
-    my $eor = $rw->recsep($file);
+    my $eor = $rw->recsep($file, 'hex');
 
     is ($eor, '\0a', "nix EOR was saved from the orig file");
 
@@ -71,7 +71,7 @@ my $rw = File::Edit::Portable->new;
         is ($1, undef, "out of testing, EOR is removed");
     }
 
-    my $eor = $rw->recsep($file);;
+    my $eor = $rw->recsep($file, 'hex');
 
     is ($eor, '\0d\0a', "win EOR was saved from the orig file");
 
