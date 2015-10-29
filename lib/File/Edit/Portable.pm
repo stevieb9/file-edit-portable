@@ -3,7 +3,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '1.08';
+our $VERSION = '1.09';
 
 use Carp;
 use Exporter;
@@ -83,30 +83,29 @@ sub write {
 
     my $wfh = $self->_open($file, 'w');
 
+    $recsep = defined $recsep ? $recsep : $self->{recsep};
+
     # is contents a fh?
 
     if (ref($contents) eq 'GLOB' || ref($contents) eq 'File::Temp'){
         seek $contents, 0, 0;
-        my @temp = <$contents>;
-        close $contents;
-        $contents = \@temp;
-    }
 
-    for (@$contents){
-        s/[\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2}//g;
-
-        if ($recsep){
+        while (<$contents>){
+            s/[\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2}//g;
             print $wfh $_ . $recsep;
         }
-        else {
-            print $wfh $_ . $self->{recsep};
+        close $contents;
+    }
+    else {
+        for (@$contents){
+            s/[\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2}//g;
+            print $wfh $_ . $recsep;
         }
     }
 
+    close $wfh;
     $self->{is_read} = 0;
     
-    close $wfh or croak "write() can't close file $file: $!";
-
     return 1;
 }
 sub splice {
@@ -203,7 +202,7 @@ sub recsep {
         $fh = $self->_open($file);
     };
 
-    croak "recsep() couldn't acquire file handle" if $@;
+    croak "recsep() couldn't acquire file handle for $file" if $@;
 
     my $recsep;
 
@@ -315,31 +314,40 @@ sub _handle {
 
     my $self = shift;
     my $file = shift;
+   
+    my $fh;
 
-    my $fh = $self->_open($file);
-    my $temp_wfh = File::Temp->new(UNLINK => 1);
-    binmode $temp_wfh, ':raw';
-    
-    my $temp_filename = $temp_wfh->filename;
+    if ($self->recsep($file, 'hex') ne $self->platform_recsep('hex')){ 
+        
+        $fh = $self->_open($file);
+        my $temp_wfh = $self->tempfile;
+        binmode $temp_wfh, ':raw';
 
-    # we'll check these in DESTROY to make sure we've
-    # cleaned up appropriately
+        my $temp_filename = $temp_wfh->filename;
 
-    push @{ $self->{temp_files} }, $temp_filename;
+        # we'll check these in DESTROY to make sure we've
+        # cleaned up appropriately
 
-    $self->platform_recsep;
+        push @{ $self->{temp_files} }, $temp_filename;
 
-    while (<$fh>){
-        s/[\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2}/$self->{platform_recsep}/;
-        print $temp_wfh $_;
+        my $platform_recsep = $self->platform_recsep;
+
+        while (<$fh>){
+            s/[\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2}/$platform_recsep/g;
+            print $temp_wfh $_;
+        }
+        
+        close $fh or die "can't close file $file: $!";
+        close $temp_wfh or die "can't close file $temp_filename: $!";
+
+        my $ret_fh = $self->_open($temp_filename);
+        
+        return $ret_fh;
     }
-
-    close $fh or die "can't close file $file: $!";
-    close $temp_wfh or die "can't close file $temp_filename: $!";
-
-    my $ret_fh = $self->_open($temp_filename);
-    
-    return $ret_fh;
+    else {
+        $fh = $self->_open($file);
+        return $fh;
+    }
 }
 sub _open {
 
@@ -405,18 +413,7 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
     use File::Edit::Portable;
     my $rw = File::Edit::Portable->new;
 
-    # read a file, replacing original file's line endings with
-    # that of the local platform's default
-
-    my $fh = $rw->read('file.txt');
-    # or
-    my @contents = $rw->read('file.txt');
-
-    # write out a file using original file's record separator
-
-    $rw->write(contents => \@contents);
-
-    # for large files, read/write without opening the entire file into memory
+    # edit file in a loop, and re-write it with its original line endings
 
     my $fh = $rw->read('file.txt');
     my $wfh = $rw->tempfile;
@@ -427,6 +424,19 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
     }
 
     $rw->write(contents => $wfh);
+
+    # read a file, replacing original file's line endings with
+    # that of the local platform's default
+
+    my $fh = $rw->read('file.txt');
+    
+    # get an array of the file's contents, with line endings stripped off
+
+    my @contents = $rw->read('file.txt');
+
+    # write out a file using original file's record separator
+
+    $rw->write(contents => \@contents);
 
     # replace original file's record separator with a new one
 
