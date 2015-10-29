@@ -19,6 +19,18 @@ SYNOPSIS
     
         $rw->write(contents => \@contents);
     
+        # for large files, read/write without opening the entire file into memory
+    
+        my $fh = $rw->read('file.txt');
+        my $wfh = $rw->tempfile;
+    
+        while (<$fh>){
+            ...
+            print $wfh $_;
+        }
+    
+        $rw->write(contents => $wfh);
+    
         # replace original file's record separator with a new one
     
         $rw->write(recsep => "\r\n", contents => \@contents);
@@ -177,6 +189,10 @@ METHODS
     Returns the the current platform's (OS) record separator. If the
     optional string value "hex" is sent in, we'll return the recsep in hex
     format. Otherwise, we'll return it in as-is string format.
+
+ tempfile
+
+    Returns a file handle in write mode to an empty temp file.
 
 AUTHOR
 

@@ -10,9 +10,6 @@ use Exporter;
 use File::Find::Rule;
 use File::Temp;
 
-our @ISA = qw(Exporter);
-our @EXPORT_OK = qw (read pread write pwrite);
-
 sub new {
     return bless {}, shift;
 }
@@ -41,14 +38,13 @@ sub read {
 
     $self->recsep($file);
 
-    my $fh = $self->_open($file);
+    my $fh = $self->_handle($file);
 
     if (! wantarray){
-        my $handle = $self->_handle($file);
-        return $handle;
+        return $fh;
     }
     else {
-
+    
         my @contents = <$fh>;
         close $fh or croak "read() can't close file $file!: $!";
 
@@ -89,6 +85,7 @@ sub write {
     # is contents a fh?
 
     if (ref($contents) eq 'GLOB' || ref($contents) eq 'File::Temp'){
+        seek $contents, 0, 0;
         my @temp = <$contents>;
         close $contents;
         $contents = \@temp;
@@ -423,6 +420,18 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
     $rw->write(contents => \@contents);
 
+    # for large files, read/write without opening the entire file into memory
+
+    my $fh = $rw->read('file.txt');
+    my $wfh = $rw->tempfile;
+
+    while (<$fh>){
+        ...
+        print $wfh $_;
+    }
+
+    $rw->write(contents => $wfh);
+
     # replace original file's record separator with a new one
 
     $rw->write(recsep => "\r\n", contents => \@contents);
@@ -532,6 +541,10 @@ If the optional string parameter 'hex' is sent in, we'll return the record separ
 =head2 C<platform_recsep('hex')>
 
 Returns the the current platform's (OS) record separator. If the optional string value "hex" is sent in, we'll return the recsep in hex format. Otherwise, we'll return it in as-is string format.
+
+=head2 C<tempfile>
+
+Returns a file handle in write mode to an empty temp file.
 
 
 =head1 AUTHOR

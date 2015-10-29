@@ -17,7 +17,7 @@ else {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
     my $rw = File::Edit::Portable->new;
 
-    my $fh = $rw->read('t/win.txt');
+    my $fh = $rw->read('t/unix.txt');
 
     for (<$fh>){
         /([\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2})/;

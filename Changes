@@ -3,6 +3,7 @@ Revision history for File-Edit-Portable
 1.08    xxx
         - splice() now takes a 'limit => int' param, limiting how many 'find's to
           insert after. Default is 1, set to 0 to insert after all
+        - added tempfile(), returns a writable handle to an empty file
 
 1.07    20151022
         - we're now perl v5.6 compliant due to replacing \R with full string
