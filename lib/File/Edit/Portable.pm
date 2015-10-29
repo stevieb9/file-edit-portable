@@ -8,7 +8,7 @@ our $VERSION = '1.08';
 use Carp;
 use Exporter;
 use File::Find::Rule;
-use File::Temp qw(tempfile);
+use File::Temp;
 
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw (read pread write pwrite);
@@ -88,7 +88,7 @@ sub write {
 
     # is contents a fh?
 
-    if (ref($contents) eq 'GLOB'){
+    if (ref($contents) eq 'GLOB' || ref($contents) eq 'File::Temp'){
         my @temp = <$contents>;
         close $contents;
         $contents = \@temp;
@@ -254,7 +254,7 @@ sub platform_recsep {
     my $self = shift;
     my $hex = shift if @_;
 
-    my $file = $self->_temp_file;
+    my $file = $self->_temp_filename;
 
     # this is for checking to see if we've cleaned up
     # in DESTROY
@@ -289,6 +289,13 @@ sub platform_recsep {
     else {
         return $self->{platform_recsep};
     }
+}
+sub tempfile {
+
+    my $self = shift;
+    
+    my $wfh = File::Temp->new(UNLINK => 1);
+    return $wfh;
 }
 sub _config {
 
@@ -362,7 +369,7 @@ sub _open {
 
     return $fh;
 }
-sub _temp_file {
+sub _temp_filename {
 
     my $self = shift;
     
@@ -371,7 +378,7 @@ sub _temp_file {
     my $file = $temp_fh->filename;
 
     close $temp_fh
-     or croak "_temp_file() can't close the $file temp file: $!";
+     or croak "_temp_filename() can't close the $file temp file: $!";
 
     return $file;
 }
