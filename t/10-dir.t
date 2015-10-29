@@ -61,10 +61,8 @@ my $rw = File::Edit::Portable->new;
 
     my @files = $rw->dir(dir => 't/a', recsep => "\r");
 
+
     for (@files){
-
-        my @contents = $rw->read($_);
-
         is($rw->recsep($_, 'hex'), '\0d', 
            "dir() - files modified to macos recsep");
     }
@@ -84,14 +82,12 @@ my $rw = File::Edit::Portable->new;
     my @files = $rw->dir(dir => 't/a', recsep => "\r\n");
 
     for (@files){
-
-        my @contents = $rw->read($_);
-
         is($rw->recsep($_, 'hex'), '\0d\0a',
            "dir() - test files were modified to win32 recsep");
     }
 
     @files = $rw->dir(dir => 't/a');
+
     for (@files){
         my $rec = $rw->recsep($_, 'hex');
         my $prec = unpack("H*", $rw->platform_recsep);

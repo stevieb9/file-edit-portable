@@ -8,6 +8,18 @@ SYNOPSIS
         use File::Edit::Portable;
         my $rw = File::Edit::Portable->new;
     
+        # modify a file efficiently while preserving original file's line endings
+    
+        my $fh = $rw->read('file.txt');
+        my $wfh = $rw->tempfile;
+    
+        while (<$fh>){
+            ...
+            print $wfh $_;
+        }
+        
+        $rw->write(contents => $wfh);
+    
         # read a file, replacing original file's line endings with
         # that of the local platform's default
     
@@ -18,18 +30,6 @@ SYNOPSIS
         # write out a file using original file's record separator
     
         $rw->write(contents => \@contents);
-    
-        # for large files, read/write without opening the entire file into memory
-    
-        my $fh = $rw->read('file.txt');
-        my $wfh = $rw->tempfile;
-    
-        while (<$fh>){
-            ...
-            print $wfh $_;
-        }
-    
-        $rw->write(contents => $wfh);
     
         # replace original file's record separator with a new one
     
@@ -92,10 +92,11 @@ METHODS
 
  write
 
-    Writes the data back to the original file, or alternately a copy of the
-    file. Returns 1 on success. If you inadvertantly append newlines to the
-    new elements of the contents array, we'll strip them off before
-    appending the real newlines.
+    Writes the data back to the original file, or alternately a new
+    separate file. Returns 1 on success. The file will be written with
+    either the original file's line endings found if you used read(), the
+    local platform's default line endings, or a custom line ending you send
+    in with the recsep parameter.
 
     Parameters:
 

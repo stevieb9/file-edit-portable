@@ -38,13 +38,14 @@ sub read {
 
     $self->recsep($file);
 
-    my $fh = $self->_handle($file);
+    my $fh;
 
     if (! wantarray){
+        $fh = $self->_handle($file);
         return $fh;
     }
     else {
-    
+        $fh = $self->_open($file); 
         my @contents = <$fh>;
         close $fh or croak "read() can't close file $file!: $!";
 
@@ -197,21 +198,16 @@ sub recsep {
     my $hex = shift if @_;
 
     my $fh;
-    my @contents;
 
     eval {
         $fh = $self->_open($file);
-
-        binmode $fh, ':raw';
-
-        croak "recsep() couldn't acquire file handle" if $@;
-
-        @contents = <$fh>;
     };
+
+    croak "recsep() couldn't acquire file handle" if $@;
 
     my $recsep;
 
-    if ($@ || ! $contents[0]){
+    if ($@ || ! <$fh>){
 
         # we've got an empty file...
         # we'll set recsep to the local platform's
@@ -333,7 +329,7 @@ sub _handle {
 
     $self->platform_recsep;
 
-    for (<$fh>){
+    while (<$fh>){
         s/[\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2}/$self->{platform_recsep}/;
         print $temp_wfh $_;
     }
