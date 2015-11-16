@@ -7,7 +7,7 @@ use Data::Dumper;
 use File::Copy;
 use Test::More;
 
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
@@ -39,9 +39,22 @@ my $nix_cp = 't/unix.bak';
 
     $rw->write(copy => $nix_cp, contents => \@nix);
 
-    my $recsep = $rw->recsep($nix_cp, 'hex');
+    my $nix_recsep = $rw->recsep($nix_cp, 'hex');
+    my $nix_internal_recsep = unpack("H*", $rw->{recsep}{$nix});
+    $nix_internal_recsep =~ s/0/\\0/g;
 
-    is ($recsep, '\0a', "with only one read(), recsep is written properly");
+    is ($nix_recsep, $nix_internal_recsep, 
+        "we keep track of different recseps with multiple open files (nix)"
+    );
+    
+    my $win_recsep = $rw->recsep($win_cp, 'hex');
+    my $win_internal_recsep = unpack("H*", $rw->{recsep}{$win});
+    $win_internal_recsep =~ s/0/\\0/g;
+   
+    is ($win_recsep, $win_internal_recsep, 
+        "we keep track of different recseps with multiple open files (win)"
+    );
+ 
 }
 
 for ($win_cp, $nix_cp){

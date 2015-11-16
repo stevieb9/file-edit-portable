@@ -1,5 +1,12 @@
 Revision history for File-Edit-Portable
 
+1.10    xxx
+        - recsep() now sets $self->{recsep}{$file} with the recsep, which allows
+          us to remember line endings for multiple concurrent open files
+
+1.09    20151029
+        - fixed regex bug that was breaking on \d]
+
 1.08    20151029
         - splice() now takes a 'limit => int' param, limiting how many 'find's to
           insert after. Default is 1, set to 0 to insert after all

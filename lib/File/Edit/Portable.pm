@@ -3,8 +3,9 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '1.09';
+our $VERSION = '1.10';
 
+use Data::Dumper;
 use Carp;
 use Exporter;
 use File::Find::Rule;
@@ -51,7 +52,7 @@ sub read {
 
         if (! $testing){
             for (@contents){
-                s/[\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2}//;
+                s/[\n\x{0B}\f\r\x{85}]{1,2}//;
             }
         }
         return @contents;
@@ -75,15 +76,15 @@ sub write {
         croak "write() requires 'contents' param sent in";
     }
 
-    $file = $copy if $copy;
-
     if (! $self->{is_read}){
         $self->recsep($file);
     }
+    
+    $recsep = defined $recsep ? $recsep : $self->{recsep}{$file};
+    
+    my $workfile = defined $copy ? $copy : $file;
 
-    my $wfh = $self->_open($file, 'w');
-
-    $recsep = defined $recsep ? $recsep : $self->{recsep};
+    my $wfh = $self->_open($workfile, 'w');
 
     # is contents a fh?
 
@@ -91,14 +92,14 @@ sub write {
         seek $contents, 0, 0;
 
         while (<$contents>){
-            s/[\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2}//g;
+            s/[\n\x{0B}\f\r\x{85}]{1,2}//g;
             print $wfh $_ . $recsep;
         }
         close $contents;
     }
     else {
         for (@$contents){
-            s/[\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2}//g;
+            s/[\n\x{0B}\f\r\x{85}]{1,2}//g;
             print $wfh $_ . $recsep;
         }
     }
@@ -212,7 +213,7 @@ sub recsep {
         # we'll set recsep to the local platform's
 
         $recsep = $self->platform_recsep;
-        $self->{recsep} = $recsep;
+        $self->{recsep}{$file} = $recsep;
 
         if ($hex){
             $recsep = unpack "H*", $recsep;
@@ -220,25 +221,25 @@ sub recsep {
             return $recsep;
         }
         else {
-            return $self->{recsep};
+            return $self->{recsep}{$file};
         }
     }
 
     seek $fh, 0, 0;
 
-    if (<$fh> =~ /([\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2})/){
-        $self->{recsep} = $1;
+    if (<$fh> =~ /([\n\x{0B}\f\r\x{85}]{1,2})/){
+        $self->{recsep}{$file} = $1;
     }
 
     close $fh or croak "recsep() can't close file $file!: $!";
    
     if ($hex){ 
-        $recsep = unpack "H*", $self->{recsep};
+        $recsep = unpack "H*", $self->{recsep}{$file};
         $recsep =~ s/0/\\0/g;
         return $recsep;
     }
     else {
-        return $self->{recsep};
+        return $self->{recsep}{$file};
     }
 }
 sub platform_recsep {
@@ -266,7 +267,7 @@ sub platform_recsep {
 
     my $fh = $self->_open($file);
 
-    if (<$fh> =~ /([\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2})/){
+    if (<$fh> =~ /([\n\x{0B}\f\r\x{85}]{1,2})/){
         $self->{platform_recsep} = $1;
     }
 
@@ -333,7 +334,7 @@ sub _handle {
         my $platform_recsep = $self->platform_recsep;
 
         while (<$fh>){
-            s/[\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2}/$platform_recsep/g;
+            s/[\n\x{0B}\f\r\x{85}]{1,2}/$platform_recsep/g;
             print $temp_wfh $_;
         }
         
@@ -404,7 +405,7 @@ __END__
 
 =head1 NAME
 
-File::Edit::Portable - Read and write files while keeping the original line-endings intact, no matter the platform.
+File::Edit::Portable - Dynamically read and write files while keeping the original line-endings intact, no matter the platform.
 
 =cut
 
@@ -482,7 +483,7 @@ In both cases, we save the line endings that were found in the original file (wh
 
 =head2 C<write>
 
-Writes the data back to the original file, or alternately a copy of the file. Returns 1 on success. If you inadvertantly append newlines to the new elements of the contents array, we'll strip them off before appending the real newlines.
+Writes the data back to the original file, or alternately a new file. Returns 1 on success.
 
 Parameters: 
 
@@ -490,7 +491,7 @@ C<file =E<gt> 'file'>: Not needed if you've used C<read()> to open the file.
 
 C<copy =E<gt> 'file2'>: Set this if you want to write to an alternate (new) file, rather than the original.
 
-C<contents =E<gt> \@contents>: Mandatory, should contain a reference to the array that was returned by C<read()>, but the value can also be a file handle.
+C<contents =E<gt> $fh (or \@contents)>: Mandatory. The parameter can either be a file handle or an array reference (that contains the lines you want written, one per element). Only use the aref option if your file is small for performance reasons. 
 
 C<recsep =E<gt> "\r\n">: Optional, a double-quoted string of any characters you want to write as the line ending (record separator). This value will override what was found in the C<read()> call. Common ones are C<"\r\n"> for Windows, C<"\n"> for Unix and C<"\r"> for Mac. 
 
