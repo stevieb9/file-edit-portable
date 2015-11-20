@@ -1,7 +1,7 @@
 NAME
 
-    File::Edit::Portable - Dynamically read and write files while keeping
-    the original line-endings intact, no matter the platform.
+    File::Edit::Portable - Read and write files while keeping the original
+    line-endings intact, no matter the platform.
 
 SYNOPSIS
 
@@ -94,8 +94,10 @@ METHODS
 
  write
 
-    Writes the data back to the original file, or alternately a new file.
-    Returns 1 on success.
+    Writes the data back to the original file, or alternately a copy of the
+    file. Returns 1 on success. If you inadvertantly append newlines to the
+    new elements of the contents array, we'll strip them off before
+    appending the real newlines.
 
     Parameters:
 
@@ -104,10 +106,9 @@ METHODS
     copy => 'file2': Set this if you want to write to an alternate (new)
     file, rather than the original.
 
-    contents => $fh (or \@contents): Mandatory. The parameter can either be
-    a file handle or an array reference (that contains the lines you want
-    written, one per element). Only use the aref option if your file is
-    small for performance reasons.
+    contents => \@contents: Mandatory, should contain a reference to the
+    array that was returned by read(), but the value can also be a file
+    handle.
 
     recsep => "\r\n": Optional, a double-quoted string of any characters
     you want to write as the line ending (record separator). This value
