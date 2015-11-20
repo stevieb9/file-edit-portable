@@ -76,11 +76,11 @@ sub write {
     }
 
     $file = $copy if $copy;
-
+    
     if (! $self->{is_read}){
         $self->recsep($file);
     }
-
+    
     my $wfh = $self->_open($file, 'w');
 
     $recsep = defined $recsep ? $recsep : $self->{recsep};
@@ -201,8 +201,6 @@ sub recsep {
     eval {
         $fh = $self->_open($file);
     };
-
-    croak "recsep() couldn't acquire file handle for $file" if $@;
 
     my $recsep;
 
