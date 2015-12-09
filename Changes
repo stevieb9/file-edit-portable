@@ -1,6 +1,10 @@
 Revision history for File-Edit-Portable
 
-1.09    xxx
+1.11    20151209
+        - fixed issue in POD which broke POD tests using Test::Pod v1.40 
+          (preventing packaging into RedHat EL 6). Reported by Denis Fateyev
+
+1.09    20151031
         - fixed regex issue where \d] sequences were getting borked
 
 1.08    20151029

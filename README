@@ -158,9 +158,9 @@ METHODS
     dir => '/path/to/files': Mandatory.
 
     types => ['*.txt', '*.dat']: Optional. Specify wildcard combinations
-    for files to work on. We'll accept anything that File::Find::Rule's
-    <http://search.cpan.org/~rclamp/File-Find-Rule-0.33/lib/File/Find/Rule.pm>
-    name() method does. If not supplied, we work on all files.
+    for files to work on. We'll accept anything that
+    File::Find::Rule::name() method does. If not supplied, we work on all
+    files.
 
     maxdepth => 1: Optional: Specify how many levels of recursion to do
     after entering the directory. We'll do a full recurse through all
