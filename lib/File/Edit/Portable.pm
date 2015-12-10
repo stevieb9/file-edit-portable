@@ -458,7 +458,7 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
 The default behaviour of C<perl> is to read and write files using the Operating System's (OS) default record separator (line ending). If you open a file on an OS where the record separators are that of another OS, things can and do break.
 
-This module will read in a file, keep track of the file's current record separators regardless of the OS. It can return either a file handle (in scalar context) that has had its line endings replaced with that of the local OS platform, or an array of the file's contents (in list context) with line endings stripped off. You can then modify this array and send it back in for writing to the same file or a new file, where the original file's line endings will be re-appended (or a custom ending if you so choose).
+This module will read in a file, keep track of the file's current record separators regardless of the OS, and save them for later writing. It can return either a file handle (in scalar context) that has had its line endings replaced with that of the local OS platform, or an array of the file's contents (in list context) with line endings stripped off. You can then modify this array and send it back in for writing to the same file or a new file, where the original file's line endings will be re-appended (or a custom ending if you so choose).
 
 Uses are for dynamically reading/writing files while on one Operating System, but you don't know whether the record separators are platform-standard. Shared storage between multpile platforms are a good use case. This module affords you the ability to not have to check each file, and is very useful in looping over a directory where various files may have been written by different platforms.
 
@@ -480,7 +480,7 @@ In both cases, we save the line endings that were found in the original file (wh
 
 =head2 C<write>
 
-Writes the data back to the original file, or alternately a copy of the file. Returns 1 on success. If you inadvertantly append newlines to the new elements of the contents array, we'll strip them off before appending the real newlines.
+Writes the data back to the original file, or alternately a new file. Returns 1 on success. If you inadvertantly append newlines to the new elements of the contents array, we'll strip them off before appending the real newlines.
 
 Parameters: 
 
@@ -488,7 +488,7 @@ C<file =E<gt> 'file'>: Not needed if you've used C<read()> to open the file.
 
 C<copy =E<gt> 'file2'>: Set this if you want to write to an alternate (new) file, rather than the original.
 
-C<contents =E<gt> \@contents>: Mandatory, should contain a reference to the array that was returned by C<read()>, but the value can also be a file handle.
+C<contents =E<gt> \@contents>: Mandatory, (it often contains a reference to the array that was returned by C<read()> in list context (after editing)), but the value can be any array, or a file handle (using handles is far less memory-intensive).
 
 C<recsep =E<gt> "\r\n">: Optional, a double-quoted string of any characters you want to write as the line ending (record separator). This value will override what was found in the C<read()> call. Common ones are C<"\r\n"> for Windows, C<"\n"> for Unix and C<"\r"> for Mac. 
 

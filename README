@@ -59,13 +59,13 @@ DESCRIPTION
     OS, things can and do break.
 
     This module will read in a file, keep track of the file's current
-    record separators regardless of the OS. It can return either a file
-    handle (in scalar context) that has had its line endings replaced with
-    that of the local OS platform, or an array of the file's contents (in
-    list context) with line endings stripped off. You can then modify this
-    array and send it back in for writing to the same file or a new file,
-    where the original file's line endings will be re-appended (or a custom
-    ending if you so choose).
+    record separators regardless of the OS, and save them for later
+    writing. It can return either a file handle (in scalar context) that
+    has had its line endings replaced with that of the local OS platform,
+    or an array of the file's contents (in list context) with line endings
+    stripped off. You can then modify this array and send it back in for
+    writing to the same file or a new file, where the original file's line
+    endings will be re-appended (or a custom ending if you so choose).
 
     Uses are for dynamically reading/writing files while on one Operating
     System, but you don't know whether the record separators are
@@ -94,10 +94,10 @@ METHODS
 
  write
 
-    Writes the data back to the original file, or alternately a copy of the
-    file. Returns 1 on success. If you inadvertantly append newlines to the
-    new elements of the contents array, we'll strip them off before
-    appending the real newlines.
+    Writes the data back to the original file, or alternately a new file.
+    Returns 1 on success. If you inadvertantly append newlines to the new
+    elements of the contents array, we'll strip them off before appending
+    the real newlines.
 
     Parameters:
 
@@ -106,9 +106,10 @@ METHODS
     copy => 'file2': Set this if you want to write to an alternate (new)
     file, rather than the original.
 
-    contents => \@contents: Mandatory, should contain a reference to the
-    array that was returned by read(), but the value can also be a file
-    handle.
+    contents => \@contents: Mandatory, (it often contains a reference to
+    the array that was returned by read() in list context (after editing)),
+    but the value can be any array, or a file handle (using handles is far
+    less memory-intensive).
 
     recsep => "\r\n": Optional, a double-quoted string of any characters
     you want to write as the line ending (record separator). This value

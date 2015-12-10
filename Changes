@@ -1,8 +1,17 @@
 Revision history for File-Edit-Portable
 
+1.12    20151209
+        - closes #1; Changes didn't contain 1.10 update
+        - POD updates
+
 1.11    20151209
         - fixed issue in POD which broke POD tests using Test::Pod v1.40 
           (preventing packaging into RedHat EL 6). Reported by Denis Fateyev
+
+1.10 	20151120
+        - fixed bug in recsep(). It was croaking if it couldn't read a file
+          to get a recsep, but it's supposed to just return the platform_recsep()
+          in that case
 
 1.09    20151031
         - fixed regex issue where \d] sequences were getting borked
