@@ -22,7 +22,7 @@ Revision history for File-Edit-Portable
         - added tempfile(), returns a writable handle to an empty file
         - fixed logic bug in read() when returning a handle
         - major performance enhancements all over, particularly in retrieving
-          a handle from read() when the file already has local receps
+          a handle from read() when the file already has local recseps
 
 1.07    20151022
         - we're now perl v5.6 compliant due to replacing \R with full string
