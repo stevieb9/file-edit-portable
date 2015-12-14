@@ -6,7 +6,6 @@ use warnings;
 our $VERSION = '1.12';
 
 use Carp;
-use Exporter;
 use File::Find::Rule;
 use File::Temp;
 
@@ -60,7 +59,7 @@ sub read {
 sub write {
 
     my $self = shift;
-    my $p = $self->_config(@_);
+    $self->_config(@_);
 
     my $file = $self->{file};
     my $copy = $self->{copy};
@@ -260,7 +259,7 @@ sub platform_recsep {
     print $wfh "abc\n";
 
     close $wfh
-      or croak "platform_recsep() can't close temp file $file write: $!";
+      or croak "platform_recsep() can't close write temp file $file: $!";
 
     my $fh = $self->_open($file);
 
@@ -317,7 +316,7 @@ sub _handle {
    
     my $fh;
 
-    if ($self->recsep($file, 'hex') ne $self->platform_recsep('hex')){ 
+    if ($self->recsep($file, 'hex') ne $self->platform_recsep('hex')){
         
         $fh = $self->_open($file);
         my $temp_wfh = $self->tempfile;

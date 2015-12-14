@@ -29,7 +29,6 @@ WriteMakefile(
     },
     PREREQ_PM => {
         Carp => 0,
-        Exporter => 0,
         'File::Find::Rule' => 0,
         'File::Temp' => 0,
     },
