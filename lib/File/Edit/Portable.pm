@@ -310,6 +310,8 @@ sub _config {
 }
 sub _handle {
 
+    # returns a handle with platform's record separator
+
     my $self = shift;
     my $file = shift;
    
@@ -348,6 +350,8 @@ sub _handle {
     }
 }
 sub _open {
+
+    # returns a handle opened with binmode :raw
 
     my $self = shift;
     my $file = shift;
