@@ -1,5 +1,11 @@
 Revision history for File-Edit-Portable
 
+1.13    20151229
+        - closes #3; splice() now warns if both 'find' and 'line' params are
+          sent in, and 'line' takes precedence (and find isn't used)
+        - closes #4; in dir()s write() call, the recsep is now checked with
+          defined-or, not for truth
+
 1.12    20151209
         - closes #1; Changes didn't contain 1.10 update
         - POD updates
