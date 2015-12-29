@@ -43,7 +43,7 @@ my $rw = File::Edit::Portable->new;
 
         my @contents = $rw->read($_);
 
-        if ($contents[0] =~ /([\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2})/){
+        if ($contents[0] =~ /([\n\x{0B}\f\r\x{85}]{1,2})/){
             is($rw->recsep($_, 'hex'), '\0d', 
                "dir() replaces with custom recsep on just specified files"
             );

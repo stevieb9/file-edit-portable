@@ -188,7 +188,7 @@ sub dir {
         $self->write(
                     file => $file, 
                     contents => \@contents, 
-                    recsep => $recsep || $self->platform_recsep,
+                    recsep => defined $recsep ? $recsep : $self->platform_recsep,
                 );
     }
 
