@@ -123,13 +123,18 @@ sub splice {
         croak "splice() requires insert => [aref] param";
     }
 
+    if (defined $line && defined $find){
+        warn
+          "splice() can't search for both line and find. Operating on 'line'.";
+    }
+
     my @contents = $self->read($file);
 
     if (defined $line){
         splice @contents, $line, 0, @$insert;
     }
 
-    if ($find){
+    if (defined $find && ! defined $line){
         $find = qr{$find};
 
         my $i = 0;

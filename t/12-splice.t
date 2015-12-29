@@ -7,7 +7,7 @@ use Data::Dumper;
 use File::Copy;
 use Test::More;
 
-use Test::More tests => 93;
+use Test::More tests => 97;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
@@ -306,6 +306,31 @@ my @insert = <DATA>;
     eval { unlink $copy or die $!; };
     is ($@, '', "copy file $copy unlinked successfully");
 } 
+{
+    my @warnings;
 
+    local $SIG{__WARN__} = sub {
+        push @warnings, @_;
+    };
+
+    my @code = ('testing', 'more testing');
+
+    my @ret = $rw->splice(
+        file => $file,
+        copy => $copy,
+        find => 'one',
+        line => 5,
+        insert => \@code,
+    );
+
+    is(@warnings, 1, "splice() with find and line params warns");
+    is($ret[5], 'testing', "splice() with both line and find params does line");
+    is($ret[6], 'more testing', "splice() with both line and find params does line");
+
+    my @new = $rw->read($copy);
+
+    eval { unlink $copy or die $!; };
+    is ($@, '', "copy file $copy unlinked successfully");
+}
 __DATA__
 testing
