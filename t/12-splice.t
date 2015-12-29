@@ -7,7 +7,7 @@ use Data::Dumper;
 use File::Copy;
 use Test::More;
 
-use Test::More tests => 97;
+use Test::More tests => 98;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
@@ -332,5 +332,19 @@ my @insert = <DATA>;
     eval { unlink $copy or die $!; };
     is ($@, '', "copy file $copy unlinked successfully");
 }
+{
+    my @code = ('testing', 'more testing');
+
+    eval {
+        my @ret = $rw->splice(
+            file => $file,
+            copy => $copy,
+            insert => \@code,
+        );
+    };
+
+    like ($@, qr/splice\(\) requires/, "splice() croaks without either find or line");
+}
+
 __DATA__
 testing

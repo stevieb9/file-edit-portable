@@ -144,7 +144,8 @@ METHODS
     first find. Set to 0 will insert after all finds.
 
     NOTE: Although both are optional, at least one of line or find must be
-    sent in.
+    sent in. If both are sent in, we'll warn, and operate on the line
+    number and skip the find parameter.
 
     Returns an array of the modified file contents.
 

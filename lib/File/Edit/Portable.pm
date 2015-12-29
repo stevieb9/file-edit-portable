@@ -3,7 +3,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '1.13';
+our $VERSION = '1.14';
 
 use Carp;
 use File::Find::Rule;
@@ -121,6 +121,10 @@ sub splice {
 
     if (! $insert){
         croak "splice() requires insert => [aref] param";
+    }
+
+    if (! defined $line && ! defined $find){
+        croak "splice() requires either the 'line' or 'find' parameter sent in.";
     }
 
     if (defined $line && defined $find){
@@ -518,7 +522,7 @@ C<find =E<gt> 'search term'>: Optional - Merge the contents into the file on the
 
 C<limit =E<gt> Integer>: Optional: When splicing with the 'find' param, set this to the number of finds to insert after. Default is stop after the first find. Set to 0 will insert after all finds.
 
-NOTE: Although both are optional, at least one of C<line> or C<find> must be sent in.
+NOTE: Although both are optional, at least one of C<line> or C<find> must be sent in. If both are sent in, we'll warn, and operate on the line number and skip the find parameter.
 
 Returns an array of the modified file contents.  
 
