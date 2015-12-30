@@ -7,7 +7,7 @@ use Data::Dumper;
 use File::Copy;
 use Test::More;
 
-use Test::More tests => 31;
+use Test::More tests => 32;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
@@ -77,5 +77,11 @@ my $rw = File::Edit::Portable->new;
 
     eval { unlink $copy or die $!; };
     ok (! $@, "unlinked test file" );
+}
+{
+    my $file = 't/unix.txt';
 
+    my @file = $rw->read(file => $file);
+
+    is (scalar @file, 5, "file hash param still works");
 }

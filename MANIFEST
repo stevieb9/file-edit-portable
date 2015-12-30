@@ -19,6 +19,8 @@ t/11-dir_depth.t
 t/12-splice.t
 t/13-multi_file_recsep.t
 t/14-tempfile.t
+t/15-_open.t
+t/empty.txt
 t/manifest.t
 t/orig/unix.txt
 t/pod-coverage.t

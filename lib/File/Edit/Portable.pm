@@ -204,8 +204,7 @@ sub recsep {
     my $file = shift;
     my $hex = shift if @_;
 
-    my $fh;
-
+    my $fh; 
     eval {
         $fh = $self->_open($file);
     };
@@ -407,7 +406,7 @@ sub DESTROY {
         }
     }
 }
-sub _vim_placeholder {}; # for folding
+sub _vim_placeholder { return 1; }; # for folding
 
 1;
 __END__

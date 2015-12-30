@@ -5,9 +5,8 @@ use warnings;
 
 use Data::Dumper;
 use File::Copy;
-use Test::More;
-
-use Test::More tests => 26;
+use Mock::Sub;
+use Test::More tests => 28;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
@@ -98,4 +97,22 @@ my $rw = File::Edit::Portable->new;
 
     eval { unlink $copy or die "can't unlink copy $copy"; };
     is ($@, '', "unlinked $copy ok");
-} 
+}
+{
+
+    my $mock = Mock::Sub->new;
+    my $recsep_sub = $mock->mock('File::Edit::Portable::recsep', return_value => 1);
+
+    my $file = 't/unix.txt';
+    my $copy = 't/write_fh.txt';
+
+    my $fh = $rw->read($file);
+    
+    $rw->{is_read} = 0;
+    $rw->write(copy => $copy, contents => $fh);
+ 
+    is($recsep_sub->called_count, 3, "recsep() is called if ! is_read");
+
+    eval { unlink $copy or die "can't unlink copy $copy"; };
+    is ($@, '', "unlinked $copy ok");
+}
