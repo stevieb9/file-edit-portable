@@ -26,6 +26,7 @@ WriteMakefile(
     },
     BUILD_REQUIRES => {
         'Test::More' => 0,
+        'Mock::Sub'  => '1.01',
     },
     PREREQ_PM => {
         Carp => 0,

@@ -1,5 +1,8 @@
 Revision history for File-Edit-Portable
 
+1.14    xxx
+        - build prereq Mock::Sub 1.01 added
+
 1.13    20151229
         - closes #3; splice() now warns if both 'find' and 'line' params are
           sent in, and 'line' takes precedence (and find isn't used)
