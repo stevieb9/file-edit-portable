@@ -8,13 +8,12 @@ perl:
     - "5.12"
     - "5.10"
     - "5.8"
-
 os:
     - linux
 before_install:
   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
   - source ~/travis-perl-helpers/init
-  - eval $(curl https://travis-perl.github.io/init) --auto
+    #  - eval $(curl https://travis-perl.github.io/init) --auto
   - build-perl
   - perl -V
   - build-dist
@@ -30,5 +29,5 @@ script:
   - make test
 matrix:
   include:
-    - perl: 5.20
-    - env: COVERAGE=1
+    - perl: '5.20'
+    env: COVERAGE=1
