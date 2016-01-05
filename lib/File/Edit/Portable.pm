@@ -607,7 +607,7 @@ L<http://search.cpan.org/dist/File-Edit-Portable/>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2015 Steve Bertrand.
+Copyright 2016 Steve Bertrand.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
