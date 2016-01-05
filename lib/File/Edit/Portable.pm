@@ -582,6 +582,8 @@ Travis-CI: L<https://travis-ci.org/stevieb9/file-edit-portable>
 
 CPAN Testers: L<http://matrix.cpantesters.org/?dist=File-Edit-Portable>
 
+Coverage: L<https://coveralls.io/github/stevieb9/file-edit-portable>
+
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
