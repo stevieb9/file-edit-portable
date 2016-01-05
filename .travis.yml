@@ -30,4 +30,4 @@ script:
 matrix:
   include:
     - perl: '5.20'
-    env: COVERAGE=1
+      env: COVERAGE=1
