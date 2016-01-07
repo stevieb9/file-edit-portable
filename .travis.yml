@@ -1,4 +1,3 @@
-
 language: perl
 perl:
     - "5.22"
@@ -32,9 +31,6 @@ before_script:
 script:
   - PERL5OPT=-MDevel::Cover=-coverage,statement,branch,condition,path,subroutine prove -lrv t
   - cover
-    #  - perl Makefile.PL          # or Build.PL if it exists
-    #  - make                      # or ./Build
-    #  - make test
 
 after_success:
   - cover -report coveralls
@@ -42,5 +38,5 @@ after_success:
 
 matrix:
   include:
-    - perl: 5.18
+    - perl: 5.20
       env: COVERAGE=1
