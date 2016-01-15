@@ -578,11 +578,12 @@ L<https://github.com/stevieb9/file-edit-portable>
 
 =head1 BUILD RESULTS
 
-Travis-CI: L<https://travis-ci.org/stevieb9/file-edit-portable>
+=begin html
+<a href="http://travis-ci.org/stevieb9/file-edit-portable"><img src="https://secure.travis-ci.org/stevieb9/file-edit-portable.png"/>
+<a href='https://coveralls.io/github/stevieb9/file-edit-portable?branch=master'><img src='https://coveralls.io/repos/stevieb9/file-edit-portable/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>
+=end html
 
 CPAN Testers: L<http://matrix.cpantesters.org/?dist=File-Edit-Portable>
-
-Coverage: L<https://coveralls.io/github/stevieb9/file-edit-portable>
 
 =head1 SUPPORT
 

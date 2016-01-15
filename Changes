@@ -1,7 +1,8 @@
 Revision history for File-Edit-Portable
 
-1.14    xxx
+1.14    20160115
         - build prereq Mock::Sub 1.01 added
+        - test coverage now at 100%
 
 1.13    20151229
         - closes #3; splice() now warns if both 'find' and 'line' params are
