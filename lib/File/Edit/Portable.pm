@@ -3,7 +3,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '1.14';
+our $VERSION = '1.15';
 
 use Carp;
 use File::Find::Rule;
@@ -415,7 +415,9 @@ __END__
 
 File::Edit::Portable - Read and write files while keeping the original line-endings intact, no matter the platform.
 
-=cut
+=for html
+<a href="http://travis-ci.org/stevieb9/file-edit-portable"><img src="https://secure.travis-ci.org/stevieb9/file-edit-portable.png"/>
+<a href='https://coveralls.io/github/stevieb9/file-edit-portable?branch=master'><img src='https://coveralls.io/repos/stevieb9/file-edit-portable/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>
 
 =head1 SYNOPSIS
 
@@ -577,11 +579,6 @@ automatically be notified of progress on your bug as I make changes.
 L<https://github.com/stevieb9/file-edit-portable>
 
 =head1 BUILD RESULTS
-
-=begin html
-<a href="http://travis-ci.org/stevieb9/file-edit-portable"><img src="https://secure.travis-ci.org/stevieb9/file-edit-portable.png"/>
-<a href='https://coveralls.io/github/stevieb9/file-edit-portable?branch=master'><img src='https://coveralls.io/repos/stevieb9/file-edit-portable/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>
-=end html
 
 CPAN Testers: L<http://matrix.cpantesters.org/?dist=File-Edit-Portable>
 
