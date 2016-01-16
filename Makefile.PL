@@ -10,6 +10,9 @@ WriteMakefile(
     META_MERGE => {
         'meta-spec' => { version => 2 },
         resources   => {
+            bugtracker => {
+                web => 'https://github.com/stevieb9/file-edit-portable/issues',
+            },
             repository => {
                 type => 'git',
                 url => 'https://github.com/stevieb9/file-edit-portable.git',
