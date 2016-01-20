@@ -1,5 +1,12 @@
 Revision history for File-Edit-Portable
 
+1.15    xxx
+        - we now LOCK_EX in write()
+        - new build prereqs File::Tempdir and File::Spec for tests
+        - cleaned up test data files
+        - all temporary test files created with File::Tempdir, removed several
+          unlink()s within tests (and their accompanying tests)
+
 1.14    20160115
         - build prereq Mock::Sub 1.01 added
         - test coverage now at 100%

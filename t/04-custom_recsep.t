@@ -4,20 +4,26 @@ use strict;
 use warnings;
 
 use File::Copy;
+use File::Spec::Functions;
+use File::Tempdir;
 use Test::More;
-
-use Test::More tests => 18;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
 }
 
-my $copy = 't/test.txt';
+my $tempdir = File::Tempdir->new;
+my $tdir = $tempdir->name;
+my $bdir = 't/base';
+
+my $unix = catfile($bdir, 'unix.txt');
+my $win = catfile($bdir, 'win.txt');
+my $copy = catfile($tdir, 'test.txt');
 
 my $rw = File::Edit::Portable->new;
 
 {
-    my @file = $rw->read('t/unix.txt');
+    my @file = $rw->read($unix);
 
     for (@file){
         /([\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2})/;
@@ -35,14 +41,9 @@ my $rw = File::Edit::Portable->new;
     my $recsep = $rw->recsep($copy, 'hex');
 
     is ($recsep, '\0d\0a', "custom recsep takes precedence" );
-    
-    eval {unlink $copy or die $!;};
-
-    ok (! $@, "unlinked copied file successfully");
-
 }
 {
-    my @file = $rw->read('t/win.txt');
+    my @file = $rw->read($win);
 
     for (@file){
         /([\n\x{0B}\f\r\x{85}]{1,2}|[{utf8}2028-{utf8}2029]]{1,2})/;
@@ -60,8 +61,6 @@ my $rw = File::Edit::Portable->new;
     my $recsep = $rw->recsep($copy, 'hex');
 
     is ($recsep, '\0a', "on windows file, custom recsep took precedence" );
-
-    eval {unlink $copy or die $!;};
-
-    ok (! $@, "unlinked copy successfully");
 }
+
+done_testing();

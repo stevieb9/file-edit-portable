@@ -2,7 +2,7 @@
 use 5.006;
 use strict;
 use warnings;
-use Test::More tests => 2;
+use Test::More;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
@@ -14,7 +14,7 @@ if ($^O eq 'MSWin32' || $^O eq 'MacOS'){
     
     { # win
 
-        my $file = 't/win.txt';
+        my $file = 't/base/win.txt';
 
         open my $fh, '<', $file or die $!;
         binmode $fh, ':raw';
@@ -41,7 +41,7 @@ if ($^O eq 'MSWin32' || $^O eq 'MacOS'){
 
     { # unix
 
-        my $file = 't/unix.txt';
+        my $file = 't/base/unix.txt';
 
         open my $fh, '<', $file or die $!;
         binmode $fh, ':raw';
@@ -69,3 +69,5 @@ if ($^O eq 'MSWin32' || $^O eq 'MacOS'){
 
 my $rw = File::Edit::Portable->new;
 is ($rw->_vim_placeholder, 1, "coverage for placeholder sub");
+
+done_testing();

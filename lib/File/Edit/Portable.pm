@@ -6,6 +6,7 @@ use warnings;
 our $VERSION = '1.15';
 
 use Carp;
+use Fcntl qw(:flock);
 use File::Find::Rule;
 use File::Temp;
 
@@ -82,6 +83,8 @@ sub write {
     
     my $wfh = $self->_open($file, 'w');
 
+    flock $wfh, LOCK_EX;
+
     $recsep = defined $recsep ? $recsep : $self->{recsep};
 
     # is contents a fh?
@@ -101,6 +104,9 @@ sub write {
             print $wfh $_ . $recsep;
         }
     }
+
+    # the following allows unit tests to test the lock
+    sleep 1 if $ENV{TEST_WRITE_LOCK};
 
     close $wfh;
     $self->{is_read} = 0;

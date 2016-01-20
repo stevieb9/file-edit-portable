@@ -4,10 +4,10 @@ use strict;
 use warnings;
 
 use Data::Dumper;
+use File::Spec::Functions;
+use File::Tempdir;
 use File::Copy;
 use Test::More;
-
-use Test::More tests => 5;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
@@ -15,11 +15,15 @@ BEGIN {
 
 my $rw = File::Edit::Portable->new;
 
-my $win = 't/win.txt';
-my $nix = 't/unix.txt';
+my $tempdir = File::Tempdir->new;
+my $tdir = $tempdir->name;
+my $bdir = 't/base';
 
-my $win_cp = 't/win.bak';
-my $nix_cp = 't/unix.bak';
+my $unix = catfile($bdir, 'unix.txt');
+my $win = catfile($bdir, 'win.txt');
+
+my $win_cp = catfile($tdir, 'win.bak');
+my $unix_cp = catfile($tdir, 'unix.bak');
 
 {
     my $rw = File::Edit::Portable->new;
@@ -35,16 +39,13 @@ my $nix_cp = 't/unix.bak';
     my $rw = File::Edit::Portable->new;
 
     my @win = $rw->read($win);
-    my @nix = $rw->read($nix);
+    my @nix = $rw->read($unix);
 
-    $rw->write(copy => $nix_cp, contents => \@nix);
+    $rw->write(copy => $unix_cp, contents => \@nix);
 
-    my $recsep = $rw->recsep($nix_cp, 'hex');
+    my $recsep = $rw->recsep($unix_cp, 'hex');
 
     is ($recsep, '\0a', "with only one read(), recsep is written properly");
 }
 
-for ($win_cp, $nix_cp){
-    eval { unlink $_ or die "can't unlink $_"; };
-    is ($@, '', "temp files unlinked successfully");
-}
+done_testing();

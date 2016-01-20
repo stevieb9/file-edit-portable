@@ -28,11 +28,14 @@ WriteMakefile(
         'ExtUtils::MakeMaker' => 0,
     },
     BUILD_REQUIRES => {
-        'Test::More' => 0,
+        'File::Stat' => 0,
+        'File::Tempdir' => 0,
         'Mock::Sub'  => '1.01',
+        'Test::More' => 0,
     },
     PREREQ_PM => {
         Carp => 0,
+        Fcntl => 0,
         'File::Find::Rule' => 0,
         'File::Temp' => 0,
     },
