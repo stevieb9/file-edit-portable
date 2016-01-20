@@ -1,7 +1,7 @@
 Revision history for File-Edit-Portable
 
 1.15    xxx
-        - we now LOCK_EX in write()
+        - we now LOCK_EX in write() (prereq Fcntl)
         - new build prereqs File::Tempdir and File::Spec for tests
         - cleaned up test data files
         - all temporary test files created with File::Tempdir, removed several
