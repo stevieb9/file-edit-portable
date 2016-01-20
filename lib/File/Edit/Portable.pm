@@ -584,7 +584,7 @@ automatically be notified of progress on your bug as I make changes.
 
 L<https://github.com/stevieb9/file-edit-portable>
 
-=head1 BUILD RESULTS
+=head1 BUILD RESULTS (THIS VERSION)
 
 CPAN Testers: L<http://matrix.cpantesters.org/?dist=File-Edit-Portable>
 
@@ -593,23 +593,6 @@ CPAN Testers: L<http://matrix.cpantesters.org/?dist=File-Edit-Portable>
 You can find documentation for this module with the perldoc command.
 
     perldoc File::Edit::Portable
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker (report bugs here)
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=File-Edit-Portable>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/File-Edit-Portable/>
-
-=back
-
-
 
 =head1 LICENSE AND COPYRIGHT
 

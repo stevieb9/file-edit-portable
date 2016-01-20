@@ -27,15 +27,15 @@ Revision history for File-Edit-Portable
 
 1.10 	20151120
         - fixed bug in recsep(). It was croaking if it couldn't read a file
-          to get a recsep, but it's supposed to just return the platform_recsep()
-          in that case
+          to get a recsep, but it's supposed to just return the
+          platform_recsep() in that case
 
 1.09    20151031
         - fixed regex issue where \d] sequences were getting borked
 
 1.08    20151029
-        - splice() now takes a 'limit => int' param, limiting how many 'find's to
-          insert after. Default is 1, set to 0 to insert after all
+        - splice() now takes a 'limit => int' param, limiting how many 'find's
+          to insert after. Default is 1, set to 0 to insert after all
         - added tempfile(), returns a writable handle to an empty file
         - fixed logic bug in read() when returning a handle
         - major performance enhancements all over, particularly in retrieving
@@ -46,9 +46,9 @@ Revision history for File-Edit-Portable
           regex
         - fixed issue when trying to write to a non-existent file
         - write() now accepts a file handle as a value to 'contents' param
-        - recsep() and platform_recsep() now both accept an optional string param
-          'hex', which will return the hex representation of the recsep. If not
-          supplied, will return the string representation
+        - recsep() and platform_recsep() now both accept an optional string
+          param 'hex', which will return the hex representation of the recsep.
+          If not supplied, will return the string representation
 
 1.06    20151019
         - removed non-OO interface, it started causing issues
@@ -81,8 +81,8 @@ Revision history for File-Edit-Portable
 0.10    2015-10-06
         - Travis-CI integration
         - now uses File::Temp (core) for anything requiring a temp file
-        - new functions read(), write() exported on demand. pread/pwrite are still
-          available
+        - new functions read(), write() exported on demand. pread/pwrite are
+          still available
         - performance/efficiency enhancements
 
 0.09    2015-10-01
@@ -96,7 +96,8 @@ Revision history for File-Edit-Portable
         - read() can now return a handle in scalar context, which will have
           the native platform's recsep installed
         - new internal _handle() method
-        - new public platform_recsep() method, returns the OSs recsep in string form 
+        - new public platform_recsep() method, returns the OSs recsep in string
+          form
 
 0.06    2015-09-26
         - fixed a couple of bugs in write() if params aren't sent in

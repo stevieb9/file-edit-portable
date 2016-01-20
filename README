@@ -214,9 +214,7 @@ REPOSITORY
 
     https://github.com/stevieb9/file-edit-portable
 
-BUILD RESULTS
-
-    Travis-CI: https://travis-ci.org/stevieb9/file-edit-portable
+BUILD RESULTS (THIS VERSION)
 
     CPAN Testers: http://matrix.cpantesters.org/?dist=File-Edit-Portable
 
@@ -226,19 +224,9 @@ SUPPORT
 
         perldoc File::Edit::Portable
 
-    You can also look for information at:
-
-      * RT: CPAN's request tracker (report bugs here)
-
-      http://rt.cpan.org/NoAuth/Bugs.html?Dist=File-Edit-Portable
-
-      * Search CPAN
-
-      http://search.cpan.org/dist/File-Edit-Portable/
-
 LICENSE AND COPYRIGHT
 
-    Copyright 2015 Steve Bertrand.
+    Copyright 2016 Steve Bertrand.
 
     This program is free software; you can redistribute it and/or modify it
     under the terms of either: the GNU General Public License as published
