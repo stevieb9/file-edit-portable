@@ -9,6 +9,7 @@ Revision history for File-Edit-Portable
         - closes #14; RHEL vendor .list build files now ignored in MANIFEST
         - closes #13; splice() now accepts both quoted strings and qr// objects
           in the 'find' parameter
+        - closes #11; major POD updates/fixes
 
 1.15    2016-01-18
         - we now LOCK_EX in write() (prereq Fcntl)

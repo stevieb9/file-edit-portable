@@ -431,6 +431,11 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
     use File::Edit::Portable;
     my $rw = File::Edit::Portable->new;
 
+    # read a file, replacing original file's line endings with
+    # that of the local platform's default
+
+    my $fh = $rw->read('file.txt');
+
     # edit file in a loop, and re-write it with its original line endings
 
     my $fh = $rw->read('file.txt');
@@ -443,20 +448,16 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
     $rw->write(contents => $wfh);
 
-    # read a file, replacing original file's line endings with
-    # that of the local platform's default
-
-    my $fh = $rw->read('file.txt');
-    
     # get an array of the file's contents, with line endings stripped off
 
     my @contents = $rw->read('file.txt');
 
-    # write out a file using original file's record separator
+    # write out a file using original file's record separator, into a new file,
+    # preserving the original
 
-    $rw->write(contents => \@contents);
+    $rw->write(contents => \@contents, copy => 'file2.txt');
 
-    # replace original file's record separator with a new one
+    # replace original file's record separator with a new (custom) one
 
     $rw->write(recsep => "\r\n", contents => \@contents);
 
@@ -467,11 +468,11 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
     # insert new data into a file after a specified line number
 
-    $rw->splice(file => $file, line => $num, insert => \@contents);
+    $rw->splice(file => 'file.txt', line => $num, insert => \@contents);
 
     # insert new data into a file after a found search term
 
-    $rw->splice(file => $file, find => 'term', insert => \@contents);
+    $rw->splice(file => 'file.txt', find => 'term', insert => \@contents);
     
 
 =head1 DESCRIPTION
@@ -488,7 +489,7 @@ Uses are for dynamically reading/writing files while on one Operating System, bu
 
 Returns a new C<File::Edit::Portable> object.
 
-=head2 C<read('filename')>
+=head2 C<read('file.txt')>
 
 In scalar context, will return a read-only file handle to a copy of the file that has had its line endings replaced with those of the local OS platform's record separator.
 
@@ -504,13 +505,13 @@ Writes the data back to the original file, or alternately a new file. Returns 1 
 
 Parameters: 
 
-C<file =E<gt> 'file'>: Not needed if you've used C<read()> to open the file. 
+C<file =E<gt> 'file.txt'>: Not needed if you've used C<read()> to open the file.
 
-C<copy =E<gt> 'file2'>: Set this if you want to write to an alternate (new) file, rather than the original.
+C<copy =E<gt> 'file2.txt'>: Set this if you want to write to an alternate (new) file, rather than the original.
 
-C<contents =E<gt> \@contents>: Mandatory, (it often contains a reference to the array that was returned by C<read()> in list context (after editing)), but the value can be any array, or a file handle (using handles is far less memory-intensive).
+C<contents =E<gt> \@contents> cor C<contents =E<gt> $filehandle>: Mandatory, either an array with one line per element, or a file handle (file handle is far less memory-intensive).
 
-C<recsep =E<gt> "\r\n">: Optional, a double-quoted string of any characters you want to write as the line ending (record separator). This value will override what was found in the C<read()> call. Common ones are C<"\r\n"> for Windows, C<"\n"> for Unix and C<"\r"> for Mac. 
+C<recsep =E<gt> "\r\n">: Optional, a double-quoted string of any characters you want to write as the line ending (record separator). This value will override what was found in the C<read()> call. Common ones are C<"\r\n"> for Windows, C<"\n"> for Unix and C<"\r"> for Mac. Use a call to C<platform_recsep() as the value to use the local platforms default separator.
 
 =head2 C<splice>
 
@@ -518,15 +519,15 @@ Inserts new data into a file after a specified line number or search term.
 
 Parameters:
 
-C<file =E<gt> 'file.name'>: Mandatory.
+C<file =E<gt> 'file.txt'>: Mandatory.
 
 C<insert =E<gt> \@contents>: Mandatory - an array reference containing the contents to merge into the file.
 
-C<copy =E<gt> 'newfile.name'>: Optional - we'll read from C<file>, but we'll write to this new file.
+C<copy =E<gt> 'file2.txt'>: Optional - we'll read from C<file>, but we'll write to this new file.
 
-C<line =E<gt> 23>: Optional - Merge the contents on the line following the one specified here.
+C<line =E<gt> Integer>: Optional - Merge the contents on the line following the one specified here.
 
-C<find =E<gt> 'search term'>: Optional - Merge the contents into the file on the line following the first find of the search term. The search term is put into C<qr>, so single quotes are recommended, and all regex patterns are honoured.
+C<find =E<gt> 'search term'>: Optional - Merge the contents into the file on the line following the first find of the search term. The search term is put into C<qr>, so single quotes are recommended, and all regex patterns are honoured. Note that we also accept a pre-created C<qr//> Regexp object directly (as opposed to a string).
 
 C<limit =E<gt> Integer>: Optional: When splicing with the 'find' param, set this to the number of finds to insert after. Default is stop after the first find. Set to 0 will insert after all finds.
 
@@ -537,7 +538,7 @@ Returns an array of the modified file contents.
 
 =head2 C<dir>
 
-Rewrites the line endings in some or all files within a directory structure recursively. Returns an array of the names of the files found.
+Rewrites the line endings in some or all files within a directory structure recursively. By default, rewrites all files with the current platform's default line ending. Returns an array of the names of the files found.
 
 Parameters:
 
@@ -545,18 +546,18 @@ C<dir =E<gt> '/path/to/files'>: Mandatory.
 
 C<types =E<gt> ['*.txt', '*.dat']>: Optional. Specify wildcard combinations for files to work on. We'll accept anything that C<File::Find::Rule::name()> method does. If not supplied, we work on all files.
 
-C<maxdepth =E<gt> 1>: Optional: Specify how many levels of recursion to do after entering the directory. We'll do a full recurse through all sub-directories if this parameter is not set.
+C<maxdepth =E<gt> Integer>: Optional: Specify how many levels of recursion to do after entering the directory. We'll do a full recurse through all sub-directories if this parameter is not set.
 
 C<recsep =E<gt> "\r\n">: Optional: If this parameter is not sent in, we'll replace the line endings with that of the current platform we're operating on. Otherwise, we'll use the double-quoted value sent in.
 
 C<list =E<gt> 1>
 
-If set, we'll return an array of the names of the files found, but won't take any editing action on them.
+If set to any true value, we'll return an array of the names of the files found, but won't take any editing action on them.
 
 Default is disabled.
 
 
-=head2 C<recsep('file', 'hex')>
+=head2 C<recsep('file.txt', 'hex')>
 
 Returns the record separator found within the file. If the file is empty, we'll return the local platform's default record separator.
 
