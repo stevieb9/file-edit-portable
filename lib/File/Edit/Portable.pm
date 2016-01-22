@@ -193,11 +193,18 @@ sub dir {
     return @files if $self->{list};
 
     for my $file (@files){
-        my @contents = $self->read($file);
+
+        my $fh = $self->read($file);
+        my $wfh = $self->tempfile;
+
+        while(<$fh>){
+            print $wfh $_;
+        }
+        close $fh;
 
         $self->write(
                     file => $file, 
-                    contents => \@contents,
+                    contents => $wfh,
                     recsep => defined $recsep ? $recsep : $self->platform_recsep,
                 );
     }

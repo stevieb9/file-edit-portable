@@ -1,5 +1,9 @@
 Revision history for File-Edit-Portable
 
+1.17    xxx
+        - closes #16; dir() in write mode now does the transform with a file
+          handle, not slurping the entire file into an array (performance)
+
 1.16    2016-01-22
         - closes #15; removed the write() lock test completely
         - closes #12; platform_recsep() can be used as the custom recsep to
