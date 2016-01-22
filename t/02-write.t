@@ -101,23 +101,29 @@ my $rw = File::Edit::Portable->new;
     is($recsep_sub->called_count, 3, "recsep() is called if ! is_read");
 }
 {
-    $ENV{TEST_WRITE_LOCK} = 1;
+    SKIP: {
+        skip "RELEASE_TESTING not enabled for lock test", 1 if ! $ENV{RELEASE_TESTING};
 
-    my @file = $rw->read($unix);
+        $ENV{TEST_WRITE_LOCK} = 1;
 
-    writing($rw, \@file);
+        my @file = $rw->read($unix);
 
-    sleep 1;
+        writing($rw, \@file);
 
-    open my $fh, '<', $copy or die $!;
+        sleep 1;
 
-    eval { flock($fh, LOCK_EX|LOCK_NB) or die "can't lock write file"; 1; };
+        open my $fh, '<', $copy or die $!;
 
-    like ($@, qr/can't lock write file/, "when writing, file is locked ok");
+        eval {
+            flock($fh, LOCK_EX | LOCK_NB) or die "can't lock write file";
+            1;
+        };
 
+        like ($@, qr/can't lock write file/, "when writing, file is locked ok");
+        print "here";
+        sleep 1; # because we need to wait for the fork() to finish
+    };
 }
-
-sleep 1; # because we need to wait for the fork() to finish
 
 done_testing();
 

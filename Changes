@@ -1,6 +1,10 @@
 Revision history for File-Edit-Portable
 
-1.15    xxx
+1.16    2016-01-22
+        - disabled the lock test if RELEASE_TESTING isn't available, as it was
+          failing on a small number of situations
+
+1.15    2016-01-18
         - we now LOCK_EX in write() (prereq Fcntl)
         - new build prereqs File::Tempdir and File::Spec for tests
         - cleaned up test data files
