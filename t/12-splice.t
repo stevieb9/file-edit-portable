@@ -313,7 +313,24 @@ my @insert = <DATA>;
 
     like ($@, qr/splice\(\) requires/, "splice() croaks without either find or line");
 }
+{
+    eval {
+        my @ret = $rw->splice(
+            file => $file,
+            copy => $copy,
+            line => 'asdf',
+            insert => \@insert,
+        );
+    };
 
+    like (
+        $@,
+        qr/splice\(\) requires its 'line' param to contain only an integer/,
+        "splice() croaks if line param isn't an integer"
+    );
+
+}
 done_testing();
+
 __DATA__
 testing

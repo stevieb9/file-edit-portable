@@ -138,6 +138,10 @@ sub splice {
     my @contents = $self->read($file);
 
     if (defined $line){
+        if ($line !~ /^[0-9]+$/){
+            croak "splice() requires its 'line' param to contain only an " .
+                  "integer. You supplied: $line\n";
+        }
         splice @contents, $line, 0, @$insert;
     }
 

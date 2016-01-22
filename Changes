@@ -4,6 +4,8 @@ Revision history for File-Edit-Portable
         - closes #15; removed the write() lock test completely
         - closes #12; platform_recsep() can be used as the custom recsep to
           write(). Added tests to confirm this
+        - closes #10; splice() now croaks if the 'line' param is sent in, and
+          it doesn't consist of only an integer
 
 1.15    2016-01-18
         - we now LOCK_EX in write() (prereq Fcntl)
