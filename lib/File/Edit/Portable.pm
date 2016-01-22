@@ -146,7 +146,7 @@ sub splice {
     }
 
     if (defined $find && ! defined $line){
-        $find = qr{$find};
+        $find = qr{$find} if ! ref $find ne 'Regexp';
 
         my $i = 0;
         my $inserts = 0;

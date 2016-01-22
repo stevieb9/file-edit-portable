@@ -330,6 +330,25 @@ my @insert = <DATA>;
     );
 
 }
+{
+    my $re = qr/one?/;
+
+    my @ret = $rw->splice(
+        file => $file,
+        copy => $copy,
+        find => $re,
+        insert => \@insert,
+    );
+
+    is($ret[1], 'testing', "splice() with find works when find is a re");
+    is(@ret, 13, "splice() retains the correct number of lines with line param");
+
+    my @new = $rw->read($copy);
+
+    is($new[1], 'testing', "splice() with find writes the file correctly");
+    is(@new, @ret, "splice() with find writes the file properly");
+}
+
 done_testing();
 
 __DATA__
