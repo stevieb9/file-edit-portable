@@ -27,8 +27,6 @@ sub read {
         $self->_config(file => $file, testing => $testing);
     }
 
-    $self->{is_read} = 1;
-
     $file = $self->{file};
     $testing = $self->{testing};
 
@@ -37,6 +35,7 @@ sub read {
     }
 
     $self->recsep($file);
+    $self->{is_read} = 1;
 
     my $fh;
 
@@ -198,7 +197,7 @@ sub dir {
 
         $self->write(
                     file => $file, 
-                    contents => \@contents, 
+                    contents => \@contents,
                     recsep => defined $recsep ? $recsep : $self->platform_recsep,
                 );
     }
@@ -295,9 +294,6 @@ sub platform_recsep {
     }
 }
 sub tempfile {
-
-    my $self = shift;
-    
     my $wfh = File::Temp->new(UNLINK => 1);
     return $wfh;
 }
@@ -389,7 +385,7 @@ sub _open {
 sub _temp_filename {
 
     my $self = shift;
-    
+
     my $temp_fh = File::Temp->new(UNLINK => 1);
 
     my $file = $temp_fh->filename;
