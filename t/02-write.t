@@ -122,7 +122,7 @@ SKIP: {
 
     my $eor = $rw->recsep($copy, 'hex');
 
-    is ($eor, '\0d\0a', "platform_recsep() w/ no parameters can be used as custom recsep" );
+    is ($eor, '\0a', "platform_recsep() w/ no parameters can be used as custom recsep" );
 };
 
 done_testing();
