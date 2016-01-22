@@ -6,6 +6,8 @@ Revision history for File-Edit-Portable
           write(). Added tests to confirm this
         - closes #10; splice() now croaks if the 'line' param is sent in, and
           it doesn't consist of only an integer
+        - closes #14; RHEL .list build files now ignored in MANIFEST
+        -
 
 1.15    2016-01-18
         - we now LOCK_EX in write() (prereq Fcntl)
