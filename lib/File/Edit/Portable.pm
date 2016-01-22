@@ -510,7 +510,7 @@ C<file =E<gt> 'file.txt'>: Not needed if you've used C<read()> to open the file.
 
 C<copy =E<gt> 'file2.txt'>: Set this if you want to write to an alternate (new) file, rather than the original.
 
-C<contents =E<gt> \@contents> cor C<contents =E<gt> $filehandle>: Mandatory, either an array with one line per element, or a file handle (file handle is far less memory-intensive).
+C<contents =E<gt> \@contents> or C<contents =E<gt> $filehandle>: Mandatory, either an array with one line per element, or a file handle (file handle is far less memory-intensive).
 
 C<recsep =E<gt> "\r\n">: Optional, a double-quoted string of any characters you want to write as the line ending (record separator). This value will override what was found in the C<read()> call. Common ones are C<"\r\n"> for Windows, C<"\n"> for Unix and C<"\r"> for Mac. Use a call to C<platform_recsep() as the value to use the local platforms default separator.
 
