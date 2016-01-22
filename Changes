@@ -1,19 +1,19 @@
 Revision history for File-Edit-Portable
 
 1.17    xxx
-        - closes #16; dir() in write mode now does the transform with a file
-          handle, not slurping the entire file into an array (performance)
+        - dir() in write mode now does the transform with a file handle, not
+          slurping the entire file into an array (performance) (closes #16)
 
 1.16    2016-01-22
-        - closes #15; removed the write() lock test completely
-        - closes #12; platform_recsep() can be used as the custom recsep to
-          write(). Added tests to confirm this
-        - closes #10; splice() now croaks if the 'line' param is sent in, and
-          it doesn't consist of only an integer
-        - closes #14; RHEL vendor .list build files now ignored in MANIFEST
-        - closes #13; splice() now accepts both quoted strings and qr// objects
-          in the 'find' parameter
-        - closes #11; major POD updates/fixes
+        - removed the write() lock test completely (closes #15)
+        - platform_recsep() can be used as the custom recsep to write().
+          Added tests to confirm this (closes #12)
+        - splice() now croaks if the 'line' param is sent in, and it doesn't
+          consist of only an integer (closes #10)
+        - RHEL vendor .list build files now ignored in MANIFEST (closes #14)
+        - splice() now accepts both quoted strings and qr// objects in the
+          'find' parameter (closes #13)
+        - major POD updates/fixes (closes #11)
 
 1.15    2016-01-18
         - we now LOCK_EX in write() (prereq Fcntl)
