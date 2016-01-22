@@ -105,9 +105,6 @@ sub write {
         }
     }
 
-    # the following allows unit tests to test the lock
-    sleep 1 if $ENV{TEST_WRITE_LOCK};
-
     close $wfh;
     $self->{is_read} = 0;
     

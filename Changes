@@ -1,8 +1,9 @@
 Revision history for File-Edit-Portable
 
 1.16    2016-01-22
-        - disabled the lock test if RELEASE_TESTING isn't available, as it was
-          failing on a small number of situations
+        - closes #15; removed the write() lock test completely
+        - closes #12; platform_recsep() can be used as the custom recsep to
+          write(). Added tests to confirm this
 
 1.15    2016-01-18
         - we now LOCK_EX in write() (prereq Fcntl)

@@ -100,40 +100,30 @@ my $rw = File::Edit::Portable->new;
  
     is($recsep_sub->called_count, 3, "recsep() is called if ! is_read");
 }
-{
-    SKIP: {
-        skip "RELEASE_TESTING not enabled for lock test", 1 if ! $ENV{RELEASE_TESTING};
+SKIP: {
 
-        $ENV{TEST_WRITE_LOCK} = 1;
+    skip "win32 test, but not on windows", 1 unless $^O eq 'MSWin32';
 
-        my @file = $rw->read($unix);
+    my $fh = $rw->read($unix);
 
-        writing($rw, \@file);
+    $rw->write(copy => $copy, contents => $fh, recsep => $rw->platform_recsep);
 
-        sleep 1;
+    my $eor = $rw->recsep($copy, 'hex');
 
-        open my $fh, '<', $copy or die $!;
+    is ($eor, '\0d\0a', "platform_recsep() w/ no parameters can be used as custom recsep" );
+};
+SKIP: {
 
-        eval {
-            flock($fh, LOCK_EX | LOCK_NB) or die "can't lock write file";
-            1;
-        };
+    skip "nix test but we're not on unix", 1 unless $^O ne 'MSWin32';
 
-        like ($@, qr/can't lock write file/, "when writing, file is locked ok");
-        print "here";
-        sleep 1; # because we need to wait for the fork() to finish
-    };
-}
+    my $fh = $rw->read($unix);
+
+    $rw->write(copy => $copy, contents => $fh, recsep => $rw->platform_recsep);
+
+    my $eor = $rw->recsep($copy, 'hex');
+
+    is ($eor, '\0d\0a', "platform_recsep() w/ no parameters can be used as custom recsep" );
+};
 
 done_testing();
 
-sub writing {
-    my ($rw, $contents) = @_;
-    my $pid = fork;
-
-    return if $pid;
-
-    $rw->write(copy => $copy, contents => $contents);
-
-    exit 0;
-}
