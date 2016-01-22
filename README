@@ -108,9 +108,9 @@ METHODS
     copy => 'file2.txt': Set this if you want to write to an alternate
     (new) file, rather than the original.
 
-    contents => \@contents cor contents => $filehandle: Mandatory, either
-    an array with one line per element, or a file handle (file handle is
-    far less memory-intensive).
+    contents => $filehandle or contents => \@contents: Mandatory, either an
+    array with one line per element, or a file handle (file handle is far
+    less memory-intensive).
 
     recsep => "\r\n": Optional, a double-quoted string of any characters
     you want to write as the line ending (record separator). This value
@@ -238,13 +238,4 @@ LICENSE AND COPYRIGHT
     by the Free Software Foundation; or the Artistic License.
 
     See http://dev.perl.org/licenses/ for more information.
-
-POD ERRORS
-
-    Hey! The above document had some coding errors, which are explained
-    below:
-
-    Around line 91:
-
-      Unterminated C<...> sequence
 
