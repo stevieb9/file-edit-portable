@@ -429,6 +429,7 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 =head1 SYNOPSIS
 
     use File::Edit::Portable;
+
     my $rw = File::Edit::Portable->new;
 
     # read a file, replacing original file's line endings with
