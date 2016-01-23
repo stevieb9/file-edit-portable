@@ -3,6 +3,8 @@ Revision history for File-Edit-Portable
 1.17    xxx
         - dir() in write mode now does the transform with a file handle, not
           slurping the entire file into an array (performance) (closes #16)
+        - fixed bugtracker link in POD (fixes #17)
+        - bumped prereq version of Mock::Sub to 1.06 due to new efficiencies
 
 1.16    2016-01-22
         - removed the write() lock test completely (closes #15)

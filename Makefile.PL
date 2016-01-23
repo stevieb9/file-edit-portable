@@ -30,7 +30,7 @@ WriteMakefile(
     BUILD_REQUIRES => {
         'File::Spec' => 0,
         'File::Tempdir' => 0,
-        'Mock::Sub'  => '1.01',
+        'Mock::Sub'  => '1.06',
         'Test::More' => 0,
     },
     PREREQ_PM => {
