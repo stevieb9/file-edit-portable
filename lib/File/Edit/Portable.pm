@@ -551,12 +551,12 @@ original.
 
 C<contents =E<gt> $filehandle> or C<contents =E<gt> \@contents>
 
-Mandatory, either an array with one line per element, or a file handle (file
+Mandatory - either an array with one line per element, or a file handle (file
 handle is far less memory-intensive).
 
 C<recsep =E<gt> "\r\n">
 
-Optional, a double-quoted string of any characters you want to write as the
+Optional - a double-quoted string of any characters you want to write as the
 line ending (record separator). This value will override what was found in the
 C<read()> call. Common ones are C<"\r\n"> for Windows, C<"\n"> for Unix and
 C<"\r"> for Mac. Use a call to C<platform_recsep()> as the value to use the
@@ -593,7 +593,7 @@ a pre-created C<qr//> Regexp object directly (as opposed to a string).
 
 C<limit =E<gt> Integer>
 
-Optional: When splicing with the 'find' param, set this to the number of finds
+Optional - When splicing with the 'find' param, set this to the number of finds
 to insert after. Default is stop after the first find. Set to 0 will insert
 after all finds.
 
@@ -618,29 +618,28 @@ Mandatory.
 
 C<types =E<gt> ['*.txt', '*.dat']>
 
-Optional. Specify wildcard combinations for files to work on. We'll accept
+Optional - Specify wildcard combinations for files to work on. We'll accept
 anything that C<File::Find::Rule::name()> method does. If not supplied, we work
 on all files.
 
 C<maxdepth =E<gt> Integer>
 
-Optional: Specify how many levels of recursion to do after entering the
+Optional - Specify how many levels of recursion to do after entering the
 directory. We'll do a full recurse through all sub-directories if this
 parameter is not set.
 
 C<recsep =E<gt> "\r\n">
 
-Optional: If this parameter is not sent in, we'll replace the line endings
+Optional - If this parameter is not sent in, we'll replace the line endings
 with that of the current platform we're operating on. Otherwise, we'll use the
 double-quoted value sent in.
 
 C<list =E<gt> 1>
 
-If set to any true value, we'll return an array of the names of the files
-found, but won't take any editing action on them.
+Optional - If set to any true value, we'll return an array of the names of the
+files found, but won't take any editing action on them.
 
 Default is disabled.
-
 
 =head2 C<recsep('file.txt', 'hex')>
 
@@ -659,7 +658,6 @@ Otherwise, we'll return it in as-is string format.
 =head2 C<tempfile>
 
 Returns a file handle in write mode to an empty temp file.
-
 
 =head1 AUTHOR
 

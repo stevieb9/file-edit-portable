@@ -114,16 +114,16 @@ METHODS
 
     contents => $filehandle or contents => \@contents
 
-    Mandatory, either an array with one line per element, or a file handle
+    Mandatory - either an array with one line per element, or a file handle
     (file handle is far less memory-intensive).
 
     recsep => "\r\n"
 
-    Optional, a double-quoted string of any characters you want to write as
-    the line ending (record separator). This value will override what was
-    found in the read() call. Common ones are "\r\n" for Windows, "\n" for
-    Unix and "\r" for Mac. Use a call to platform_recsep() as the value to
-    use the local platforms default separator.
+    Optional - a double-quoted string of any characters you want to write
+    as the line ending (record separator). This value will override what
+    was found in the read() call. Common ones are "\r\n" for Windows, "\n"
+    for Unix and "\r" for Mac. Use a call to platform_recsep() as the value
+    to use the local platforms default separator.
 
  splice
 
@@ -159,7 +159,7 @@ METHODS
 
     limit => Integer
 
-    Optional: When splicing with the 'find' param, set this to the number
+    Optional - When splicing with the 'find' param, set this to the number
     of finds to insert after. Default is stop after the first find. Set to
     0 will insert after all finds.
 
@@ -184,26 +184,26 @@ METHODS
 
     types => ['*.txt', '*.dat']
 
-    Optional. Specify wildcard combinations for files to work on. We'll
+    Optional - Specify wildcard combinations for files to work on. We'll
     accept anything that File::Find::Rule::name() method does. If not
     supplied, we work on all files.
 
     maxdepth => Integer
 
-    Optional: Specify how many levels of recursion to do after entering the
-    directory. We'll do a full recurse through all sub-directories if this
-    parameter is not set.
+    Optional - Specify how many levels of recursion to do after entering
+    the directory. We'll do a full recurse through all sub-directories if
+    this parameter is not set.
 
     recsep => "\r\n"
 
-    Optional: If this parameter is not sent in, we'll replace the line
+    Optional - If this parameter is not sent in, we'll replace the line
     endings with that of the current platform we're operating on.
     Otherwise, we'll use the double-quoted value sent in.
 
     list => 1
 
-    If set to any true value, we'll return an array of the names of the
-    files found, but won't take any editing action on them.
+    Optional - If set to any true value, we'll return an array of the names
+    of the files found, but won't take any editing action on them.
 
     Default is disabled.
 
