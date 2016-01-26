@@ -493,11 +493,24 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
 =head1 DESCRIPTION
 
-The default behaviour of C<perl> is to read and write files using the Operating System's (OS) default record separator (line ending). If you open a file on an OS where the record separators are that of another OS, things can and do break.
+The default behaviour of C<perl> is to read and write files using the Operating
+System's (OS) default record separator (line ending). If you open a file on an
+OS where the record separators are that of another OS, things can and do break.
 
-This module will read in a file, keep track of the file's current record separators regardless of the OS, and save them for later writing. It can return either a file handle (in scalar context) that has had its line endings replaced with that of the local OS platform, or an array of the file's contents (in list context) with line endings stripped off. You can then modify this array and send it back in for writing to the same file or a new file, where the original file's line endings will be re-appended (or a custom ending if you so choose).
+This module will read in a file, keep track of the file's current record
+separators regardless of the OS, and save them for later writing. It can return
+either a file handle (in scalar context) that has had its line endings replaced
+with that of the local OS platform, or an array of the file's contents
+(in list context) with line endings stripped off. You can then modify this
+array and send it back in for writing to the same file or a new file, where the
+original file's line endings will be re-appended (or a custom ending if you so
+choose).
 
-Uses are for dynamically reading/writing files while on one Operating System, but you don't know whether the record separators are platform-standard. Shared storage between multpile platforms are a good use case. This module affords you the ability to not have to check each file, and is very useful in looping over a directory where various files may have been written by different platforms.
+Uses are for dynamically reading/writing files while on one Operating System,
+but you don't know whether the record separators are platform-standard. Shared
+storage between multpile platforms are a good use case. This module affords you
+the ability to not have to check each file, and is very useful in looping over
+a directory where various files may have been written by different platforms.
 
 =head1 METHODS
 
@@ -507,27 +520,47 @@ Returns a new C<File::Edit::Portable> object.
 
 =head2 C<read('file.txt')>
 
-In scalar context, will return a read-only file handle to a copy of the file that has had its line endings replaced with those of the local OS platform's record separator.
+In scalar context, will return a read-only file handle to a copy of the file
+that has had its line endings replaced with those of the local OS platform's
+record separator.
 
-In list context, will return an array, where each element is a line from the file, with all line endings stripped off.
+In list context, will return an array, where each element is a line from the
+file, with all line endings stripped off.
 
-In both cases, we save the line endings that were found in the original file (which is used when C<write()> is used, by default).
+In both cases, we save the line endings that were found in the original file
+(which is used when C<write()> is called, by default).
 
 
 
 =head2 C<write>
 
-Writes the data back to the original file, or alternately a new file. Returns 1 on success. If you inadvertantly append newlines to the new elements of the contents array, we'll strip them off before appending the real newlines.
+Writes the data back to the original file, or alternately a new file. Returns 1
+on success. If you inadvertantly append newlines to the new elements of the
+contents array, we'll strip them off before appending the real newlines.
 
 Parameters: 
 
-C<file =E<gt> 'file.txt'>: Not needed if you've used C<read()> to open the file.
+C<file =E<gt> 'file.txt'>
 
-C<copy =E<gt> 'file2.txt'>: Set this if you want to write to an alternate (new) file, rather than the original.
+Not needed if you've used C<read()> to open the file.
 
-C<contents =E<gt> $filehandle> or C<contents =E<gt> \@contents>: Mandatory, either an array with one line per element, or a file handle (file handle is far less memory-intensive).
+C<copy =E<gt> 'file2.txt'>
 
-C<recsep =E<gt> "\r\n">: Optional, a double-quoted string of any characters you want to write as the line ending (record separator). This value will override what was found in the C<read()> call. Common ones are C<"\r\n"> for Windows, C<"\n"> for Unix and C<"\r"> for Mac. Use a call to C<platform_recsep()> as the value to use the local platforms default separator.
+Set this if you want to write to an alternate (new) file, rather than the
+original.
+
+C<contents =E<gt> $filehandle> or C<contents =E<gt> \@contents>
+
+Mandatory, either an array with one line per element, or a file handle (file
+handle is far less memory-intensive).
+
+C<recsep =E<gt> "\r\n">
+
+Optional, a double-quoted string of any characters you want to write as the
+line ending (record separator). This value will override what was found in the
+C<read()> call. Common ones are C<"\r\n"> for Windows, C<"\n"> for Unix and
+C<"\r"> for Mac. Use a call to C<platform_recsep()> as the value to use the
+local platforms default separator.
 
 =head2 C<splice>
 
@@ -535,53 +568,93 @@ Inserts new data into a file after a specified line number or search term.
 
 Parameters:
 
-C<file =E<gt> 'file.txt'>: Mandatory.
+C<file =E<gt> 'file.txt'>
 
-C<insert =E<gt> \@contents>: Mandatory - an array reference containing the contents to merge into the file.
+Mandatory.
 
-C<copy =E<gt> 'file2.txt'>: Optional - we'll read from C<file>, but we'll write to this new file.
+C<insert =E<gt> \@contents>
 
-C<line =E<gt> Integer>: Optional - Merge the contents on the line following the one specified here.
+ Mandatory - an array reference containing the contents to merge into the file.
 
-C<find =E<gt> 'search term'>: Optional - Merge the contents into the file on the line following the first find of the search term. The search term is put into C<qr>, so single quotes are recommended, and all regex patterns are honoured. Note that we also accept a pre-created C<qr//> Regexp object directly (as opposed to a string).
+C<copy =E<gt> 'file2.txt'>
 
-C<limit =E<gt> Integer>: Optional: When splicing with the 'find' param, set this to the number of finds to insert after. Default is stop after the first find. Set to 0 will insert after all finds.
+Optional - we'll read from C<file>, but we'll write to this new file.
 
-NOTE: Although both are optional, at least one of C<line> or C<find> must be sent in. If both are sent in, we'll warn, and operate on the line number and skip the find parameter.
+C<line =E<gt> Integer>
+
+Optional - Merge the contents on the line following the one specified here.
+
+C<find =E<gt> 'search term'>
+
+Optional - Merge the contents into the file on the line following the first
+find of the search term. The search term is put into C<qr>, so single quotes
+are recommended, and all regex patterns are honoured. Note that we also accept
+a pre-created C<qr//> Regexp object directly (as opposed to a string).
+
+C<limit =E<gt> Integer>
+
+Optional: When splicing with the 'find' param, set this to the number of finds
+to insert after. Default is stop after the first find. Set to 0 will insert
+after all finds.
+
+NOTE: Although both are optional, at least one of C<line> or C<find> must be
+sent in. If both are sent in, we'll warn, and operate on the line number and
+skip the find parameter.
 
 Returns an array of the modified file contents.  
 
 
 =head2 C<dir>
 
-Rewrites the line endings in some or all files within a directory structure recursively. By default, rewrites all files with the current platform's default line ending. Returns an array of the names of the files found.
+Rewrites the line endings in some or all files within a directory structure
+recursively. By default, rewrites all files with the current platform's default
+line ending. Returns an array of the names of the files found.
 
 Parameters:
 
-C<dir =E<gt> '/path/to/files'>: Mandatory.
+C<dir =E<gt> '/path/to/files'>
 
-C<types =E<gt> ['*.txt', '*.dat']>: Optional. Specify wildcard combinations for files to work on. We'll accept anything that C<File::Find::Rule::name()> method does. If not supplied, we work on all files.
+Mandatory.
 
-C<maxdepth =E<gt> Integer>: Optional: Specify how many levels of recursion to do after entering the directory. We'll do a full recurse through all sub-directories if this parameter is not set.
+C<types =E<gt> ['*.txt', '*.dat']>
 
-C<recsep =E<gt> "\r\n">: Optional: If this parameter is not sent in, we'll replace the line endings with that of the current platform we're operating on. Otherwise, we'll use the double-quoted value sent in.
+Optional. Specify wildcard combinations for files to work on. We'll accept
+anything that C<File::Find::Rule::name()> method does. If not supplied, we work
+on all files.
+
+C<maxdepth =E<gt> Integer>
+
+Optional: Specify how many levels of recursion to do after entering the
+directory. We'll do a full recurse through all sub-directories if this
+parameter is not set.
+
+C<recsep =E<gt> "\r\n">
+
+Optional: If this parameter is not sent in, we'll replace the line endings
+with that of the current platform we're operating on. Otherwise, we'll use the
+double-quoted value sent in.
 
 C<list =E<gt> 1>
 
-If set to any true value, we'll return an array of the names of the files found, but won't take any editing action on them.
+If set to any true value, we'll return an array of the names of the files
+found, but won't take any editing action on them.
 
 Default is disabled.
 
 
 =head2 C<recsep('file.txt', 'hex')>
 
-Returns the record separator found within the file. If the file is empty, we'll return the local platform's default record separator.
+Returns the record separator found within the file. If the file is empty, we'll
+return the local platform's default record separator.
 
-If the optional string parameter 'hex' is sent in, we'll return the record separator in hex format. Otherwise, by default, it's returned in string form.
+If the optional string parameter 'hex' is sent in, we'll return the record
+separator in hex format. Otherwise, by default, it's returned in string form.
 
 =head2 C<platform_recsep('hex')>
 
-Returns the the current platform's (OS) record separator. If the optional string value "hex" is sent in, we'll return the recsep in hex format. Otherwise, we'll return it in as-is string format.
+Returns the the current platform's (OS) record separator. If the optional
+string value "hex" is sent in, we'll return the recsep in hex format.
+Otherwise, we'll return it in as-is string format.
 
 =head2 C<tempfile>
 
@@ -594,7 +667,8 @@ Steve Bertrand, C<< <steveb at cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to L<https://github.com/stevieb9/mock-sub/issues>
+Please report any bugs or feature requests to
+L<https://github.com/stevieb9/mock-sub/issues>
 
 =head1 REPOSITORY
 
