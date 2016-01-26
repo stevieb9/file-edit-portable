@@ -1,8 +1,8 @@
 Revision history for File-Edit-Portable
 
 1.17    2016-01-26
-        - dir() in write mode now does the transform with a file handle, not
-          slurping the entire file into an array (performance) (closes #16)
+        - dir() in write mode now does the transform with a file handle instead
+          of slurping the entire file into an array (performance) (closes #16)
         - fixed bugtracker link in POD (fixes #17)
         - bumped prereq version of Mock::Sub to 1.06 due to new efficiencies
         - FreeBSD 10.1 and 9.2 amd64 fail on flock() in write(), so we check
