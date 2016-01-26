@@ -38,6 +38,7 @@ WriteMakefile(
         Fcntl => 0,
         'File::Find::Rule' => 0,
         'File::Temp' => 0,
+        POSIX => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'File-Edit-Portable-*' },
