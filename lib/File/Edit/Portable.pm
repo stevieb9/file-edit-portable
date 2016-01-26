@@ -9,6 +9,7 @@ use Carp;
 use Fcntl qw(:flock);
 use File::Find::Rule;
 use File::Temp;
+use POSIX qw(uname);
 
 sub new {
     return bless {}, shift;
@@ -82,7 +83,18 @@ sub write {
     
     my $wfh = $self->_open($file, 'w');
 
-    flock $wfh, LOCK_EX;
+    # certain FreeBSD versions on amd64 don't work
+    # with flock()
+
+    my @os = uname();
+
+    unless (
+            $os[0] eq 'FreeBSD' 
+            && ($os[2] eq '10.1-RELEASE' || $os[2] eq '9.2-RELEASE')
+            && $os[-1] eq 'amd64'
+        ){
+        flock $wfh, LOCK_EX;
+    }
 
     $recsep = defined $recsep ? $recsep : $self->{recsep};
 
