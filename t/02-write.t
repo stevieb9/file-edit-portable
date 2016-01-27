@@ -124,6 +124,37 @@ SKIP: {
 
     is ($eor, '\0a', "platform_recsep() w/ no parameters can be used as custom recsep" );
 };
+{
 
+    my @orig_contents = $rw->read($unix);
+
+    my $fh = $rw->read($unix);
+    $rw->write(copy => $copy, contents => $fh);
+    close $fh;
+
+    my @copy_contents = $rw->read($copy);
+
+    is (
+        @orig_contents,
+        @copy_contents,
+        "file length equal when rewriting with different recsep (unix)",
+    );
+
+    @orig_contents= $rw->read($win);
+
+    $fh = $rw->read($win);
+    $rw->write(copy => $copy, contents => $fh);
+    close $fh;
+
+    @copy_contents = $rw->read($copy);
+
+    is (
+        @orig_contents,
+        @copy_contents,
+        "file length equal when rewriting with different recsep (win)",
+    );
+
+    copy $copy, 't/bad.txt';
+};
 done_testing();
 
