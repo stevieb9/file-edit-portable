@@ -125,7 +125,6 @@ SKIP: {
     is ($eor, '\0a', "platform_recsep() w/ no parameters can be used as custom recsep" );
 };
 {
-
     my @orig_contents = $rw->read($unix);
 
     my $fh = $rw->read($unix);
@@ -140,13 +139,19 @@ SKIP: {
         "file length equal when rewriting with different recsep (unix)",
     );
 
-    @orig_contents= $rw->read($win);
+    my $orig_eof = $rw->recsep($unix, 'hex');
+    my $copy_eof = $rw->recsep($copy, 'hex');
 
-    $fh = $rw->read($win);
+    is ($orig_eof, $copy_eof, "orig and copy have same eof (unix)");
+}
+{
+    my @orig_contents= $rw->read($win);
+
+    my $fh = $rw->read($win);
     $rw->write(copy => $copy, contents => $fh);
     close $fh;
 
-    @copy_contents = $rw->read($copy);
+    my @copy_contents = $rw->read($copy);
 
     is (
         @orig_contents,
@@ -154,7 +159,40 @@ SKIP: {
         "file length equal when rewriting with different recsep (win)",
     );
 
-    copy $copy, 't/bad.txt';
+    my $orig_eof = $rw->recsep($win, 'hex');
+    my $copy_eof = $rw->recsep($copy, 'hex');
+
+    is ($orig_eof, $copy_eof, "orig and copy have same eof (win)");
 };
+{
+    my $fh = $rw->read($unix);
+    $rw->write(copy => $copy, contents => $fh, recsep => "\r\n");
+    close $fh;
+
+    my $orig_eof = $rw->recsep($unix, 'hex');
+    my $copy_eof = $rw->recsep($copy, 'hex');
+
+    ok ($orig_eof ne $copy_eof, "orig and copy differ w/ recsep (unix)");
+
+    my @orig = $rw->read($unix);
+    my @copy = $rw->read($copy);
+
+    is (@orig, @copy, "files contain the same num of lines with recsep (unix)");
+}
+{
+    my $fh = $rw->read($win);
+    $rw->write(copy => $copy, contents => $fh, recsep => "\n");
+    close $fh;
+
+    my $orig_eof = $rw->recsep($win, 'hex');
+    my $copy_eof = $rw->recsep($copy, 'hex');
+
+    ok ($orig_eof ne $copy_eof, "orig and copy differ w/ recsep (win)");
+
+    my @orig = $rw->read($win);
+    my @copy = $rw->read($copy);
+
+    is (@orig, @copy, "files contain the same num of lines with recsep (win)");
+}
 done_testing();
 
