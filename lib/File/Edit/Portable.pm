@@ -75,12 +75,12 @@ sub write {
         croak "write() requires 'contents' param sent in";
     }
 
-    $file = $copy if $copy;
-    
     if (! $self->{is_read}){
         $self->recsep($file);
     }
-    
+
+    $file = $copy if $copy;
+
     my $wfh = $self->_open($file, 'w');
 
     # certain FreeBSD versions on amd64 don't work

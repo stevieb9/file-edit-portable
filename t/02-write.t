@@ -124,6 +124,26 @@ SKIP: {
 
     is ($eor, '\0a', "platform_recsep() w/ no parameters can be used as custom recsep" );
 };
+{
 
+    my $file = $unix;
+    my $copy = catfile($tdir, 'write_bug_19.txt');
+
+    my $fh = $rw->read($file);
+    delete $rw->{file};
+    eval { $rw->write(copy => $copy, contents => $fh); };
+
+    like ($@, qr/\Qwrite() requires a file\E/, "write() croaks if not handed a file");
+
+    $rw->{file} = $file;
+    $rw->write(copy => $copy, contents => $fh, recsep => "\r");
+
+    $fh = $rw->read($file);
+    $rw->{is_read} = 0;
+    $rw->write(copy => $copy, contents => $fh);
+
+    is ($rw->recsep($copy, 'hex'), '\0a', "write() without is_read has the right recsep");
+
+}
 done_testing();
 
