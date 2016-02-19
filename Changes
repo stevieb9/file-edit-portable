@@ -1,6 +1,6 @@
 Revision history for File-Edit-Portable
 
-1.18    xxx
+1.19    xxx
         - is_read check in write() is now performed before $copy assignment
           to $file, so that the proper original file's recsep is used
           (fixes #19)
