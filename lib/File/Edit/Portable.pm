@@ -88,11 +88,7 @@ sub write {
 
     my @os = uname();
 
-    unless (
-            $os[0] eq 'FreeBSD' 
-            && ($os[2] eq '10.1-RELEASE' || $os[2] eq '9.2-RELEASE')
-            && $os[-1] eq 'amd64'
-        ){
+    unless ($os[0] eq 'FreeBSD' && $os[-1] eq 'amd64'){
         flock $wfh, LOCK_EX;
     }
 

@@ -5,6 +5,9 @@ Revision history for File-Edit-Portable
           to $file, so that the proper original file's recsep is used
           (fixes #19)
 
+1.18    2016-01-28
+        - flock() now disabled for all FreeBSD amd64 versions
+
 1.17    2016-01-26
         - dir() in write mode now does the transform with a file handle instead
           of slurping the entire file into an array (performance) (closes #16)
