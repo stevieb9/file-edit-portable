@@ -2,10 +2,15 @@
 use warnings;
 use strict;
 
+use Cwd;
+
+my $cwd = getcwd();
+print "$cwd\n";
+
 if ($^O ne 'MSWin32'){
-    system("sudo cpanm --installdeps . && make && make test");
+    system "cpanm --installdeps . && make && make test";
 }
 else {
-    system("cpanm --installdeps . && dmake && dmake test");
+    system "cpanm --installdeps . && dmake && dmake test";
 }
 
