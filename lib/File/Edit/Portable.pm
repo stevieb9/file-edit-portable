@@ -553,7 +553,7 @@ Mandatory.
 
 C<insert =E<gt> \@contents>
 
- Mandatory - an array reference containing the contents to merge into the file.
+Mandatory - an array reference containing the contents to merge into the file.
 
 C<copy =E<gt> 'file2.txt'>
 
