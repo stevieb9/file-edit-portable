@@ -60,7 +60,6 @@ sub write {
     my $self = shift;
     $self->_config(@_);
 
-    my $copy = $self->{copy};
     my $contents = $self->{contents};
     my $recsep = $self->{custom_recsep};
 
@@ -76,7 +75,7 @@ sub write {
         $self->recsep($self->{file});
     }
 
-    $self->{file} = $copy if $copy;
+    $self->{file} = $self->{copy} if $self->{copy};
 
     my $wfh = $self->_open($self->{file}, 'w');
 
