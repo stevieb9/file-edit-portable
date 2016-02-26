@@ -60,12 +60,11 @@ sub write {
     my $self = shift;
     $self->_config(@_);
 
-    my $file = $self->{file};
     my $copy = $self->{copy};
     my $contents = $self->{contents};
     my $recsep = $self->{custom_recsep};
 
-    if (! $file){
+    if (! $self->{file}){
         croak "write() requires a file to be passed in!";
     }
 
@@ -74,12 +73,12 @@ sub write {
     }
 
     if (! $self->{is_read}){
-        $self->recsep($file);
+        $self->recsep($self->{file});
     }
 
-    $file = $copy if $copy;
+    $self->{file} = $copy if $copy;
 
-    my $wfh = $self->_open($file, 'w');
+    my $wfh = $self->_open($self->{file}, 'w');
 
     # certain FreeBSD versions on amd64 don't work
     # with flock()
