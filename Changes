@@ -1,9 +1,9 @@
 Revision history for File-Edit-Portable
 
-1.20    2016-02-27
+1.20    2016-02-26
         - no functional changes
-        - code cleanup
-        - changed from croak() to confess()
+        - code cleanup, slight refactoring
+        - changed from croak() to confess() for better diagnostics
 
 1.19    2016-02-20
         - is_read check in write() is now performed before $copy assignment
