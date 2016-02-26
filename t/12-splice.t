@@ -13,7 +13,6 @@ BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
 }
 
-
 my $tempdir = File::Tempdir->new;
 my $tdir = $tempdir->name;
 my $bdir = 't/base';

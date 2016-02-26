@@ -31,7 +31,7 @@ sub read {
     $testing = $self->{testing};
 
     if (! $file){ 
-        croak "read() requires a file name sent in!";
+        confess "read() requires a file name sent in!";
     }
 
     $self->recsep($file);
@@ -46,7 +46,7 @@ sub read {
     else {
         $fh = $self->_open($file); 
         my @contents = <$fh>;
-        close $fh or croak "read() can't close file $file!: $!";
+        close $fh or confess "read() can't close file $file!: $!";
 
         if (! $testing){
             for (@contents){
@@ -60,15 +60,12 @@ sub write {
     my $self = shift;
     $self->_config(@_);
 
-    my $contents = $self->{contents};
-    my $recsep = $self->{custom_recsep};
-
     if (! $self->{file}){
-        croak "write() requires a file to be passed in!";
+        confess "write() requires a file to be passed in!";
     }
 
-    if (! $contents){
-        croak "write() requires 'contents' param sent in";
+    if (! $self->{contents}){
+        confess "write() requires 'contents' param sent in";
     }
 
     if (! $self->{is_read}){
@@ -88,9 +85,11 @@ sub write {
         flock $wfh, LOCK_EX;
     }
 
-    $recsep = defined $recsep ? $recsep : $self->{recsep};
+    my $recsep = defined $self->{custom_recsep}
+        ? $self->{custom_recsep}
+        : $self->{recsep};
 
-    # is contents a fh?
+    my $contents = $self->{contents};
 
     if (ref($contents) eq 'GLOB' || ref($contents) eq 'File::Temp'){
         seek $contents, 0, 0;
@@ -119,17 +118,17 @@ sub splice {
 
     my $file = $self->{file};
     my $copy = $self->{copy};
+    my $insert = $self->{insert};
     my $limit = defined $self->{limit} ? $self->{limit} : 1;
 
-    my $insert = $self->{insert};
     if (! $insert){
-        croak "splice() requires insert => [aref] param";
+        confess "splice() requires insert => [aref] param";
     }
 
     my ($line, $find) = ($self->{line}, $self->{find});
 
     if (! defined $line && ! defined $find){
-        croak "splice() requires either the 'line' or 'find' parameter sent in.";
+        confess "splice() requires either the 'line' or 'find' parameter sent in.";
     }
 
     if (defined $line && defined $find){
@@ -141,7 +140,7 @@ sub splice {
 
     if (defined $line){
         if ($line !~ /^[0-9]+$/){
-            croak "splice() requires its 'line' param to contain only an " .
+            confess "splice() requires its 'line' param to contain only an " .
                   "integer. You supplied: $line\n";
         }
         splice @contents, $line, 0, @$insert;
@@ -207,7 +206,9 @@ sub dir {
         $self->write(
                     file => $file, 
                     contents => $wfh,
-                    recsep => defined $recsep ? $recsep : $self->platform_recsep,
+                    recsep => defined $recsep
+                        ? $recsep
+                        : $self->platform_recsep,
                 );
     }
 
@@ -249,7 +250,7 @@ sub recsep {
         $self->{recsep} = $1;
     }
 
-    close $fh or croak "recsep() can't close file $file!: $!";
+    close $fh or confess "recsep() can't close file $file!: $!";
    
     if ($hex){ 
         $recsep = unpack "H*", $self->{recsep};
@@ -267,9 +268,6 @@ sub platform_recsep {
 
     my $file = $self->_temp_filename;
 
-    # this is for checking to see if we've cleaned up
-    # in DESTROY
-
     push @{ $self->{temp_files} }, $file;
 
     # for platform_recsep(), we need the file open in ASCII mode,
@@ -281,7 +279,7 @@ sub platform_recsep {
     print $wfh "abc\n";
 
     close $wfh
-      or croak "platform_recsep() can't close write temp file $file: $!";
+      or confess "platform_recsep() can't close write temp file $file: $!";
 
     my $fh = $self->_open($file);
 
@@ -290,7 +288,7 @@ sub platform_recsep {
     }
 
     close $fh
-      or croak "platform_recsep() can't close temp file $file after run: $!";
+      or confess "platform_recsep() can't close temp file $file after run: $!";
 
     if ($hex){
         my $recsep = unpack "H*", $self->{platform_recsep};
@@ -341,9 +339,6 @@ sub _handle {
 
         my $temp_filename = $temp_wfh->filename;
 
-        # we'll check these in DESTROY to make sure we've
-        # cleaned up appropriately
-
         push @{ $self->{temp_files} }, $temp_filename;
 
         my $platform_recsep = $self->platform_recsep;
@@ -376,11 +371,11 @@ sub _open {
 
     if ($mode =~ /^w/){
         open $fh, '>', $file
-          or croak "_open() can't open file $file for writing!: $!";
+          or confess "_open() can't open file $file for writing!: $!";
     }
     else {
         open $fh, '<', $file
-          or croak "_open() can't open file $file for reading!: $!";
+          or confess "_open() can't open file $file for reading!: $!";
     }
 
     binmode $fh, ':raw';
@@ -395,7 +390,7 @@ sub _temp_filename {
     my $file = $temp_fh->filename;
 
     close $temp_fh
-     or croak "_temp_filename() can't close the $file temp file: $!";
+     or confess "_temp_filename() can't close the $file temp file: $!";
 
     return $file;
 }
@@ -406,7 +401,7 @@ sub DESTROY {
         if (-f && $^O ne 'MSWin32'){
             eval { unlink $_ or die $!; };
             if ($@){
-                croak "File::Temp didn't unlink $_ temp file, and we " .
+                confess "File::Temp didn't unlink $_ temp file, and we " .
                       "can't unlink it in our DESTROY() either!: $@";
             }
         }
