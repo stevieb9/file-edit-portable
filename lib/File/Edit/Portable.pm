@@ -15,7 +15,6 @@ sub new {
     return bless {}, shift;
 }
 sub read {
-
     my $self = shift;
     my ($file, $testing);
 
@@ -58,7 +57,6 @@ sub read {
     }
 }
 sub write {
-
     my $self = shift;
     $self->_config(@_);
 
@@ -118,7 +116,6 @@ sub write {
     return 1;
 }
 sub splice {
-
     my $self = shift;
     $self->_config(@_);
 
@@ -175,7 +172,6 @@ sub splice {
     return @contents;
 }
 sub dir {
-    
     my $self = shift;
     $self->_config(@_);
 
@@ -220,7 +216,6 @@ sub dir {
     return @files;
 }
 sub recsep {
-
     my $self = shift;
     my $file = shift;
     my $hex = shift if @_;
@@ -313,7 +308,6 @@ sub tempfile {
     return $wfh;
 }
 sub _config {
-
     my $self = shift;
     my %p = @_;
 
@@ -334,7 +328,6 @@ sub _config {
     }
 }
 sub _handle {
-
     # returns a handle with platform's record separator
 
     my $self = shift;
@@ -375,7 +368,6 @@ sub _handle {
     }
 }
 sub _open {
-
     # returns a handle opened with binmode :raw
 
     my $self = shift;
@@ -398,7 +390,6 @@ sub _open {
     return $fh;
 }
 sub _temp_filename {
-
     my $self = shift;
 
     my $temp_fh = File::Temp->new(UNLINK => 1);
@@ -411,7 +402,6 @@ sub _temp_filename {
     return $file;
 }
 sub DESTROY {
-    
     my $self = shift;
 
     for (@{ $self->{temp_files} }){

@@ -1,5 +1,9 @@
 Revision history for File-Edit-Portable
 
+1.20    2016-02-25
+        - .gitignore fix
+        -
+
 1.19    2016-02-20
         - is_read check in write() is now performed before $copy assignment
           to $file, so that the proper original file's recsep is used
