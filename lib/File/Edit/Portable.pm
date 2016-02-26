@@ -119,14 +119,14 @@ sub splice {
 
     my $file = $self->{file};
     my $copy = $self->{copy};
-    my $insert = $self->{insert};
-    my $find = $self->{find};
-    my $line = $self->{line};
     my $limit = defined $self->{limit} ? $self->{limit} : 1;
 
+    my $insert = $self->{insert};
     if (! $insert){
         croak "splice() requires insert => [aref] param";
     }
+
+    my ($line, $find) = ($self->{line}, $self->{find});
 
     if (! defined $line && ! defined $find){
         croak "splice() requires either the 'line' or 'find' parameter sent in.";
