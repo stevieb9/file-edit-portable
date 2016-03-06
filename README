@@ -110,7 +110,9 @@ METHODS
 
     file => 'file.txt'
 
-    Not needed if you've used read() to open the file.
+    Not needed if you've used read() to open the file. However, if you have
+    multiple read()s open, write() will die without the 'file' param, as it
+    won't know which file you're wanting to write.
 
     copy => 'file2.txt'
 

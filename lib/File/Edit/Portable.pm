@@ -35,6 +35,7 @@ sub read {
     }
 
     $self->recsep($file);
+    $self->{files}{$file} = $self->{recsep};
     $self->{is_read} = 1;
 
     my $fh;
@@ -58,12 +59,19 @@ sub read {
 }
 sub write {
     my $self = shift;
-    $self->_config(@_);
+    my %p = @_;
+    $self->_config(%p);
 
     if (! $self->{file}){
         confess "write() requires a file to be passed in!";
     }
 
+    if (keys %{ $self->{files} } > 1 && ! $p{file}){
+        confess "if calling write() with more than one read() open, you must " .
+                "send in a file name with the 'file' parameter so we know " .
+                "which file to write. You currently have the following files " .
+                "open: " . join(' ', keys %{ $self->{files} }) . "\n";
+    }
     if (! $self->{contents}){
         confess "write() requires 'contents' param sent in";
     }
@@ -224,7 +232,7 @@ sub recsep {
         $fh = $self->_open($file);
     };
 
-    if ($@){
+    if ($@ || ! $fh){
 
         # we've got an empty file...
         # we'll set recsep to the local platform's
@@ -329,8 +337,8 @@ sub _handle {
             print $temp_wfh $_;
         }
         
-        close $fh or die "can't close file $file: $!";
-        close $temp_wfh or die "can't close file $temp_filename: $!";
+        close $fh or confess "can't close file $file: $!";
+        close $temp_wfh or confess "can't close file $temp_filename: $!";
 
         my $ret_fh = $self->_open($temp_filename);
         
@@ -527,11 +535,13 @@ Writes the data back to the original file, or alternately a new file. Returns 1
 on success. If you inadvertantly append newlines to the new elements of the
 contents array, we'll strip them off before appending the real newlines.
 
-Parameters: 
+Parameters:
 
 C<file =E<gt> 'file.txt'>
 
-Not needed if you've used C<read()> to open the file.
+Not needed if you've used C<read()> to open the file. However, if you have
+multiple C<read()>s open, C<write()> will die without the 'file' param, as it
+won't know which file you're wanting to write.
 
 C<copy =E<gt> 'file2.txt'>
 

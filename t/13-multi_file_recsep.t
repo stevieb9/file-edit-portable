@@ -41,7 +41,7 @@ my $unix_cp = catfile($tdir, 'unix.bak');
     my @win = $rw->read($win);
     my @nix = $rw->read($unix);
 
-    $rw->write(copy => $unix_cp, contents => \@nix);
+    $rw->write(file => $unix, copy => $unix_cp, contents => \@nix);
 
     my $recsep = $rw->recsep($unix_cp, 'hex');
 

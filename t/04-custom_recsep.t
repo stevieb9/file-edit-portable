@@ -20,9 +20,10 @@ my $unix = catfile($bdir, 'unix.txt');
 my $win = catfile($bdir, 'win.txt');
 my $copy = catfile($tdir, 'test.txt');
 
-my $rw = File::Edit::Portable->new;
 
 {
+    my $rw = File::Edit::Portable->new;
+
     my @file = $rw->read($unix);
 
     for (@file){
@@ -43,6 +44,8 @@ my $rw = File::Edit::Portable->new;
     is ($recsep, '\0d\0a', "custom recsep takes precedence" );
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     my @file = $rw->read($win);
 
     for (@file){

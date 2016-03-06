@@ -20,8 +20,9 @@ my $unix = catfile($bdir, 'unix.txt');
 my $win = catfile($bdir, 'win.txt');
 my $copy = catfile($tdir, 'test.txt');
 
-my $rw = File::Edit::Portable->new;
 {
+    my $rw = File::Edit::Portable->new;
+
     eval { $rw->write; };
     like ($@, qr/file/, "write() croaks if no file is found");
 
@@ -31,6 +32,8 @@ my $rw = File::Edit::Portable->new;
     like ($@, qr/contents/, "write() croaks if no contents are passed in");
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     my @file = $rw->read($unix);
 
     for (@file){
@@ -49,6 +52,8 @@ my $rw = File::Edit::Portable->new;
     is ($eor, '\0a', "unix line endings were replaced properly" );
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     my @file = $rw->read($win);
 
     for (@file){
@@ -67,6 +72,7 @@ my $rw = File::Edit::Portable->new;
     is ($eor, '\0d\0a', "win line endings were replaced properly" );
 }
 {
+    my $rw = File::Edit::Portable->new;
 
     my $file = $unix;
     my $copy = catfile($tdir, 'write_fh.txt');
@@ -86,6 +92,7 @@ my $rw = File::Edit::Portable->new;
     }
 }
 {
+    my $rw = File::Edit::Portable->new;
 
     my $mock = Mock::Sub->new;
     my $recsep_sub = $mock->mock('File::Edit::Portable::recsep', return_value => 1);
@@ -96,6 +103,11 @@ my $rw = File::Edit::Portable->new;
     my $fh = $rw->read($file);
     
     $rw->{is_read} = 0;
+
+    # we need to set this manually because of the mock, or else warnings will
+    # be emitted for uninit
+
+    $rw->{recsep} = 'blah';
     $rw->write(copy => $copy, contents => $fh);
  
     is($recsep_sub->called_count, 3, "recsep() is called if ! is_read");
@@ -103,6 +115,8 @@ my $rw = File::Edit::Portable->new;
 SKIP: {
 
     skip "win32 test, but not on windows", 1 unless $^O eq 'MSWin32';
+
+    my $rw = File::Edit::Portable->new;
 
     my $fh = $rw->read($unix);
 
@@ -116,6 +130,8 @@ SKIP: {
 
     skip "nix test but we're not on unix", 1 unless $^O ne 'MSWin32';
 
+    my $rw = File::Edit::Portable->new;
+
     my $fh = $rw->read($unix);
 
     $rw->write(copy => $copy, contents => $fh, recsep => $rw->platform_recsep);
@@ -125,6 +141,8 @@ SKIP: {
     is ($eor, '\0a', "platform_recsep() w/ no parameters can be used as custom recsep" );
 };
 {
+    my $rw = File::Edit::Portable->new;
+
     my @orig_contents = $rw->read($unix);
     {
 
@@ -147,58 +165,62 @@ SKIP: {
     }
 }
 {
-        my @orig_contents = $rw->read($win);
+    my $rw = File::Edit::Portable->new;
+    my @orig_contents = $rw->read($win);
 
-        my $fh = $rw->read($win);
-        $rw->write(copy => $copy, contents => $fh);
-        close $fh;
+    my $fh = $rw->read($win);
+    $rw->write(copy => $copy, contents => $fh);
+    close $fh;
 
-        my @copy_contents = $rw->read($copy);
+    my @copy_contents = $rw->read($copy);
 
-        is (
-            @orig_contents,
-            @copy_contents,
-            "file length equal when rewriting with different recsep (win)",
-        );
+    is (
+        @orig_contents,
+        @copy_contents,
+        "file length equal when rewriting with different recsep (win)",
+    );
 
-        my $orig_eof = $rw->recsep($win, 'hex');
-        my $copy_eof = $rw->recsep($copy, 'hex');
+    my $orig_eof = $rw->recsep($win, 'hex');
+    my $copy_eof = $rw->recsep($copy, 'hex');
 
-        is ($orig_eof, $copy_eof, "orig and copy have same eof (win)");
+    is ($orig_eof, $copy_eof, "orig and copy have same eof (win)");
 };
 {
-        my $fh = $rw->read($unix);
-        $rw->write(copy => $copy, contents => $fh, recsep => "\r\n");
-        close $fh;
+    my $rw = File::Edit::Portable->new;
+    my $fh = $rw->read($unix);
+    $rw->write(copy => $copy, contents => $fh, recsep => "\r\n");
+    close $fh;
 
-        my $orig_eof = $rw->recsep($unix, 'hex');
-        my $copy_eof = $rw->recsep($copy, 'hex');
+    my $orig_eof = $rw->recsep($unix, 'hex');
+    my $copy_eof = $rw->recsep($copy, 'hex');
 
-        ok ($orig_eof ne $copy_eof, "orig and copy differ w/ recsep (unix)");
+    ok ($orig_eof ne $copy_eof, "orig and copy differ w/ recsep (unix)");
 
-        my @orig = $rw->read($unix);
-        my @copy = $rw->read($copy);
+    my @orig = $rw->read($unix);
+    my @copy = $rw->read($copy);
 
-        is (@orig, @copy,
-            "files contain the same num of lines with recsep (unix)");
+    is (@orig, @copy,
+        "files contain the same num of lines with recsep (unix)");
 }
 {
-        my $fh = $rw->read($win);
-        $rw->write(copy => $copy, contents => $fh, recsep => "\n");
-        close $fh;
+    my $rw = File::Edit::Portable->new;
+    my $fh = $rw->read($win);
+    $rw->write(copy => $copy, contents => $fh, recsep => "\n");
+    close $fh;
 
-        my $orig_eof = $rw->recsep($win, 'hex');
-        my $copy_eof = $rw->recsep($copy, 'hex');
+    my $orig_eof = $rw->recsep($win, 'hex');
+    my $copy_eof = $rw->recsep($copy, 'hex');
 
-        ok ($orig_eof ne $copy_eof, "orig and copy differ w/ recsep (win)");
+    ok ($orig_eof ne $copy_eof, "orig and copy differ w/ recsep (win)");
 
-        my @orig = $rw->read($win);
-        my @copy = $rw->read($copy);
+    my @orig = $rw->read($win);
+    my @copy = $rw->read($copy);
 
-        is (@orig, @copy,
-            "files contain the same num of lines with recsep (win)");
+    is (@orig, @copy,
+        "files contain the same num of lines with recsep (win)");
 }
 {
+    my $rw = File::Edit::Portable->new;
     my $file = $unix;
     my $copy = catfile($tdir, 'write_bug_19.txt');
 
@@ -217,6 +239,36 @@ SKIP: {
 
     is ($rw->recsep($copy, 'hex'), '\0a', "write() without is_read has the right recsep");
 
+}
+{
+    my $rw = File::Edit::Portable->new;
+
+    my $fh = $rw->read($win);
+    my $fh2 = $rw->read($unix);
+
+    eval { $rw->write(copy => $copy, contents => $fh); };
+
+    like (
+        $@,
+        qr/\Qif calling write() with more than one read()/,
+        "write() barfs if called without a file and multiple read()s open"
+    );
+
+    eval { $rw->write(file => $unix, copy => $copy, contents => $fh); };
+    is ($@, '', "...but works if a file is sent in");
+
+}
+{
+    my $warn;
+    local $SIG{__WARN__} = sub { $warn = shift; };
+
+    my $rw = File::Edit::Portable->new;
+
+    my $fh = $rw->read($win);
+    $rw->write(copy => $copy, contents => $fh);
+
+    <$fh>;
+    like ($warn, qr/\Qreadline() on closed\E/, "write() closes a contents \$fh");
 }
 done_testing();
 

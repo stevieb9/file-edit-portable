@@ -25,6 +25,8 @@ my $rw = File::Edit::Portable->new;
 my @insert = <DATA>;
 
 {
+    my $rw = File::Edit::Portable->new;
+
     my @ret = $rw->splice(
         file => $file,
         copy => $copy,
@@ -41,6 +43,8 @@ my @insert = <DATA>;
     is(@new, @ret, "splice() writes the correct number of lines in the file");
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     my @ret = $rw->splice(
         file => $file,
         copy => $copy,
@@ -57,6 +61,8 @@ my @insert = <DATA>;
     is(@new, @ret, "splice() writes the correct number of lines in the file");
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     my @ret = $rw->splice(
         file => $file,
         copy => $copy,
@@ -73,6 +79,8 @@ my @insert = <DATA>;
     is(@new, @ret, "splice() with find writes the file properly");
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     my @ret = $rw->splice(
         file => $file,
         copy => $copy,
@@ -89,6 +97,8 @@ my @insert = <DATA>;
     is(@new, @ret, "splice() with find writes the file properly");
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     eval {
         my @ret = $rw->splice(
             file => $file,
@@ -101,6 +111,8 @@ my @insert = <DATA>;
     like($@, qr/splice()/, "splice() croaks if find or insert params aren't sent in");
 } 
 {
+    my $rw = File::Edit::Portable->new;
+
     my @ret = $rw->splice(
         file => $file,
         copy => $copy,
@@ -111,6 +123,8 @@ my @insert = <DATA>;
     is(ref(\@ret), 'ARRAY', "splice() returns an array");
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     eval {
         my @ret = $rw->splice(
             file => '',
@@ -123,6 +137,8 @@ my @insert = <DATA>;
     like($@, qr/read()/, "splice() croaks if a file isn't sent in");
 } 
 {
+    my $rw = File::Edit::Portable->new;
+
     my @ret = $rw->splice(
         file => $file,
         copy => $copy,
@@ -146,6 +162,8 @@ my @insert = <DATA>;
     is($count, 2, "limit set to 2 does the right thing");
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     my @ret = $rw->splice(
         file => $file,
         copy => $copy,
@@ -173,6 +191,8 @@ my @insert = <DATA>;
     is($count, 4, "limit set to 4 does the right thing");
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     my @ret = $rw->splice(
         file => $file,
         copy => $copy,
@@ -200,6 +220,8 @@ my @insert = <DATA>;
     is($count, 4, "limit set to 4 does the right thing");
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     my @code = ('testing', 'more testing');
 
     my @ret = $rw->splice(
@@ -219,6 +241,8 @@ my @insert = <DATA>;
     is(@new, @ret, "splice() with find writes the file properly");
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     my @code = ('testing', 'more testing');
 
     my @ret = $rw->splice(
@@ -244,6 +268,8 @@ my @insert = <DATA>;
     is(@new, @ret, "splice() with find writes the file properly");
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     my @code = ('testing', 'more testing');
 
     my @ret = $rw->splice(
@@ -279,6 +305,8 @@ my @insert = <DATA>;
     is(@new, @ret, "splice() with find writes the file properly");
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     my @warnings;
 
     local $SIG{__WARN__} = sub {
@@ -300,6 +328,8 @@ my @insert = <DATA>;
     is($ret[6], 'more testing', "splice() with both line and find params does line");
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     my @code = ('testing', 'more testing');
 
     eval {
@@ -313,6 +343,8 @@ my @insert = <DATA>;
     like ($@, qr/splice\(\) requires/, "splice() croaks without either find or line");
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     eval {
         my @ret = $rw->splice(
             file => $file,
@@ -330,6 +362,8 @@ my @insert = <DATA>;
 
 }
 {
+    my $rw = File::Edit::Portable->new;
+
     my $re = qr/one?/;
 
     my @ret = $rw->splice(
