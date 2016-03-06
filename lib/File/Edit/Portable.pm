@@ -224,15 +224,12 @@ sub recsep {
         $fh = $self->_open($file);
     };
 
-    my $recsep;
-
-    if ($@ || ! <$fh>){
+    if ($@){
 
         # we've got an empty file...
         # we'll set recsep to the local platform's
 
-        $recsep = $self->platform_recsep;
-        $self->{recsep} = $recsep;
+        $self->{recsep} = $self->platform_recsep;
 
         return $want
             ? $self->_convert_recsep($self->{recsep}, $want)
@@ -260,13 +257,12 @@ sub platform_recsep {
 
     my $file = $self->_temp_filename;
 
-    push @{ $self->{temp_files} }, $file;
-
     # for platform_recsep(), we need the file open in ASCII mode,
     # so we can't use _open() or File::Temp
 
     open my $wfh, '>', $file
-      or die "platform_recsep() can't open temp file $file for writing!: $!";
+      or confess
+        "platform_recsep() can't open temp file $file for writing!: $!";
 
     print $wfh "abc\n";
 
@@ -327,8 +323,6 @@ sub _handle {
         binmode $temp_wfh, ':raw';
 
         my $temp_filename = $temp_wfh->filename;
-
-        push @{ $self->{temp_files} }, $temp_filename;
 
         while (<$fh>){
             $_ = $self->_platform_replace($_);
@@ -407,19 +401,6 @@ sub _strip_ends {
     $str =~ s/[\n\x{0B}\f\r\x{85}]{1,2}//g;
     return $str;
 }
-sub DESTROY {
-    my $self = shift;
-
-    for (@{ $self->{temp_files} }){
-        if (-f && $^O ne 'MSWin32'){
-            eval { unlink $_ or die $!; };
-            if ($@){
-                confess "File::Temp didn't unlink $_ temp file, and we " .
-                      "can't unlink it in our DESTROY() either!: $@";
-            }
-        }
-    }
-}
 sub _temp_filename {
     shift;
 
@@ -492,7 +473,12 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
     # insert new data into a file after a found search term
 
     $rw->splice(file => 'file.txt', find => 'term', insert => \@contents);
-    
+
+    # get a file's record separator
+
+    $rw->recsep('file.txt'); # string form
+    $rw->recsep('file.txt', 'hex'); # hex form
+    $rw->recsep('file.txt', 'os');  # OS name (nix, win, mac, etc)
 
 =head1 DESCRIPTION
 
@@ -644,19 +630,24 @@ files found, but won't take any editing action on them.
 
 Default is disabled.
 
-=head2 C<recsep('file.txt', 'hex')>
+=head2 C<recsep('file.txt', $want)>
 
 Returns the record separator found within the file. If the file is empty, we'll
 return the local platform's default record separator.
 
-If the optional string parameter 'hex' is sent in, we'll return the record
-separator in hex format. Otherwise, by default, it's returned in string form.
+The optional C<$want> parameter can contain either 'hex' or 'os'. If 'hex' is
+sent in, the record separator will be returned in hex form (eg: "\0d\0a" for
+Windows). If 'os' is sent in, we'll return a short-form of the OS name (eg:
+win, nix, mac, etc).
 
-=head2 C<platform_recsep('hex')>
+=head2 C<platform_recsep($want)>
 
-Returns the the current platform's (OS) record separator. If the optional
-string value "hex" is sent in, we'll return the recsep in hex format.
-Otherwise, we'll return it in as-is string format.
+Returns the the current platform's (OS) record separator in string form.
+
+The optional C<$want> parameter can contain either 'hex' or 'os'. If 'hex' is
+sent in, the record separator will be returned in hex form (eg: "\0d\0a" for
+Windows). If 'os' is sent in, we'll return a short-form of the OS name (eg:
+win, nix, mac, etc).
 
 =head2 C<tempfile>
 
