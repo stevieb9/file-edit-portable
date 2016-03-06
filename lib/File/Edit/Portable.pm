@@ -370,6 +370,8 @@ sub _open {
     return $fh;
 }
 sub _convert_recsep {
+    # converts recsep to either hex or OS name
+
     my ($self, $sep, $want) = @_;
 
     if ($want eq 'hex'){
@@ -386,15 +388,21 @@ sub _convert_recsep {
     }
 }
 sub _recsep_regex {
+    # returns a regex object representing all recseps
+
     my $re = qr/([\n\x{0B}\f\r\x{85}]{1,2})/;
     return $re;
 }
 sub _platform_replace {
+    # replace recseps in a string with the platform recsep
+
     my ($self, $str) = @_;
     $str =~ s/[\n\x{0B}\f\r\x{85}]{1,2}/$self->platform_recsep/ge;
     return $str;
 }
 sub _strip_ends {
+    # strip all line endings from string
+
     my ($self, $str) = @_;
     $str =~ s/[\n\x{0B}\f\r\x{85}]{1,2}//g;
     return $str;
