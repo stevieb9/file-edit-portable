@@ -217,7 +217,7 @@ sub dir {
 sub recsep {
     my $self = shift;
     my $file = shift;
-    my $hex = shift if @_;
+    my $want = shift if @_;
 
     my $fh;
     eval {
@@ -234,14 +234,9 @@ sub recsep {
         $recsep = $self->platform_recsep;
         $self->{recsep} = $recsep;
 
-        if ($hex){
-            $recsep = unpack "H*", $recsep;
-            $recsep =~ s/0/\\0/g;
-            return $recsep;
-        }
-        else {
-            return $self->{recsep};
-        }
+        return $want
+            ? $self->_convert_recsep($self->{recsep}, $want)
+            : $self->{recsep};
     }
 
     seek $fh, 0, 0;
@@ -251,20 +246,15 @@ sub recsep {
     }
 
     close $fh or confess "recsep() can't close file $file!: $!";
-   
-    if ($hex){ 
-        $recsep = unpack "H*", $self->{recsep};
-        $recsep =~ s/0/\\0/g;
-        return $recsep;
-    }
-    else {
-        return $self->{recsep};
-    }
+
+    return $want
+        ? $self->_convert_recsep($self->{recsep}, $want)
+        : $self->{recsep};
 }
 sub platform_recsep {
 
     my $self = shift;
-    my $hex = shift if @_;
+    my $want = shift if @_;
 
     my $file = $self->_temp_filename;
 
@@ -290,14 +280,9 @@ sub platform_recsep {
     close $fh
       or confess "platform_recsep() can't close temp file $file after run: $!";
 
-    if ($hex){
-        my $recsep = unpack "H*", $self->{platform_recsep};
-        $recsep =~ s/0/\\0/g;
-        return $recsep;
-    }
-    else {
-        return $self->{platform_recsep};
-    }
+    return $want
+        ? $self->_convert_recsep($self->{platform_recsep}, $want)
+        : $self->{platform_recsep};
 }
 sub tempfile {
     my $wfh = File::Temp->new(UNLINK => 1);
