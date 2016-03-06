@@ -25,6 +25,11 @@ is ($hex, '\0d\0a', 'converts win to hex ok');
 $os = $rw->_convert_recsep("\r\n", 'os');
 is ($os, 'win', 'converts win to os ok');
 
+$hex = $rw->_convert_recsep("\r", 'hex');
+is ($hex, '\0d', 'converts mac to hex ok');
+$os = $rw->_convert_recsep("\r", 'os');
+is ($os, 'mac', 'converts mac to os ok');
+
 $hex = $rw->_convert_recsep("xxx", 'hex');
 is ($hex, '787878', 'converts unknown to hex ok');
 $os = $rw->_convert_recsep("xxx", 'os');
