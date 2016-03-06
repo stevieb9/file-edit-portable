@@ -219,7 +219,7 @@ sub recsep {
     my $file = shift;
     my $hex = shift if @_;
 
-    my $fh; 
+    my $fh;
     eval {
         $fh = $self->_open($file);
     };
@@ -405,6 +405,22 @@ sub DESTROY {
                       "can't unlink it in our DESTROY() either!: $@";
             }
         }
+    }
+}
+sub _convert_recsep {
+    my ($self, $sep, $want) = @_;
+
+    if ($want eq 'hex'){
+        $sep = unpack "H*", $sep;
+        $sep =~ s/0/\\0/g;
+        return $sep;
+    }
+    elsif ($want eq 'os'){
+        my $hex_sep = $self->_convert_recsep($sep, 'hex');
+        return 'nix' if $hex_sep =~ /^\\0a$/;
+        return 'win' if $hex_sep =~ /^\\0d\\0a$/;
+        return 'mac' if $hex_sep =~ /^\\0d$/;
+        return 'unknown';
     }
 }
 sub _vim_placeholder { return 1; }; # for folding

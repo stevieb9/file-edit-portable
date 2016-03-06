@@ -45,7 +45,7 @@ my $unix_cp = catfile($tdir, 'unix.bak');
 
     my $recsep = $rw->recsep($unix_cp, 'hex');
 
-    is ($recsep, '\0a', "with only one read(), recsep is written properly");
+    is ($recsep, '\0a', "with two read(), recsep is written properly");
 }
 
 done_testing();
