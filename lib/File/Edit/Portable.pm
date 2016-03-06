@@ -50,7 +50,7 @@ sub read {
 
         if (! $testing){
             for (@contents){
-                s/[\n\x{0B}\f\r\x{85}]{1,2}//;
+                $_ = $self->_strip_ends($_);
             }
         }
         return @contents;
@@ -95,14 +95,14 @@ sub write {
         seek $contents, 0, 0;
 
         while (<$contents>){
-            s/[\n\x{0B}\f\r\x{85}]{1,2}//g;
+            $_ = $self->_strip_ends($_);
             print $wfh $_ . $recsep;
         }
         close $contents;
     }
     else {
         for (@$contents){
-            s/[\n\x{0B}\f\r\x{85}]{1,2}//g;
+            $_ = $self->_strip_ends($_);
             print $wfh $_ . $recsep;
         }
     }
@@ -241,7 +241,9 @@ sub recsep {
 
     seek $fh, 0, 0;
 
-    if (<$fh> =~ /([\n\x{0B}\f\r\x{85}]{1,2})/){
+    my $recsep_regex = $self->_recsep_regex;
+
+    if (<$fh> =~ /$recsep_regex/){
         $self->{recsep} = $1;
     }
 
@@ -273,7 +275,9 @@ sub platform_recsep {
 
     my $fh = $self->_open($file);
 
-    if (<$fh> =~ /([\n\x{0B}\f\r\x{85}]{1,2})/){
+    my $recsep_regex = $self->_recsep_regex;
+
+    if (<$fh> =~ /$recsep_regex/){
         $self->{platform_recsep} = $1;
     }
 
@@ -326,10 +330,8 @@ sub _handle {
 
         push @{ $self->{temp_files} }, $temp_filename;
 
-        my $platform_recsep = $self->platform_recsep;
-
         while (<$fh>){
-            s/[\n\x{0B}\f\r\x{85}]{1,2}/$platform_recsep/g;
+            $_ = $self->_platform_replace($_);
             print $temp_wfh $_;
         }
         
@@ -367,31 +369,6 @@ sub _open {
 
     return $fh;
 }
-sub _temp_filename {
-    my $self = shift;
-
-    my $temp_fh = File::Temp->new(UNLINK => 1);
-
-    my $file = $temp_fh->filename;
-
-    close $temp_fh
-     or confess "_temp_filename() can't close the $file temp file: $!";
-
-    return $file;
-}
-sub DESTROY {
-    my $self = shift;
-
-    for (@{ $self->{temp_files} }){
-        if (-f && $^O ne 'MSWin32'){
-            eval { unlink $_ or die $!; };
-            if ($@){
-                confess "File::Temp didn't unlink $_ temp file, and we " .
-                      "can't unlink it in our DESTROY() either!: $@";
-            }
-        }
-    }
-}
 sub _convert_recsep {
     my ($self, $sep, $want) = @_;
 
@@ -407,6 +384,44 @@ sub _convert_recsep {
         return 'mac' if $hex_sep =~ /^\\0d$/;
         return 'unknown';
     }
+}
+sub _recsep_regex {
+    my $re = qr/([\n\x{0B}\f\r\x{85}]{1,2})/;
+    return $re;
+}
+sub _platform_replace {
+    my ($self, $str) = @_;
+    $str =~ s/[\n\x{0B}\f\r\x{85}]{1,2}/$self->platform_recsep/ge;
+    return $str;
+}
+sub _strip_ends {
+    my ($self, $str) = @_;
+    $str =~ s/[\n\x{0B}\f\r\x{85}]{1,2}//g;
+    return $str;
+}
+sub DESTROY {
+    my $self = shift;
+
+    for (@{ $self->{temp_files} }){
+        if (-f && $^O ne 'MSWin32'){
+            eval { unlink $_ or die $!; };
+            if ($@){
+                confess "File::Temp didn't unlink $_ temp file, and we " .
+                      "can't unlink it in our DESTROY() either!: $@";
+            }
+        }
+    }
+}
+sub _temp_filename {
+    shift;
+
+    my $temp_fh = File::Temp->new(UNLINK => 1);
+    my $filename = $temp_fh->filename;
+
+    close $temp_fh
+     or confess "_temp_filename() can't close the $filename temp file: $!";
+
+    return $filename;
 }
 sub _vim_placeholder { return 1; }; # for folding
 
