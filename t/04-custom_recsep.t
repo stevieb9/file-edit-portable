@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use File::Copy;
-use File::Spec::Functions;
 use File::Tempdir;
 use Test::More;
 
@@ -16,10 +15,9 @@ my $tempdir = File::Tempdir->new;
 my $tdir = $tempdir->name;
 my $bdir = 't/base';
 
-my $unix = catfile($bdir, 'unix.txt');
-my $win = catfile($bdir, 'win.txt');
-my $copy = catfile($tdir, 'test.txt');
-
+my $unix = "$bdir/unix.txt";
+my $win = "$bdir/win.txt";
+my $copy = "$tdir/test.txt";
 
 {
     my $rw = File::Edit::Portable->new;

@@ -5,7 +5,6 @@ use warnings;
 
 use Data::Dumper;
 use File::Copy;
-use File::Spec::Functions;
 use File::Tempdir;
 use Test::More;
 
@@ -17,8 +16,8 @@ my $tempdir = File::Tempdir->new;
 my $tdir = $tempdir->name;
 my $bdir = 't/base';
 
-my $file = catfile($bdir, 'splice.txt');
-my $copy = catfile($tdir, 'splice.bak');
+my $file = "$bdir/splice.txt";
+my $copy = "$tdir/splice.bak";
 
 my $rw = File::Edit::Portable->new;
 

@@ -3,7 +3,6 @@ use 5.006;
 use strict;
 use warnings;
 
-use File::Spec::Functions;
 use Test::More;
 
 BEGIN {
@@ -11,8 +10,8 @@ BEGIN {
 }
 
 my $bdir = 't/base';
-my $unix = catfile($bdir, 'unix.txt');
-my $win = catfile($bdir, 'win.txt');
+my $unix = "$bdir/unix.txt";
+my $win = "$bdir/win.txt";
 
 my $rw = File::Edit::Portable->new;
 

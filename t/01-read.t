@@ -5,7 +5,6 @@ use warnings;
 
 use Data::Dumper;
 use File::Copy;
-use File::Spec::Functions;
 use File::Tempdir;
 use Test::More;
 
@@ -21,7 +20,7 @@ my $tempdir = File::Tempdir->new;
 my $tdir = $tempdir->name;
 my $bdir = 't/base';
 
-my $copy = catfile($tdir, 'test.txt');
+my $copy = "$tdir/test.txt";
 
 my $rw = File::Edit::Portable->new;
 

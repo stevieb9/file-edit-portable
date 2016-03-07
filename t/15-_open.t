@@ -5,7 +5,7 @@ use warnings;
 
 use Data::Dumper;
 use File::Copy;
-use Test::More tests => 2;
+use Test::More;
 
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
@@ -23,3 +23,5 @@ my $rw = File::Edit::Portable->new;
     like ($@, qr/_open\(\) can't/, "coverage for open bad file");
 
 }
+
+done_testing();

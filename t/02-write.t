@@ -7,7 +7,6 @@ use Data::Dumper;
 use Fcntl qw(:flock);
 use File::Copy;
 use File::Edit::Portable;
-use File::Spec::Functions;
 use File::Tempdir;
 use Mock::Sub;
 use Test::More;
@@ -16,9 +15,9 @@ my $tempdir = File::Tempdir->new;
 my $tdir = $tempdir->name;
 my $bdir = 't/base';
 
-my $unix = catfile($bdir, 'unix.txt');
-my $win = catfile($bdir, 'win.txt');
-my $copy = catfile($tdir, 'test.txt');
+my $unix = "$bdir/unix.txt";
+my $win = "$bdir/win.txt";
+my $copy = "$tdir/test.txt";
 
 {
     my $rw = File::Edit::Portable->new;
@@ -75,7 +74,7 @@ my $copy = catfile($tdir, 'test.txt');
     my $rw = File::Edit::Portable->new;
 
     my $file = $unix;
-    my $copy = catfile($tdir, 'write_fh.txt');
+    my $copy = "$tdir/write_fh.txt";
 
     my $fh = $rw->read($file);
     my @read_contents = $rw->read($file);
@@ -98,7 +97,7 @@ my $copy = catfile($tdir, 'test.txt');
     my $recsep_sub = $mock->mock('File::Edit::Portable::recsep', return_value => 1);
 
     my $file = $unix;
-    my $copy = catfile($tdir, 'write_fh.txt');
+    my $copy = "$tdir/write_fh.txt";
 
     my $fh = $rw->read($file);
     
@@ -222,7 +221,7 @@ SKIP: {
 {
     my $rw = File::Edit::Portable->new;
     my $file = $unix;
-    my $copy = catfile($tdir, 'write_bug_19.txt');
+    my $copy = "$tdir/write_bug_19.txt";
 
     my $fh = $rw->read($file);
     delete $rw->{file};
