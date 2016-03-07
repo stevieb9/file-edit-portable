@@ -25,20 +25,13 @@ WriteMakefile(
     PL_FILES         => {},
     MIN_PERL_VERSION => 5.008,
     CONFIGURE_REQUIRES => {
-        'ExtUtils::MakeMaker' => 0,
     },
     BUILD_REQUIRES => {
-        'File::Spec' => 0,
         'File::Tempdir' => 0,
         'Mock::Sub'  => '1.06',
-        'Test::More' => 0,
     },
     PREREQ_PM => {
-        Carp => 0,
-        Fcntl => 0,
         'File::Find::Rule' => 0,
-        'File::Temp' => 0,
-        POSIX => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'File-Edit-Portable-*' },
