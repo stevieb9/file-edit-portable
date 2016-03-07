@@ -6,10 +6,14 @@ use warnings;
 our $VERSION = '1.22';
 
 use Carp;
+use Exporter;
 use Fcntl qw(:flock);
 use File::Find::Rule;
 use File::Temp;
 use POSIX qw(uname);
+
+our @ISA = qw(Exporter);
+our @EXPORT_OK = qw(recsep platform_recsep);
 
 sub new {
     return bless {}, shift;
@@ -227,7 +231,10 @@ sub dir {
     return @files;
 }
 sub recsep {
-    my $self = shift;
+    my $self = ref $_[0] eq __PACKAGE__
+        ? shift
+        : __PACKAGE__->new;
+
     my $file = shift;
     my $want = shift if @_;
 
@@ -263,8 +270,10 @@ sub recsep {
         : $self->{recsep};
 }
 sub platform_recsep {
+    my $self = ref $_[0] eq __PACKAGE__
+        ? shift
+        : __PACKAGE__->new;
 
-    my $self = shift;
     my $want = shift if @_;
 
     my $file = $self->_temp_filename;
