@@ -44,6 +44,7 @@ sub read {
     $self->recsep($file);
     $self->{files}{$file}{is_read} = 1;
     $self->{files}{$file}{recsep} = $self->{recsep};
+    $self->{reads}{count} = keys %{ $self->{files} };
 
     my $fh;
 
@@ -73,8 +74,10 @@ sub write {
         confess "write() requires a file to be passed in!";
     }
 
-    if (keys %{ $self->{files} } > 1 && ! $p{file}){
-        confess "if calling write() with more than one read() open, you must " .
+    my $reads_count = $self->{reads}{count} || 0;
+
+    if ($reads_count > 1 && ! $p{file}){
+        confess "\nif calling write() with more than one read() open, you must " .
                 "send in a file name with the 'file' parameter so we know " .
                 "which file to write. You currently have the following files " .
                 "open: " . join(' ', keys %{ $self->{files} }) . "\n";
@@ -108,8 +111,19 @@ sub write {
 
     my $contents = $self->{contents};
 
-    if (ref($contents) eq 'GLOB' || ref($contents) eq 'File::Temp'){
-        seek $contents, 0, 0;
+    if (ref($contents) eq 'GLOB' || ref($contents) eq 'File::Temp') {
+        {
+            my $warn;
+            local $SIG{__WARN__} = sub { $warn = shift; };
+
+            seek $contents, 0, 0;
+
+            if ($warn) {
+                confess "\nthe file handle you're passing into write() as ".
+                    "the contents param has already been closed\n";
+            }
+
+        };
 
         while (<$contents>){
             $_ = $self->_strip_ends($_);
@@ -126,6 +140,7 @@ sub write {
 
     close $wfh;
     delete $self->{files}{$file}; # cleanup open list
+    $self->{reads}{count} = 0 if keys %{ $self->{files} } == 0;
 
     return 1;
 }

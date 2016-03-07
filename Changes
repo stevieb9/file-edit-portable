@@ -9,6 +9,8 @@ Revision history for File-Edit-Portable
         - cleanup of numerous unnecessary prereqs in Makefile.PL
         - write() now uses the correct recsep for a file if multiple read()s
           are concurrently open (fixes #30)
+        - catch warning and die if write() is called with the 'contents' param
+          set to a previously closed file handle (closes #31)
 
 1.21    2016-03-07
         - write() now dies if not called with the 'file' param and more than

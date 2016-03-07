@@ -295,5 +295,47 @@ SKIP: {
     is (defined $rw->{files}{$unix}, '', "after write(), unix read() disappears");
     is (defined $rw->{files}{$win}, '', "...and win is still disappeared");
 }
+{ #bug 31 - seek on closed fh
+    my $rw = File::Edit::Portable->new;
+
+    my $fh;
+    $fh = $rw->read($unix);
+
+    $rw->write(file => $unix, copy => $copy, contents => $fh);
+    eval { $rw->write(file => $unix, copy => $copy, contents => $fh); };
+
+    like ($@, qr/the file handle you're/, "bug 31 catch - die on closed fh");
+}
+{
+    my $rw = File::Edit::Portable->new;
+
+    my $fh = $rw->read($unix);
+    my $fh2 = $rw->read($win);
+
+    $rw->write(file => $unix, copy => $copy, contents => $fh);
+
+    is (
+        $rw->recsep($copy, 'type'),
+        'nix',
+        "with two read()s open write() works with 'file' param"
+    );
+
+    eval { $rw->write(copy => $copy, contents => $fh2); };
+
+    like (
+        $@,
+        qr/if calling write/,
+        "if read() has been called more than once even with only one file " .
+        "still open, write() requires the 'file' param");
+
+    $rw->write(file => $win, copy => $copy, contents => $fh2);
+
+    is (
+        $rw->recsep($copy, 'type'),
+        'win',
+        "with one read() closed, write() doesn't need 'file'"
+    );
+}
+
 done_testing();
 
