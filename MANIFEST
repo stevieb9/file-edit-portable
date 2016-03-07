@@ -20,7 +20,7 @@ t/12-splice.t
 t/13-multi_file_recsep.t
 t/14-tempfile.t
 t/15-_open.t
-t/16-_to_hex.t
+t/16-_convert_recsep.t
 t/base/empty.txt
 t/base/splice.txt
 t/base/unix.txt

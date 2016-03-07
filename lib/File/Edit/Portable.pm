@@ -399,14 +399,16 @@ sub _platform_replace {
     # replace recseps in a string with the platform recsep
 
     my ($self, $str) = @_;
-    $str =~ s/[\n\x{0B}\f\r\x{85}]{1,2}/$self->platform_recsep/ge;
+    my $re = $self->_recsep_regex;
+    $str =~ s/$re/$self->platform_recsep/ge;
     return $str;
 }
 sub _strip_ends {
     # strip all line endings from string
 
     my ($self, $str) = @_;
-    $str =~ s/[\n\x{0B}\f\r\x{85}]{1,2}//g;
+    my $re = $self->_recsep_regex;
+    $str =~ s/$re//g;
     return $str;
 }
 sub _temp_filename {
