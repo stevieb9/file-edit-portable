@@ -5,6 +5,7 @@ Revision history for File-Edit-Portable
           namespace (non-OO) (closes #23)
         - cleaned up return structure for recsep types (closes #29)
         - renamed _open() to _binmode_handle()
+        - cleanup and tidy of all test files
 
 1.21    2016-03-07
         - write() now dies if not called with the 'file' param and more than
