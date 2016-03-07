@@ -12,7 +12,9 @@ use File::Temp;
 use POSIX qw(uname);
 
 sub new {
-    return bless {}, shift;
+    return bless {
+        rs_cache => 0,
+    }, shift;
 }
 sub read {
     my $self = shift;
@@ -35,17 +37,19 @@ sub read {
     }
 
     $self->recsep($file);
-    $self->{files}{$file} = $self->{recsep};
+    $self->{files}{$file}{recsep} = $self->{recsep};
     $self->{is_read} = 1;
 
     my $fh;
 
     if (! wantarray){
         $fh = $self->_handle($file);
+        $self->{files}{$file}{mtime} = (stat $fh)[9];
         return $fh;
     }
     else {
-        $fh = $self->_open($file); 
+        $fh = $self->_open($file);
+        $self->{files}{$file}{mtime} = (stat $fh)[9];
         my @contents = <$fh>;
         close $fh or confess "read() can't close file $file!: $!";
 
@@ -79,6 +83,8 @@ sub write {
     if (! $self->{is_read}){
         $self->recsep($self->{file});
     }
+
+    my $file = $self->{file}; # needed for cleanup of recsep cache
 
     $self->{file} = $self->{copy} if $self->{copy};
 
@@ -117,7 +123,8 @@ sub write {
 
     close $wfh;
     $self->{is_read} = 0;
-    
+    delete $self->{files}{$file}; # cleanup recsep cache
+
     return 1;
 }
 sub splice {
@@ -242,6 +249,15 @@ sub recsep {
         return $want
             ? $self->_convert_recsep($self->{recsep}, $want)
             : $self->{recsep};
+    }
+
+    my $file_mtime = $self->{files}{$file}{mtime} || 0;
+    my $cached = $self->{files}{$file}{recsep};
+
+    if ($self->{rs_cache} && $file_mtime == (stat $fh)[9] && defined $cached){
+         return $want
+            ? $self->_convert_recsep($cached, $want)
+            : $cached;
     }
 
     seek $fh, 0, 0;
