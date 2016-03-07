@@ -403,10 +403,14 @@ sub _convert_recsep {
     }
     elsif ($want eq 'type'){
         my $hex_sep = $self->_convert_recsep($sep, 'hex');
-        return 'nix' if $hex_sep =~ /^\\0a$/;
-        return 'win' if $hex_sep =~ /^\\0d\\0a$/;
-        return 'mac' if $hex_sep =~ /^\\0d$/;
-        return 'unknown';
+
+        my %seps = (
+            '\0a'    => 'nix',
+            '\0d\0a' => 'win',
+            '\0d'    => 'mac',
+        );
+
+        return $seps{$hex_sep} || 'unknown';
     }
 }
 sub _recsep_regex {
