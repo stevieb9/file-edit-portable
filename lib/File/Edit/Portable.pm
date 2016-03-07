@@ -411,7 +411,6 @@ sub _convert_recsep {
 }
 sub _recsep_regex {
     # returns a regex object representing all recseps
-
     return qr/([\n\x{0B}\f\r\x{85}]{1,2})/;
 }
 sub _platform_replace {
@@ -419,7 +418,8 @@ sub _platform_replace {
 
     my ($self, $str) = @_;
     my $re = $self->_recsep_regex;
-    return $str =~ s/$re/$self->platform_recsep/ge;
+    $str =~ s/$re/$self->platform_recsep/ge;
+    return $str;
 }
 sub _strip_ends {
     # strip all line endings from string
