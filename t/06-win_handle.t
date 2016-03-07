@@ -10,9 +10,6 @@ if ($^O ne 'MSWin32'){
     plan skip_all => "Windows test but we're not on Windows";
 }
 else {
-
-    plan tests => 2;
-
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
 
     my $rw = File::Edit::Portable->new;
@@ -28,3 +25,5 @@ else {
         last;
     }
 }
+
+done_testing();

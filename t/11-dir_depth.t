@@ -3,7 +3,6 @@ use 5.006;
 use strict;
 use warnings;
 
-use Data::Dumper;
 use File::Copy;
 use File::Tempdir;
 use Test::More;

@@ -3,7 +3,6 @@ use 5.006;
 use strict;
 use warnings;
 
-use Data::Dumper;
 use Test::More;
 
 BEGIN {
@@ -12,7 +11,6 @@ BEGIN {
 
 my $rw = File::Edit::Portable->new;
 
-my @seps = ("\n", "\r\n", "\r", "blah");
 my ($hex, $type);
 
 $hex = $rw->_convert_recsep("\n", 'hex');

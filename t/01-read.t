@@ -3,7 +3,6 @@ use 5.006;
 use strict;
 use warnings;
 
-use Data::Dumper;
 use File::Copy;
 use File::Tempdir;
 use Test::More;
@@ -13,8 +12,6 @@ use Test::More tests => 30;
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
 }
-
-use File::Edit::Portable;
 
 my $tempdir = File::Tempdir->new;
 my $tdir = $tempdir->name;

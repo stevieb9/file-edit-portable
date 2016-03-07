@@ -6,13 +6,10 @@ use warnings;
 use File::Copy;
 use Test::More;
 
-
 if ($^O eq 'MSWin32' || $^O eq 'MacOS'){
     plan skip_all => "Unix test, but we're not on Unix";
 }
 else {
-
-    plan tests => 2;
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
 
     my $rw = File::Edit::Portable->new;
@@ -29,3 +26,4 @@ else {
     }
 }
 
+done_testing();

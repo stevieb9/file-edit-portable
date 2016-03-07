@@ -3,7 +3,6 @@ use 5.006;
 use strict;
 use warnings;
 
-use Data::Dumper;
 use Fcntl qw(:flock);
 use File::Copy;
 use File::Edit::Portable;
