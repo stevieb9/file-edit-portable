@@ -19,7 +19,7 @@ t/11-dir_depth.t
 t/12-splice.t
 t/13-multi_file_recsep.t
 t/14-tempfile.t
-t/15-_open.t
+t/15-_binmode_handle.t
 t/16-_convert_recsep.t
 t/17-exports.t
 t/base/empty.txt

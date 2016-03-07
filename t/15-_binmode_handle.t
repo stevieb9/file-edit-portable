@@ -17,10 +17,10 @@ my $rw = File::Edit::Portable->new;
 
 {
     eval {
-        my @file = $rw->_open('xxx');
+        my @file = $rw->_binmode_handle('xxx');
     };
 
-    like ($@, qr/_open\(\) can't/, "coverage for open bad file");
+    like ($@, qr/_binmode_handle\(\) can't/, "coverage for open bad file");
 
 }
 

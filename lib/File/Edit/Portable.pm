@@ -52,7 +52,7 @@ sub read {
         return $fh;
     }
     else {
-        $fh = $self->_open($file);
+        $fh = $self->_binmode_handle($file);
         my @contents = <$fh>;
         close $fh or confess "read() can't close file $file!: $!";
 
@@ -91,7 +91,7 @@ sub write {
 
     $self->{file} = $self->{copy} if $self->{copy};
 
-    my $wfh = $self->_open($self->{file}, 'w');
+    my $wfh = $self->_binmode_handle($self->{file}, 'w');
 
     # certain FreeBSD versions on amd64 don't work
     # with flock()
@@ -243,7 +243,7 @@ sub recsep {
 
     my $fh;
     eval {
-        $fh = $self->_open($file);
+        $fh = $self->_binmode_handle($file);
     };
 
     if ($@ || ! $fh){
@@ -282,7 +282,7 @@ sub platform_recsep {
     my $file = $self->_temp_filename;
 
     # for platform_recsep(), we need the file open in ASCII mode,
-    # so we can't use _open() or File::Temp
+    # so we can't use _binmode_handle() or File::Temp
 
     open my $wfh, '>', $file
       or confess
@@ -293,7 +293,7 @@ sub platform_recsep {
     close $wfh
       or confess "platform_recsep() can't close write temp file $file: $!";
 
-    my $fh = $self->_open($file);
+    my $fh = $self->_binmode_handle($file);
 
     my $recsep_regex = $self->_recsep_regex;
 
@@ -346,7 +346,7 @@ sub _handle {
 
     if ($self->recsep($file, 'hex') ne $self->platform_recsep('hex')){
         
-        $fh = $self->_open($file);
+        $fh = $self->_binmode_handle($file);
         my $temp_wfh = $self->tempfile;
         binmode $temp_wfh, ':raw';
 
@@ -360,16 +360,16 @@ sub _handle {
         close $fh or confess "can't close file $file: $!";
         close $temp_wfh or confess "can't close file $temp_filename: $!";
 
-        my $ret_fh = $self->_open($temp_filename);
+        my $ret_fh = $self->_binmode_handle($temp_filename);
         
         return $ret_fh;
     }
     else {
-        $fh = $self->_open($file);
+        $fh = $self->_binmode_handle($file);
         return $fh;
     }
 }
-sub _open {
+sub _binmode_handle {
     # returns a handle opened with binmode :raw
 
     my $self = shift;
@@ -380,11 +380,11 @@ sub _open {
 
     if ($mode =~ /^w/){
         open $fh, '>', $file
-          or confess "_open() can't open file $file for writing!: $!";
+          or confess "_binmode_handle() can't open file $file for writing!: $!";
     }
     else {
         open $fh, '<', $file
-          or confess "_open() can't open file $file for reading!: $!";
+          or confess "_binmode_handle() can't open file $file for reading!: $!";
     }
 
     binmode $fh, ':raw';
