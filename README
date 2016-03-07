@@ -81,6 +81,14 @@ DESCRIPTION
     file, and is very useful in looping over a directory where various
     files may have been written by different platforms.
 
+EXPORT
+
+    None by default. See EXPORT_OK
+
+EXPORT_OK
+
+    recsep(), platform_recsep()
+
 METHODS
 
  new
