@@ -309,10 +309,14 @@ sub platform_recsep {
         : $self->{platform_recsep};
 }
 sub tempfile {
+    # returns a temporary file handle in write mode
+
     my $wfh = File::Temp->new(UNLINK => 1);
     return $wfh;
 }
 sub _config {
+    # configures self with incoming params
+
     my $self = shift;
     my %p = @_;
 
@@ -407,16 +411,15 @@ sub _convert_recsep {
 }
 sub _recsep_regex {
     # returns a regex object representing all recseps
-    my $re = qr/([\n\x{0B}\f\r\x{85}]{1,2})/;
-    return $re;
+
+    return qr/([\n\x{0B}\f\r\x{85}]{1,2})/;
 }
 sub _platform_replace {
     # replace recseps in a string with the platform recsep
 
     my ($self, $str) = @_;
     my $re = $self->_recsep_regex;
-    $str =~ s/$re/$self->platform_recsep/ge;
-    return $str;
+    return $str =~ s/$re/$self->platform_recsep/ge;
 }
 sub _strip_ends {
     # strip all line endings from string
@@ -427,7 +430,7 @@ sub _strip_ends {
     return $str;
 }
 sub _temp_filename {
-    shift;
+    # return the name of a temporary file
 
     my $temp_fh = File::Temp->new(UNLINK => 1);
     my $filename = $temp_fh->filename;
