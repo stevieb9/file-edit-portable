@@ -15,13 +15,16 @@ my @files;
     @files = File::Edit::Portable->new->dir(dir => 't/base', list => 1);
 }
 
-my %map;
+my %h;
 
 for my $f (@files){
-    $map{$f} = recsep($f, 'type');
+    $h{$f} = recsep($f, 'type');
 }
 
-print Dumper \%map;
+is ($h{'t/base/splice.txt'}, platform_recsep('type'), "splice.txt is ok");
+is ($h{'t/base/empty.txt'}, platform_recsep('type'), "empty.txt is ok");
+is ($h{'t/base/unix.txt'}, 'nix', "unix.txt is ok");
+is ($h{'t/base/win.txt'}, 'win', "win.txt is ok");
 
 done_testing();
 
