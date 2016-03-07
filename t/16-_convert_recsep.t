@@ -13,26 +13,26 @@ BEGIN {
 my $rw = File::Edit::Portable->new;
 
 my @seps = ("\n", "\r\n", "\r", "blah");
-my ($hex, $os);
+my ($hex, $type);
 
 $hex = $rw->_convert_recsep("\n", 'hex');
 is ($hex, '\0a', 'converts nix to hex ok');
-$os = $rw->_convert_recsep("\n", 'os');
-is ($os, 'nix', 'converts nix to os ok');
+$type = $rw->_convert_recsep("\n", 'type');
+is ($type, 'nix', 'converts nix to type ok');
 
 $hex = $rw->_convert_recsep("\r\n", 'hex');
 is ($hex, '\0d\0a', 'converts win to hex ok');
-$os = $rw->_convert_recsep("\r\n", 'os');
-is ($os, 'win', 'converts win to os ok');
+$type = $rw->_convert_recsep("\r\n", 'type');
+is ($type, 'win', 'converts win to type ok');
 
 $hex = $rw->_convert_recsep("\r", 'hex');
 is ($hex, '\0d', 'converts mac to hex ok');
-$os = $rw->_convert_recsep("\r", 'os');
-is ($os, 'mac', 'converts mac to os ok');
+$type = $rw->_convert_recsep("\r", 'type');
+is ($type, 'mac', 'converts mac to type ok');
 
 $hex = $rw->_convert_recsep("xxx", 'hex');
 is ($hex, '787878', 'converts unknown to hex ok');
-$os = $rw->_convert_recsep("xxx", 'os');
-is ($os, 'unknown', 'converts unknown to os ok');
+$type = $rw->_convert_recsep("xxx", 'type');
+is ($type, 'unknown', 'converts unknown to type ok');
 
 done_testing();

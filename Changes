@@ -1,5 +1,25 @@
 Revision history for File-Edit-Portable
 
+1.21    2016-03-07
+        - write() now dies if not called with the 'file' param and more than
+          one file is currently open with read() (fixes #21)
+        - write functions for regex and hex (closes #25)
+        - added _convert_recsep(), which consolidates repetitive code (#25)
+        - added 'type' param to recsep() and platform_recsep(), returns the
+          type of line ending (win, nix, mac, etc) (#25)
+        - added _recsep_regex(), returns the regex instead of having it
+          peppered throughout the code (#25)
+        - added _platform_replace(), replaces file's line endings to platform
+          recsep (de-duplicates code)
+        - added _strip_ends(), removes all line endings from file (also to
+          de-dup code)
+        - remove all requirements/uses of File::Spec::Function (closes #27)
+        - implemented recsep caching (#22), but after benchmarks, it performed
+          worse than no cache, so backed it all out
+        - added/updated numerous tests for recsep() and platform_recsep() due
+          to new 'type' param (closes #26)
+        - update/add other new tests, and small POD fixes/updates
+
 1.20    2016-02-26
         - no functional changes
         - code cleanup, slight refactoring

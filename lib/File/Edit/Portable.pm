@@ -385,7 +385,7 @@ sub _convert_recsep {
         $sep =~ s/0/\\0/g;
         return $sep;
     }
-    elsif ($want eq 'os'){
+    elsif ($want eq 'type'){
         my $hex_sep = $self->_convert_recsep($sep, 'hex');
         return 'nix' if $hex_sep =~ /^\\0a$/;
         return 'win' if $hex_sep =~ /^\\0d\\0a$/;
@@ -395,7 +395,6 @@ sub _convert_recsep {
 }
 sub _recsep_regex {
     # returns a regex object representing all recseps
-
     my $re = qr/([\n\x{0B}\f\r\x{85}]{1,2})/;
     return $re;
 }
@@ -492,7 +491,7 @@ File::Edit::Portable - Read and write files while keeping the original line-endi
 
     $rw->recsep('file.txt'); # string form
     $rw->recsep('file.txt', 'hex'); # hex form
-    $rw->recsep('file.txt', 'os');  # OS name (nix, win, mac, etc)
+    $rw->recsep('file.txt', 'type');  # line ending type (nix, win, mac, etc)
 
 =head1 DESCRIPTION
 
@@ -651,19 +650,19 @@ Default is disabled.
 Returns the record separator found within the file. If the file is empty, we'll
 return the local platform's default record separator.
 
-The optional C<$want> parameter can contain either 'hex' or 'os'. If 'hex' is
+The optional C<$want> parameter can contain either 'hex' or 'type'. If 'hex' is
 sent in, the record separator will be returned in hex form (eg: "\0d\0a" for
-Windows). If 'os' is sent in, we'll return a short-form of the OS name (eg:
-win, nix, mac, etc).
+Windows). If 'type' is sent in, we'll return a short-form of the line-ending
+type (eg: win, nix, mac, etc).
 
 =head2 C<platform_recsep($want)>
 
 Returns the the current platform's (OS) record separator in string form.
 
-The optional C<$want> parameter can contain either 'hex' or 'os'. If 'hex' is
+The optional C<$want> parameter can contain either 'hex' or 'type'. If 'hex' is
 sent in, the record separator will be returned in hex form (eg: "\0d\0a" for
-Windows). If 'os' is sent in, we'll return a short-form of the OS name (eg:
-win, nix, mac, etc).
+Windows). If 'type' is sent in, we'll return a short-from of the line-ending
+type (eg: win, nix, mac, etc).
 
 =head2 C<tempfile>
 

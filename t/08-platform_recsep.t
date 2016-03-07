@@ -19,8 +19,8 @@ my $rw = File::Edit::Portable->new;
 
     my @sys = qw(win nix mac unknown);
 
-    my $os = $rw->platform_recsep('os');
-    is ((grep {/^$os$/} @sys), 1, "platform recsep os is ok" );
+    my $type = $rw->platform_recsep('type');
+    is ((grep {/^$type$/} @sys), 1, "platform recsep type is ok" );
 }
 
 done_testing();
