@@ -12,9 +12,7 @@ use File::Temp;
 use POSIX qw(uname);
 
 sub new {
-    return bless {
-        rs_cache => 0,
-    }, shift;
+    return bless {}, shift;
 }
 sub read {
     my $self = shift;
@@ -44,12 +42,10 @@ sub read {
 
     if (! wantarray){
         $fh = $self->_handle($file);
-        $self->{files}{$file}{mtime} = (stat $fh)[9];
         return $fh;
     }
     else {
         $fh = $self->_open($file);
-        $self->{files}{$file}{mtime} = (stat $fh)[9];
         my @contents = <$fh>;
         close $fh or confess "read() can't close file $file!: $!";
 
@@ -84,7 +80,7 @@ sub write {
         $self->recsep($self->{file});
     }
 
-    my $file = $self->{file}; # needed for cleanup of recsep cache
+    my $file = $self->{file}; # needed for cleanup of open file list
 
     $self->{file} = $self->{copy} if $self->{copy};
 
@@ -123,7 +119,7 @@ sub write {
 
     close $wfh;
     $self->{is_read} = 0;
-    delete $self->{files}{$file}; # cleanup recsep cache
+    delete $self->{files}{$file}; # cleanup open list
 
     return 1;
 }
@@ -143,7 +139,8 @@ sub splice {
     my ($line, $find) = ($self->{line}, $self->{find});
 
     if (! defined $line && ! defined $find){
-        confess "splice() requires either the 'line' or 'find' parameter sent in.";
+        confess
+          "splice() requires either the 'line' or 'find' parameter sent in.";
     }
 
     if (defined $line && defined $find){
@@ -219,12 +216,12 @@ sub dir {
         close $fh;
 
         $self->write(
-                    file => $file, 
-                    contents => $wfh,
-                    recsep => defined $recsep
-                        ? $recsep
-                        : $self->platform_recsep,
-                );
+            file => $file,
+            contents => $wfh,
+            recsep => defined $recsep
+                ? $recsep
+                : $self->platform_recsep,
+        );
     }
 
     return @files;
@@ -249,15 +246,6 @@ sub recsep {
         return $want
             ? $self->_convert_recsep($self->{recsep}, $want)
             : $self->{recsep};
-    }
-
-    my $file_mtime = $self->{files}{$file}{mtime} || 0;
-    my $cached = $self->{files}{$file}{recsep};
-
-    if ($self->{rs_cache} && $file_mtime == (stat $fh)[9] && defined $cached){
-         return $want
-            ? $self->_convert_recsep($cached, $want)
-            : $cached;
     }
 
     seek $fh, 0, 0;
