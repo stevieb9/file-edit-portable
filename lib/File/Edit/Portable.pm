@@ -392,26 +392,22 @@ sub _open {
     return $fh;
 }
 sub _convert_recsep {
-    # converts recsep to either hex or OS name
+    # converts recsep to either hex or OS name (ie. type)
 
     my ($self, $sep, $want) = @_;
 
-    if ($want eq 'hex'){
-        $sep = unpack "H*", $sep;
-        $sep =~ s/0/\\0/g;
-        return $sep;
-    }
-    elsif ($want eq 'type'){
-        my $hex_sep = $self->_convert_recsep($sep, 'hex');
+    $sep = unpack "H*", $sep;
+    $sep =~ s/0/\\0/g;
 
-        my %seps = (
-            '\0a'    => 'nix',
-            '\0d\0a' => 'win',
-            '\0d'    => 'mac',
-        );
+    return $sep if $want eq 'hex';
 
-        return $seps{$hex_sep} || 'unknown';
-    }
+    my %seps = (
+        '\0a'    => 'nix',
+        '\0d\0a' => 'win',
+        '\0d'    => 'mac',
+    );
+
+    return $seps{$sep} || 'unknown';
 }
 sub _recsep_regex {
     # returns a regex object representing all recseps
