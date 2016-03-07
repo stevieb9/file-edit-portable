@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Data::Dumper;
+use File::Temp;
 use Test::More;
 use File::Edit::Portable qw(recsep platform_recsep);
 

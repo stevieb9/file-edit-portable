@@ -1,5 +1,9 @@
 Revision history for File-Edit-Portable
 
+1.22    xxx
+        - recsep() and platform_recsep() can now be imported into the local
+          namespace (non-OO) (closes #23)
+
 1.21    2016-03-07
         - write() now dies if not called with the 'file' param and more than
           one file is currently open with read() (fixes #21)

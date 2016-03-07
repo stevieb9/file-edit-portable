@@ -13,7 +13,10 @@ use File::Temp;
 use POSIX qw(uname);
 
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(recsep platform_recsep);
+our @EXPORT_OK = qw(
+    recsep
+    platform_recsep
+);
 
 sub new {
     return bless {}, shift;
@@ -522,6 +525,14 @@ but you don't know whether the record separators are platform-standard. Shared
 storage between multpile platforms are a good use case. This module affords you
 the ability to not have to check each file, and is very useful in looping over
 a directory where various files may have been written by different platforms.
+
+=head1 EXPORT
+
+None by default. See L<EXPORT_OK>
+
+=head1 EXPORT_OK
+
+C<recsep()>, C<platform_recsep()>
 
 =head1 METHODS
 
