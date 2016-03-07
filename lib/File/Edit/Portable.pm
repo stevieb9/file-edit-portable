@@ -42,8 +42,8 @@ sub read {
     }
 
     $self->recsep($file);
+    $self->{files}{$file}{is_read} = 1;
     $self->{files}{$file}{recsep} = $self->{recsep};
-    $self->{is_read} = 1;
 
     my $fh;
 
@@ -83,11 +83,11 @@ sub write {
         confess "write() requires 'contents' param sent in";
     }
 
-    if (! $self->{is_read}){
-        $self->recsep($self->{file});
-    }
-
     my $file = $self->{file}; # needed for cleanup of open file list
+
+    if (! $self->{files}{$file}{is_read}){
+        $self->{files}{$file}{recsep} = $self->recsep($file);
+    }
 
     $self->{file} = $self->{copy} if $self->{copy};
 
@@ -104,7 +104,7 @@ sub write {
 
     my $recsep = defined $self->{custom_recsep}
         ? $self->{custom_recsep}
-        : $self->{recsep};
+        : $self->{files}{$file}{recsep};
 
     my $contents = $self->{contents};
 
@@ -125,7 +125,6 @@ sub write {
     }
 
     close $wfh;
-    $self->{is_read} = 0;
     delete $self->{files}{$file}; # cleanup open list
 
     return 1;

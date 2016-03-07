@@ -6,6 +6,9 @@ Revision history for File-Edit-Portable
         - cleaned up return structure for recsep types (closes #29)
         - renamed _open() to _binmode_handle()
         - cleanup and tidy of all test files
+        - cleanup of numerous unnecessary prereqs in Makefile.PL
+        - write() now uses the correct recsep for a file if multiple read()s
+          are concurrently open (fixes #30)
 
 1.21    2016-03-07
         - write() now dies if not called with the 'file' param and more than

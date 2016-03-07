@@ -91,24 +91,35 @@ my $copy = "$tdir/test.txt";
 }
 {
     my $rw = File::Edit::Portable->new;
-
     my $mock = Mock::Sub->new;
-    my $recsep_sub = $mock->mock('File::Edit::Portable::recsep', return_value => 1);
 
     my $file = $unix;
     my $copy = "$tdir/write_fh.txt";
 
     my $fh = $rw->read($file);
-    
-    $rw->{is_read} = 0;
 
-    # we need to set this manually because of the mock, or else warnings will
-    # be emitted for uninit
-
-    $rw->{recsep} = 'blah';
+    my $recsep_sub = $mock->mock('File::Edit::Portable::recsep', return_value => 1);
+    $rw->{files}{$file}{is_read} = 0;
+    $rw->{files}{$file}{recsep} = 'blah';
     $rw->write(copy => $copy, contents => $fh);
  
-    is($recsep_sub->called_count, 3, "recsep() is called if ! is_read");
+    is($recsep_sub->called_count, 1, "recsep() is called if ! is_read");
+}
+{
+    my $rw = File::Edit::Portable->new;
+    my $mock = Mock::Sub->new;
+
+    my $file = $unix;
+    my $copy = "$tdir/write_fh.txt";
+
+    my $fh = $rw->read($file);
+
+    my $recsep_sub = $mock->mock('File::Edit::Portable::recsep', return_value => 1);
+
+    $rw->{files}{$file}{recsep} = 'blah';
+    $rw->write(copy => $copy, contents => $fh);
+
+    is($recsep_sub->called_count, 0, "recsep() isn't called if is_read set");
 }
 SKIP: {
 
@@ -267,6 +278,22 @@ SKIP: {
 
     <$fh>;
     like ($warn, qr/\Qreadline() on closed\E/, "write() closes a contents \$fh");
+}
+{ # multiple reads()
+    my $rw = File::Edit::Portable->new;
+
+    my $fh2 = $rw->read($win);
+    my $fh3 = $rw->read($unix);
+
+    $rw->write(file => $win, copy => $copy, contents => $fh2);
+    is ($rw->recsep($copy, 'type'), 'win', "with multiple read(), win is ok");
+    is (defined $rw->{files}{$win}, '', "after write(), win read() disappears");
+    is (defined $rw->{files}{$unix}, 1, "...and unix is still defined");
+
+    $rw->write(file => $unix, copy => $copy, contents => $fh3);
+    is ($rw->recsep($copy, 'type'), 'nix', "with multiple read(), nix is ok");
+    is (defined $rw->{files}{$unix}, '', "after write(), unix read() disappears");
+    is (defined $rw->{files}{$win}, '', "...and win is still disappeared");
 }
 done_testing();
 
