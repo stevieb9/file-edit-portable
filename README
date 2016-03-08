@@ -233,6 +233,9 @@ METHODS
     (eg: "\0d\0a" for Windows). If 'type' is sent in, we'll return a
     short-form of the line-ending type (eg: win, nix, mac, etc).
 
+    Note that this method can be imported into your namespace on demand if
+    you don't need the object functionality of the module.
+
  platform_recsep($want)
 
     Returns the the current platform's (OS) record separator in string
@@ -242,6 +245,9 @@ METHODS
     'hex' is sent in, the record separator will be returned in hex form
     (eg: "\0d\0a" for Windows). If 'type' is sent in, we'll return a
     short-from of the line-ending type (eg: win, nix, mac, etc).
+
+    Note that this method can be imported into your namespace on demand if
+    you don't need the object functionality of the module.
 
  tempfile
 

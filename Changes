@@ -1,6 +1,8 @@
 Revision history for File-Edit-Portable
 
 1.22    2016-03-07
+        - last two releases have focused primarily on reliability and far more
+          enhanced unit testing, with a couple new features
         - recsep() and platform_recsep() can now be imported into the local
           namespace (non-OO) (closes #23)
         - cleaned up return structure for recsep types (closes #29)
@@ -13,6 +15,8 @@ Revision history for File-Edit-Portable
           set to a previously closed file handle (closes #31)
         - read() now simply overwrites it's data for a file if it has been read
           more than once prior to a write() (closes #32)
+        - added t/000-critic.t (closes #33)
+        - fixed minor issues to satisfy critic tests
 
 1.21    2016-03-07
         - write() now dies if not called with the 'file' param and more than

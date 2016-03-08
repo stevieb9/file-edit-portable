@@ -253,7 +253,7 @@ sub recsep {
         : __PACKAGE__->new;
 
     my $file = shift;
-    my $want = shift if @_;
+    my $want = shift;
 
     my $fh;
     eval {
@@ -291,7 +291,7 @@ sub platform_recsep {
         ? shift
         : __PACKAGE__->new;
 
-    my $want = shift if @_;
+    my $want = shift;
 
     my $file = $self->_temp_filename;
 
@@ -692,6 +692,9 @@ sent in, the record separator will be returned in hex form (eg: "\0d\0a" for
 Windows). If 'type' is sent in, we'll return a short-form of the line-ending
 type (eg: win, nix, mac, etc).
 
+Note that this method can be imported into your namespace on demand if you
+don't need the object functionality of the module.
+
 =head2 C<platform_recsep($want)>
 
 Returns the the current platform's (OS) record separator in string form.
@@ -700,6 +703,9 @@ The optional C<$want> parameter can contain either 'hex' or 'type'. If 'hex' is
 sent in, the record separator will be returned in hex form (eg: "\0d\0a" for
 Windows). If 'type' is sent in, we'll return a short-from of the line-ending
 type (eg: win, nix, mac, etc).
+
+Note that this method can be imported into your namespace on demand if you
+don't need the object functionality of the module.
 
 =head2 C<tempfile>
 
