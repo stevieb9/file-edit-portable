@@ -7,8 +7,6 @@ use File::Copy;
 use File::Tempdir;
 use Test::More;
 
-use Test::More tests => 30;
-
 BEGIN {
     use_ok( 'File::Edit::Portable' ) || print "Bail out!\n";
 }
@@ -75,10 +73,55 @@ my $rw = File::Edit::Portable->new;
 }
 {
     my $file = "$bdir/unix.txt";
-
     my @file = $rw->read(file => $file);
-
     is (scalar @file, 5, "file hash param still works");
+}
+{
+    my $rw = File::Edit::Portable->new;
+
+    my $f1 = "$bdir/unix.txt";
+    my $f2 = "$bdir/win.txt";
+    my $f3 = "$bdir/splice.txt";
+    my $f4 = "$bdir/empty.txt";
+
+    my $fh1 = $rw->read(file => $f1);
+    my $fh2 = $rw->read(file => $f2);
+    my $fh3 = $rw->read(file => $f3);
+    my $fh4 = $rw->read(file => $f4);
+
+    is ($rw->{reads}{count}, 4, "reads count is correct");
+
+    $rw->write(file => $f1, copy => $copy, contents => $fh1);
+    is ($rw->{reads}{count}, 4, "reads count is 3 after write");
+
+    $rw->write(file => $f2, copy => $copy, contents => $fh2);
+    is ($rw->{reads}{count}, 4, "reads count is 2 after write");
+
+    $rw->write(file => $f3, copy => $copy, contents => $fh3);
+    is ($rw->{reads}{count}, 4, "reads count is 1 after write");
+
+    $rw->write(file => $f4, copy => $copy, contents => $fh4);
+    is ($rw->{reads}{count}, 0, "reads count is 0 after write");
+}
+{
+    my $rw = File::Edit::Portable->new;
+
+    my $f1 = "$bdir/unix.txt";
+    my $f2 = "$bdir/win.txt";
+
+    my $fh1 = $rw->read(file => $f1);
+    my $fh2 = $rw->read(file => $f2);
+    my $fh3 = $rw->read(file => $f1);
+
+
+    $rw->write(file => $f1, copy => $copy, contents => $fh1);
+    is ($rw->recsep($copy, 'type'), 'nix', "after first read, recsep is ok");
+
+    $rw->write(file => $f2, copy => $copy, contents => $fh2);
+    is ($rw->recsep($copy, 'type'), 'win', "after other file, recsep is ok");
+
+    $rw->write(file => $f1, copy => $copy, contents => $fh3);
+    is ($rw->recsep($copy, 'type'), 'nix', "after double-reading, recsep is ok");
 }
 
 done_testing();

@@ -314,6 +314,8 @@ SKIP: {
 
     $rw->write(file => $unix, copy => $copy, contents => $fh);
 
+    is ($rw->{reads}{count}, 2, "read count is correct");
+
     is (
         $rw->recsep($copy, 'type'),
         'nix',
@@ -327,14 +329,6 @@ SKIP: {
         qr/if calling write/,
         "if read() has been called more than once even with only one file " .
         "still open, write() requires the 'file' param");
-
-    $rw->write(file => $win, copy => $copy, contents => $fh2);
-
-    is (
-        $rw->recsep($copy, 'type'),
-        'win',
-        "with one read() closed, write() doesn't need 'file'"
-    );
 }
 
 done_testing();

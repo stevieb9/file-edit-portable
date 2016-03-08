@@ -1,6 +1,6 @@
 Revision history for File-Edit-Portable
 
-1.22    xxx
+1.22    2016-03-07
         - recsep() and platform_recsep() can now be imported into the local
           namespace (non-OO) (closes #23)
         - cleaned up return structure for recsep types (closes #29)
@@ -11,6 +11,8 @@ Revision history for File-Edit-Portable
           are concurrently open (fixes #30)
         - catch warning and die if write() is called with the 'contents' param
           set to a previously closed file handle (closes #31)
+        - read() now simply overwrites it's data for a file if it has been read
+          more than once prior to a write() (closes #32)
 
 1.21    2016-03-07
         - write() now dies if not called with the 'file' param and more than
