@@ -1,5 +1,10 @@
 Revision history for File-Edit-Portable
 
+1.23    2016-03-10
+        - no code changes
+        - critic.t now only runs with AUTHOR_TESTING env var set
+        - corrected a couple of other tests that were failing on CPAN testers
+
 1.22    2016-03-07
         - last two releases have focused primarily on reliability and far more
           enhanced unit testing, with a couple new features

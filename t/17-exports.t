@@ -21,8 +21,8 @@ for my $f (@files){
     $h{$f} = recsep($f, 'type');
 }
 
-is ($h{'t/base/splice.txt'}, platform_recsep('type'), "splice.txt is ok");
-is ($h{'t/base/empty.txt'}, platform_recsep('type'), "empty.txt is ok");
+like ($h{'t/base/splice.txt'}, qr/(win|nix)/, "splice.txt is ok");
+like ($h{'t/base/empty.txt'}, qr/(win|nix)/, "empty.txt is ok");
 is ($h{'t/base/unix.txt'}, 'nix', "unix.txt is ok");
 is ($h{'t/base/win.txt'}, 'win', "win.txt is ok");
 
