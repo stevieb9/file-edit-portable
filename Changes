@@ -4,7 +4,8 @@ Revision history for File-Edit-Portable
         - fixed bug where recsep() was producing uninit warnings if the file
           we're looking for an rs in was empty (ie. "-z $fh" is true)
           (closes #35)
-        - added test
+        - added new test file t/18-bug.t
+        - cleaned up a few Critic issues
 
 1.23    2016-03-10
         - no code changes
