@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 $SIG{__WARN__} = sub { confess(shift); };
-our $VERSION = '1.24';
+our $VERSION = '1.25';
 
 use Carp;
 use Exporter;
