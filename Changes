@@ -1,5 +1,11 @@
 Revision history for File-Edit-Portable
 
+1.24    2016-03-14
+        - fixed bug where recsep() was producing uninit warnings if the file
+          we're looking for an rs in was empty (ie. "-z $fh" is true)
+          (closes #35)
+        - added test
+
 1.23    2016-03-10
         - no code changes
         - critic.t now only runs with AUTHOR_TESTING env var set

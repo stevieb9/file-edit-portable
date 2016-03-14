@@ -9,7 +9,9 @@ unless ( $ENV{RELEASE_TESTING} ) {
 }
 
 my $min_tcm = 0.9;
-eval "use Test::CheckManifest $min_tcm";
+## no critic
+eval "use Test::CheckManifest $min_tcm"; # no-critic
+## use critic
 plan skip_all => "Test::CheckManifest $min_tcm required" if $@;
 
 ok_manifest();

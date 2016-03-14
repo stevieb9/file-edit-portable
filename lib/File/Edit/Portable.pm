@@ -3,6 +3,7 @@ use 5.008;
 use strict;
 use warnings;
 
+$SIG{__WARN__} = sub { confess(shift); };
 our $VERSION = '1.24';
 
 use Carp;
@@ -260,7 +261,7 @@ sub recsep {
         $fh = $self->_binmode_handle($file);
     };
 
-    if ($@ || ! $fh){
+    if ($@ || -z $fh){
 
         # we've got an empty file...
         # we'll set recsep to the local platform's
