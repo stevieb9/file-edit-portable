@@ -200,4 +200,3 @@ Revision history for File-Edit-Portable
 0.01    2015-09-25
         - pread(), pwrite() completed
         - all tests pass
-        
