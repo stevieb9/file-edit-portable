@@ -719,7 +719,7 @@ Steve Bertrand, C<< <steveb at cpan.org> >>
 =head1 BUGS
 
 Please report any bugs or feature requests to
-L<https://github.com/stevieb9/mock-sub/issues>
+L<https://github.com/stevieb9/file-edit-portable/issues>
 
 =head1 REPOSITORY
 
