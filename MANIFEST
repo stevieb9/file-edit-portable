@@ -34,3 +34,4 @@ t/orig/unix.txt
 t/pod-coverage.t
 t/pod.t
 xt/boilerplate.t
+rhel_vendor_manifest_test.list
