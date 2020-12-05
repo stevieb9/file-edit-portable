@@ -1,6 +1,6 @@
 Revision history for File-Edit-Portable
 
-1.25 UNREL
+1.25    2020-12-04
         - fixed bug where platform_recsep() wasn't unlinking files created with
           _temp_filename() (closes #37)
 
