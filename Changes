@@ -1,6 +1,6 @@
 Revision history for File-Edit-Portable
 
-1.26 UNREL
+1.26    2022-11-14
         - Changed from Travis CI to Github Actions
         - Merge Pull Request from XSven (https://github.com/XSven) that
           localizes SIG{__WARN__} (Thanks!)
