@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 local $SIG{__WARN__} = sub { confess(shift); };
-our $VERSION = '1.26';
+our $VERSION = '1.27';
 
 use Carp qw(confess croak);
 use Exporter;
