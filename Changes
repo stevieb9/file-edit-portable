@@ -1,7 +1,7 @@
 Revision history for File-Edit-Portable
 
 1.26 UNREL
-        -
+        - Changed from Travis CI to Github Actions
 
 1.25    2020-12-04
         - fixed bug where platform_recsep() wasn't unlinking files created with
